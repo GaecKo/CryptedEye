@@ -89,6 +89,7 @@ class LoginPage extends StatelessWidget {
                     border: InputBorder.none,
                   ),
                   style: TextStyle(color: Colors.black),
+                  obscureText: true,
                 ),
               ),
               
