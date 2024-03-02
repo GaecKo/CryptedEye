@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'pages/login.dart';
 import 'pages/Tabs/notes.dart';
 import 'pages/Tabs/albumPage.dart';
+import 'pages/Tabs/passwords.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,7 +61,7 @@ class _HomePageState extends State<HomePage> {
         body: TabBarView(
           children: <Widget>[
             AlbumsPage(),
-            Icon(Icons.lock),
+            PasswordManagerPage(),
             NotesPage(),
           ],)
       
