@@ -49,21 +49,27 @@ class _HomePageState extends State<HomePage> {
         
       
         bottom: TabBar(
-          tabs: [
-            Tab(icon: Icon(Icons.panorama_outlined),),
+          tabs: const [
             Tab(icon: Icon(Icons.lock),),
+            Tab(icon: Icon(Icons.panorama_outlined),),
             Tab(icon: Icon(Icons.note_outlined),),
-          ]),
+            ],
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorColor: Colors.blue,
+          labelColor: Colors.blue,
+          ),
       
         ), 
       
-        //tabbar view
-        body: TabBarView(
-          children: <Widget>[
-            AlbumsPage(),
-            PasswordManagerPage(),
-            NotesPage(),
-          ],)
+        // tabbar view
+        body: SafeArea(
+          child: TabBarView(
+            children: const <Widget>[
+              PasswordManagerPage(),
+              AlbumsPage(),
+              NotesPage(),
+            ],),
+        )
       
       
       ),
