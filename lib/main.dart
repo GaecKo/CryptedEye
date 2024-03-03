@@ -46,6 +46,13 @@ class _HomePageState extends State<HomePage> {
             color: Colors.white,
             fontWeight: FontWeight.bold
           ),),
+
+          actions : <Widget>[
+            IconButton(
+              icon : Icon(Icons.settings, size: 30, color: Colors.white,),
+              onPressed: (){},
+              )
+          ],
         
       
         bottom: TabBar(
