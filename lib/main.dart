@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CryptedEye Demo',
       routes: {
-      '/login': (context) => const LoginPage(),
-      '/HomePage': (context) => const HomePage(),
+      '/login': (context) => LoginPage(),
+      '/HomePage': (context) => HomePage(),
       },
       home: const LoginPage(),
       debugShowCheckedModeBanner: false,
@@ -66,6 +66,9 @@ class _HomePageState extends State<HomePage> {
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorColor: Colors.blue,
           labelColor: Colors.blue,
+          unselectedLabelColor: Colors.white,
+          overlayColor: MaterialStateColor.resolveWith((states) => Color.fromRGBO(20, 20, 40, 0.2)),
+          splashBorderRadius: BorderRadius.circular(10),
           ),
       
         ), 

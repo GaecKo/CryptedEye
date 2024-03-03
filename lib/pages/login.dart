@@ -1,14 +1,42 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  // Function to handle the login action
+  void _login() {
+    String password = _passwordController.text;
+    print('Entered password: $password');
+
+    // TO DO: login logic
+
+    if (password == 'test') {
+      Navigator.pushReplacementNamed(context, '/HomePage', arguments: {'AP' : password});
+    } else {
+      print('Invalid password');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
       body: SafeArea(
-        child: SingleChildScrollView( // Wrap with SingleChildScrollView
+        child: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -26,18 +54,16 @@ class LoginPage extends StatelessWidget {
                     Text(
                       "CryptedEye",
                       style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
-                      ),
+                          fontSize: 26,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
                       " > Login",
                       style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold
-                      ),
+                          fontSize: 15,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -63,12 +89,13 @@ class LoginPage extends StatelessWidget {
                     color: Colors.grey[500],
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const TextField(
-                    decoration: InputDecoration(
+                  child: TextField(
+                    controller: _passwordController,
+                    decoration: const InputDecoration(
                       hintText: "> Access Password",
                       border: InputBorder.none,
                     ),
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                     obscureText: true,
                   ),
                 ),
@@ -83,12 +110,12 @@ class LoginPage extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        print("Button pressed");
-                        Navigator.pushNamed(context, '/HomePage');
+                        _login();
                       },
                       borderRadius: BorderRadius.circular(10.0),
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 12.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
