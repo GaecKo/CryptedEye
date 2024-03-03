@@ -15,11 +15,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'CryptedEye Demo',
-
+      routes: {
+      '/login': (context) => const LoginPage(),
+      '/HomePage': (context) => const HomePage(),
+      },
+      home: const LoginPage(),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
     ); // Material App
   }
 }

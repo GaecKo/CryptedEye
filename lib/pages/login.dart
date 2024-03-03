@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key});
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +84,7 @@ class LoginPage extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         print("Button pressed");
+                        Navigator.pushNamed(context, '/HomePage');
                       },
                       borderRadius: BorderRadius.circular(10.0),
                       child: const Padding(
