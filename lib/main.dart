@@ -35,8 +35,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
+
+    // TODO: retrieve real security var that could be needed.
+    // retrieve password from LoginPage:
+    Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    var password = args['AP'];
+
+    print("Retrieved password from HomePage: $password");
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(

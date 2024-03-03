@@ -20,9 +20,10 @@ class _LoginPageState extends State<LoginPage> {
   // Function to handle the login action
   void _login() {
     String password = _passwordController.text;
-    print('Entered password: $password');
+    print('Entered password from LoginPage: $password');
 
-    // TO DO: login logic
+    // TODO:
+    //  login logic
 
     if (password == 'test') {
       Navigator.pushReplacementNamed(context, '/HomePage', arguments: {'AP' : password});
@@ -33,6 +34,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    // TODO:
+    //  When keyboard appears, widget are moved up and then cropped by the SafeArea
+    //  (so they don't go to the very top of the screen)
+    // -> This is looking ugly, should be fixed
+
+    // TODO:
+    // When keyboard apperas, login button is hidden. It should however be easily clickable and thus visible
+    // even with keyboard active
+    // -> This should be fix and quite important!
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
       body: SafeArea(
@@ -41,7 +53,10 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
                 const SizedBox(height: 50),
+
+                // Top title (lock - name - >login)
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -67,13 +82,21 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+
+
                 const SizedBox(height: 40),
+
+                // Profile Icon
                 const Icon(
                   Icons.account_circle_rounded,
                   size: 200,
                   color: Colors.black,
                 ),
+
+
                 const SizedBox(height: 50),
+
+                // Login text
                 const Text(
                   "Login to Vault",
                   style: TextStyle(
@@ -81,7 +104,11 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
+
                 const SizedBox(height: 50),
+
+                // password prompt
                 Container(
                   width: 250,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -99,7 +126,11 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                   ),
                 ),
+
+
                 const SizedBox(height: 10),
+
+                // Login Button
                 Container(
                   width: 250,
                   decoration: BoxDecoration(
