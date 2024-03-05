@@ -66,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.white,
                     ),
                     SizedBox(width: 10),
+
                     Text(
                       "CryptedEye",
                       style: TextStyle(
