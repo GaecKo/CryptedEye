@@ -11,26 +11,30 @@ class Crypter {
   Key? _key;
   List<int>? _salt;
 
-  String salt_path = 'salt.key';
+  String? saltPath;
 
   Crypter._create();
 
   /// Public factory, same for our instance of Crypter
-  static Future<Crypter> create(String password) async {
+  static Future<Crypter> create(String password, String salt_path) async {
 
     // Call the private constructor
     var crypter = Crypter._create();
 
+    // salt path 
+    salt_path = salt_path;
+
     // Do initialization that requires async
     //await component._complexAsyncInit();
-    await crypter._init(password);
+    await crypter._init(password, salt_path);
 
     return crypter;
   }
 
-  Future<void> _init(String password) async {
+  Future<void> _init(String password, String salt_path) async {
     // first, we init our _salt var, that will contain 
     // our bytes for the key later on
+    saltPath = salt_path;
 
     _salt = await _loadSaltFromFile(salt_path);    
 
