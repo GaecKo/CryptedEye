@@ -1,14 +1,17 @@
-import 'dart:typed_data';
-import 'package:encrypt/encrypt.dart';
-import 'package:pointycastle/pointycastle.dart' as pc;
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:encrypt/encrypt.dart';
+import 'package:pointycastle/pointycastle.dart' as pc;
 
 
 
 class Crypter {
   Key? _key;
   List<int>? _salt;
+
+  String salt_path = 'salt.key';
 
   Crypter._create();
 
@@ -29,11 +32,11 @@ class Crypter {
     // first, we init our _salt var, that will contain 
     // our bytes for the key later on
 
-    _salt = await _loadSaltFromFile('salt.key');    
+    _salt = await _loadSaltFromFile(salt_path);    
 
     if (_salt!.isEmpty || _salt == []) { // if the file is empty or inexistant, we generate it
       _salt = await _generateSalt();
-      await _saveSaltToFile('salt.key', _salt!);
+      await _saveSaltToFile(salt_path, _salt!);
     }
 
     // Now, we can use the salt + the password to load the key
@@ -82,7 +85,7 @@ class Crypter {
     final encrypted = encrypter.encrypt(toEncrypt, iv: iv);
     
     // Return the base64-encoded ciphertext concatenated with the IV
-    return encrypted.base64 + ':' + base64.encode(iv.bytes);
+    return '${encrypted.base64}:${base64.encode(iv.bytes)}';
   }
 
   String decrypt(String toDecrypt) {
@@ -105,18 +108,44 @@ class Crypter {
     return decrypted;
   }
 
+    String generateSHA256Hash(String input) {
+    // Create a SHA-256 digest instance
+    final pc.Digest sha256 = pc.Digest('SHA-256');
+
+    // Convert the input string to bytes
+    final Uint8List data = Uint8List.fromList(utf8.encode(input));
+
+    // Calculate the hash
+    final Uint8List hash = sha256.process(data);
+
+    // Convert the hash bytes to a hexadecimal string
+    final hexString = hash.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join('');
+
+    return hexString;
+  }
+
+  String secureHash(String input) {
+    // double hash
+    return generateSHA256Hash(generateSHA256Hash(input));
+  }
+
+
 }
 
 void main() async {
   Crypter cr = await Crypter.create("test");
   print("init done");
 
-  String to_encrypt = "coucou";
+  String toEncrypt = "coucou";
 
-  String encrypted = cr.encrypt(to_encrypt);
-  print("crypt done on $to_encrypt: $encrypted");
+  String encrypted = cr.encrypt(toEncrypt);
+  print("crypt done on $toEncrypt: $encrypted");
 
   String decrypted = cr.decrypt(encrypted);
   print("decrypt done: $decrypted");
+
+  String hashed = cr.secureHash(toEncrypt);
+
+  print("hash done on $toEncrypt: $hashed");
 
 }
