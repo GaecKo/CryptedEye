@@ -137,7 +137,7 @@ class Crypter {
 }
 
 void main() async {
-  Crypter cr = await Crypter.create("test");
+  Crypter cr = await Crypter.create("test", "temp.key");
   print("init done");
 
   String toEncrypt = "coucou";

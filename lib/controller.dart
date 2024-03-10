@@ -11,7 +11,7 @@ class Controller {
 
   // TODO: create function
   // think on class instanciation: when should we instantiate the class? Before Login? At Login?
-  
+  // Load App function -> will instantiate the different API
   // static Future<Controller> create() 
 
 }
