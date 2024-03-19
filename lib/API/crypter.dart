@@ -16,22 +16,15 @@ class Crypter {
   Crypter._create();
 
   /// Public factory, same for our instance of Crypter
-  static Future<Crypter> create(String password, String salt_path) async {
+  static Future<Crypter> create() async {
 
     // Call the private constructor
     var crypter = Crypter._create();
 
-    // salt path 
-    salt_path = salt_path;
-
-    // Do initialization that requires async
-    //await component._complexAsyncInit();
-    await crypter._init(password, salt_path);
-
     return crypter;
   }
 
-  Future<void> _init(String password, String salt_path) async {
+  Future<void> init(String password, String salt_path) async {
     // first, we init our _salt var, that will contain 
     // our bytes for the key later on
     saltPath = salt_path;
@@ -67,16 +60,16 @@ class Crypter {
   }
 
   Future<Key> _loadKey(String password, List<int> salt) async {
-  // Initialize PBKDF2 with SHA-256, HMAC, and PBKDF2 parameters
-  final pbkdf2 = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
-    ..init(pc.Pbkdf2Parameters(Uint8List.fromList(salt), 380000, 32));
-  
-  // Derive key bytes from the password using PBKDF2
-  final keyBytes = pbkdf2.process(utf8.encode(password));
-  
-  // Create a Key object from the derived key bytes
-  return Key(keyBytes);
-}
+    // Initialize PBKDF2 with SHA-256, HMAC, and PBKDF2 parameters
+    final pbkdf2 = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
+      ..init(pc.Pbkdf2Parameters(Uint8List.fromList(salt), 380000, 32));
+
+    // Derive key bytes from the password using PBKDF2
+    final keyBytes = pbkdf2.process(utf8.encode(password));
+
+    // Create a Key object from the derived key bytes
+    return Key(keyBytes);
+  }
 
   String encrypt(String toEncrypt) {
     // Generate a random initialization vector (IV)
@@ -137,7 +130,8 @@ class Crypter {
 }
 
 void main() async {
-  Crypter cr = await Crypter.create("test", "temp.key");
+  Crypter cr = await Crypter.create();
+  await cr.init("test", "temp.key");
   print("init done");
 
   String toEncrypt = "coucou";

@@ -1,6 +1,9 @@
 // TODO: basic write function for general purpose
 // Boolean write_content(String content, String path) -> true if done, false if error/...
-// String read_content(String path) -> List<String> 
+// String read_content(String path) -> List<String>
+
+// TODO: create function to create file
+
 import 'dart:io';
 import 'dart:convert';
 import 'crypter.dart';
