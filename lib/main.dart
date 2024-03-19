@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'pages/login.dart';
 import 'pages/home.dart';
+import 'pages/test_crypted.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
       '/login': (context) => LoginPage(),
       '/HomePage': (context) => HomePage(),
+      '/HashPage': (context) => HashPage(),
       },
       home: const LoginPage(),
       debugShowCheckedModeBanner: false,

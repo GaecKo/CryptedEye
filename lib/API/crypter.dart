@@ -28,6 +28,7 @@ class Crypter {
     //await component._complexAsyncInit();
     await crypter._init(password, salt_path);
 
+    print("\n\n\n\n\nCRYPTER INIT FINISHED\n\n\n\n\n");
     return crypter;
   }
 
@@ -35,6 +36,7 @@ class Crypter {
     // first, we init our _salt var, that will contain 
     // our bytes for the key later on
     saltPath = salt_path;
+    print("\n\n\n\n\nINITIALIZING\n\n\n\n\n");
 
     _salt = await _loadSaltFromFile(salt_path);    
 

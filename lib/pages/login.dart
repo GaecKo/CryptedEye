@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     //  login logic
 
     if (password == 'test') {
-      Navigator.pushReplacementNamed(context, '/HomePage', arguments: {'AP' : password});
+      Navigator.pushReplacementNamed(context, '/HashPage', arguments: {'AP' : password});
     } else {
       print('Invalid password');
     }
