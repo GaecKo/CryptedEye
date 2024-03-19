@@ -25,11 +25,11 @@ class _LoginPageState extends State<LoginPage> {
     // TODO:
     //  login logic
 
-    if (password == 'test') {
-      Navigator.pushReplacementNamed(context, '/HashPage', arguments: {'AP' : password});
-    } else {
-      print('Invalid password');
-    }
+    //if (password == 'test') {
+    Navigator.pushReplacementNamed(context, '/HashPage', arguments: {'AP' : password});
+    //} else {
+    //  print('Invalid password');
+    //}
   }
 
   @override

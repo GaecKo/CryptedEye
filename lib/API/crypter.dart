@@ -18,12 +18,11 @@ class Crypter {
   Crypter._create();
 
   /// Public factory, same for our instance of Crypter
-  static Future<Crypter> create() async {
+  static Crypter create() {
 
     // Call the private constructor
     var crypter = Crypter._create();
 
-    print("\n\n\n\n\nCRYPTER INIT FINISHED\n\n\n\n\n");
     return crypter;
   }
 
@@ -32,17 +31,21 @@ class Crypter {
     // our bytes for the key later on
     initialized = true;
     saltPath = salt_path;
-    print("\n\n\n\n\nINITIALIZING\n\n\n\n\n");
 
-    _salt = await _loadSaltFromFile(salt_path);    
+    // TODO: temp code: for demo purpose
+    _salt = await _generateSalt();
 
-    if (_salt!.isEmpty || _salt == []) { // if the file is empty or inexistant, we generate it
-      _salt = await _generateSalt();
-      await _saveSaltToFile(salt_path, _salt!);
-    }
+    //if (_salt!.isEmpty || _salt == []) { // if the file is empty or inexistant, we generate it
+      //_salt = await _generateSalt();
+      //await _saveSaltToFile(salt_path, _salt!);
+    //}
 
     // Now, we can use the salt + the password to load the key
     _key = await _loadKey(password, _salt!);
+  }
+
+  bool isInit() {
+    return initialized;
   }
 
   Future<List<int>> _generateSalt() async {
@@ -65,52 +68,54 @@ class Crypter {
   }
 
   Future<Key> _loadKey(String password, List<int> salt) async {
-    // Initialize PBKDF2 with SHA-256, HMAC, and PBKDF2 parameters
-    final pbkdf2 = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
-      ..init(pc.Pbkdf2Parameters(Uint8List.fromList(salt), 380000, 32));
 
-    // Derive key bytes from the password using PBKDF2
+    // pdkf2 creation
+    final pbkdf2 = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
+      ..init(pc.Pbkdf2Parameters(Uint8List.fromList(salt), 38000, 32));
+    // WARNING: we should increase number of iteration
+
+    // prepare key with password
     final keyBytes = pbkdf2.process(utf8.encode(password));
 
-    // Create a Key object from the derived key bytes
+    // Key object based on password
     return Key(keyBytes);
   }
 
   String encrypt(String toEncrypt) {
-    // Generate a random initialization vector (IV)
+    print("encrypting: $toEncrypt");
+    // random IV (init vector)
     final iv = IV.fromSecureRandom(16);
     
-    // Create an Encrypter object with AES encryption algorithm and the provided key
+    // encrypted bases on Key
     final encrypter = Encrypter(AES(_key!));
-    
-    // Encrypt the plaintext using AES encryption algorithm and the generated IV
+
+    // IV + AES on text to encrypt using encrypted
     final encrypted = encrypter.encrypt(toEncrypt, iv: iv);
     
-    // Return the base64-encoded ciphertext concatenated with the IV
+    // crypted - iv
     return '${encrypted.base64}:${base64.encode(iv.bytes)}';
   }
 
   String decrypt(String toDecrypt) {
-    // Split the input string into ciphertext and IV parts
+    // crypted - iv
     final parts = toDecrypt.split(':');
     
-    // Create an Encrypted object from the base64-decoded ciphertext
+    // encrypted = text
     final encrypted = Encrypted(base64.decode(parts[0]));
     
-    // Create an IV object from the base64-decoded IV bytes
+    // iv from parts[1]
     final iv = IV(Uint8List.fromList(base64.decode(parts[1])));
     
-    // Create an Encrypter object with AES encryption algorithm and the provided key
+    // AES using Key
     final encrypter = Encrypter(AES(_key!));
     
-    // Decrypt the ciphertext using AES encryption algorithm and the provided IV
+    // decrypted text with IV and Key from encrypter
     final decrypted = encrypter.decrypt(encrypted, iv: iv);
     
-    // Return the decrypted plaintext
     return decrypted;
   }
 
-    String generateSHA256Hash(String input) {
+  String generateSHA256Hash(String input) {
     // Create a SHA-256 digest instance
     final pc.Digest sha256 = pc.Digest('SHA-256');
 
