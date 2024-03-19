@@ -11,6 +11,8 @@ class Crypter {
   Key? _key;
   List<int>? _salt;
 
+  bool initialized = false;
+
   String? saltPath;
 
   Crypter._create();
@@ -21,13 +23,16 @@ class Crypter {
     // Call the private constructor
     var crypter = Crypter._create();
 
+    print("\n\n\n\n\nCRYPTER INIT FINISHED\n\n\n\n\n");
     return crypter;
   }
 
   Future<void> init(String password, String salt_path) async {
     // first, we init our _salt var, that will contain 
     // our bytes for the key later on
+    initialized = true;
     saltPath = salt_path;
+    print("\n\n\n\n\nINITIALIZING\n\n\n\n\n");
 
     _salt = await _loadSaltFromFile(salt_path);    
 
