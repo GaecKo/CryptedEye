@@ -5,13 +5,13 @@ import 'API/rwm.dart';
 import 'dart:io';
 
 class Controller {
-  Crypter? crypter;
+  Crypter? crp;
   IMG? img;
   RWM? rwm;
 
   Controller._create();
 
-  static Future<Controller> create() async {
+  static Controller create() {
     var ctr = Controller._create();
 
     ctr.initAPI();
@@ -19,13 +19,14 @@ class Controller {
     return ctr;
   }
 
-  void initAPI() async {
-    crypter = await Crypter.create();
+  void initAPI() {
+    crp = Crypter.create();
     img = IMG();
     rwm = RWM();
   }
 
-  void loadApp(String saltPath, String AP) {
+  void loadApp(String AP, String saltPath) async {
+    await crp?.init(AP, saltPath);
     print("Controller has loaded the app");
   }
 
@@ -34,10 +35,10 @@ class Controller {
   // Load App function -> will instantiate the different API
   // static Future<Controller> create() 
 
-  void initApp(String AP) async {
+  void initApp(String AP, String saltPath) async {
     // Init and then load App
     // save hash into file
-    crypter?.init(AP, "structure/app/salt.key");
+    await crp?.init(AP, "structure/app/salt.key");
     loadApp("structure/app/salt.key", AP);
   }
 
@@ -51,7 +52,7 @@ class Controller {
   }
 
   void saveHashPassword(String AP) {
-    rwm?.write_content("structure/app/AP.hash", crypter!.secureHash(AP));
+    rwm?.write_content("structure/app/AP.hash", crp!.secureHash(AP));
   }
 
 }
