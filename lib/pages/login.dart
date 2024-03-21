@@ -1,14 +1,23 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../controller.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  Controller ctr;
+
+  LoginPage({super.key, required this.ctr});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageState createState() => _LoginPageState(ctr);
 }
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
+  Controller ctr;
+
+  _LoginPageState(this.ctr);
 
   @override
   void dispose() {
@@ -17,19 +26,24 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  void _callSignUp() {
+    Navigator.pushReplacementNamed(context, '/SignUp');
+  }
+
   // Function to handle the login action
-  void _login() {
+  void _login() async {
     String password = _passwordController.text;
     print('Entered password from LoginPage: $password');
 
     // TODO:
     //  login logic
 
-    //if (password == 'test') {
-    Navigator.pushReplacementNamed(context, '/HashPage', arguments: {'AP' : password});
-    //} else {
-    //  print('Invalid password');
-    //}
+    if (password == 'test') {
+      ctr.loadApp(password, "structure/app/salt.key");
+      Navigator.pushReplacementNamed(context, '/HomePage');
+    } else {
+      print('Invalid password');
+    }
   }
 
   @override
@@ -168,6 +182,22 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 10,),
+
+                InkWell(
+                  onTap: _callSignUp,
+                  child: const Text(
+                    "No account? Sign-up!",
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline
+                    ),
+
+                  ),
+                ),
+
               ],
             ),
           ),
