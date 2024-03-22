@@ -78,9 +78,3 @@ class RWM {
   }
 
 }
-
-
-void main() {
-  RWM r = RWM();
-  r.create_folder("hello/les/loulou");
-}
