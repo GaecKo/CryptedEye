@@ -38,7 +38,7 @@ void main(List<String> args) {
   IMG img = IMG();
 
   String sourceFolderPath = 'test';
-  String destinationFilePath = 'data.tar';
+  String destinationFilePath = 'data.CryptedEye.tar';
   
   img.createTarFile(sourceFolderPath, destinationFilePath);
 }
