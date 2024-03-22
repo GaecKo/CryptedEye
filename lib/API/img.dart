@@ -4,6 +4,11 @@ import 'package:archive/archive_io.dart';
 // import 'package:path/path.dart' as p;
 
 class IMG {
+
+  void unTarFile(String sourceDir, String targetFile) async {
+    // ... TODO: @guillaume
+  }
+
   void createTarFile(String sourceDir, String targetFile) async {
     // Créer une liste de tous les fichiers et sous-répertoires dans le dossier source
     List<FileSystemEntity> fileList = Directory(sourceDir).listSync(recursive: true);
