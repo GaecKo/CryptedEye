@@ -36,9 +36,11 @@ class Controller {
 
   void loadApp(String AP, String VaultName, {bool fromSignup=false}) {
     VaultName = VaultName;
+    // untar image
+    img.unTarFile("$localPath/$VaultName", "$localPath/$VaultName");
 
     // get salt path
-    String saltPath = "$VaultName/app/salt.key";
+    String saltPath = "$localPath$VaultName/app/salt.key";
 
     crypter.init(AP, saltPath);
 
@@ -67,9 +69,12 @@ class Controller {
     
     // create project structure image and delete file structure for basic loadApp
     // -> we created the project structure temporaly, to save it to .cryptedEye.tar
-    // -> when we'll load the app, we will
+    // -> when we'll load the app, we will again untar it
 
-    loadApp("structure/app/salt.key", AP, fromSignup: true);
+    img.createTarFile("$localPath/$VaultName", "$localPath/$VaultName");
+    rwm.deleteDirectory(VaultName);
+
+    loadApp(AP, VaultName, fromSignup: true);
   }
 
 

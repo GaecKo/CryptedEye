@@ -8,22 +8,23 @@ import 'pages/signup.dart';
 
 import 'controller.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+
+  Controller ctr = await Controller.create();
+
+  runApp(CryptedEye(ctr: ctr));
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
+class CryptedEye extends StatelessWidget {
+  Controller ctr;
 
-  Controller ctr = Controller.create();
+  CryptedEye({super.key, required this.ctr});
 
   @override
-  Widget build(BuildContext context) {
-
-
+  Future<Widget> build(BuildContext context) async {
 
     return MaterialApp(
-      title: 'CryptedEye Demo',
+      title: 'CryptedEye',
       routes: {
       '/login': (context) => LoginPage(ctr: ctr),
       '/HomePage': (context) => HomePage(ctr:ctr),
@@ -33,5 +34,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
     ); // Material App
   }
+
 }
 

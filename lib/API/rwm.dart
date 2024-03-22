@@ -65,6 +65,11 @@ class RWM {
     return File("$localPath/$filePath");
   }
 
+  void deleteDirectory(String filePath) {
+    final dir = Directory("$localPath/$filePath");
+    dir.deleteSync(recursive: true);
+  }
+
   Future<List<FileSystemEntity>> getListofVault() async {
     final dir = Directory(localPath);
 
