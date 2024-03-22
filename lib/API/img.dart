@@ -1,18 +1,40 @@
 import 'dart:io';
-
 import 'package:archive/archive_io.dart';
-// import 'package:path/path.dart' as p;
 
 class IMG {
+  void unTarFile(String sourceFile, String targetDir) async {
+    // Vérifier si le fichier source existe
+    File source = File(sourceFile);
+    if (!source.existsSync()) {
+      print("Le fichier source n'existe pas.");
+      return;
+    }
 
-  void unTarFile(String sourceDir, String targetFile) async {
-    // ... TODO: @guillaume
+    // Lire les données de l'archive tar
+    List<int> bytes = await source.readAsBytes();
+    Archive archive = TarDecoder().decodeBytes(bytes);
+
+    // Extraire les fichiers de l'archive
+    for (var file in archive) {
+      if (file.isFile) {
+        List<int> data = file.content as List<int>;
+        String filePath = '$targetDir/${file.name}';
+        File(filePath)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(data);
+        print('Fichier extrait: $filePath');
+      }
+    }
+
+    // Delete l'archive
+    await source.delete();
+    print('Extraction terminée.');
   }
 
   void createTarFile(String sourceDir, String targetFile) async {
     // Créer une liste de tous les fichiers et sous-répertoires dans le dossier source
-    List<FileSystemEntity> fileList = Directory(sourceDir).listSync(recursive: true);
-    
+    List<FileSystemEntity> fileList =
+        Directory(sourceDir).listSync(recursive: true);
 
     // Créer un objet Archive
     Archive archive = Archive();
@@ -22,7 +44,7 @@ class IMG {
       String filePath = file.path;
       if (FileSystemEntity.isFileSync(filePath)) {
         List<int> bytes = await (file as File).readAsBytes();
-        ArchiveFile af =  ArchiveFile(filePath, bytes.length, bytes);
+        ArchiveFile af = ArchiveFile(filePath, bytes.length, bytes);
         archive.addFile(af);
       }
     }
@@ -33,17 +55,17 @@ class IMG {
       target.createSync(recursive: true);
     }
     target.writeAsBytesSync(TarEncoder().encode(archive));
+    print('Tar créer: $targetFile');
   }
 }
-
-
-
 
 void main(List<String> args) {
   IMG img = IMG();
 
   String sourceFolderPath = 'test';
   String destinationFilePath = 'data.CryptedEye.tar';
-  
+  String data = "data";
+
   img.createTarFile(sourceFolderPath, destinationFilePath);
+  //img.unTarFile(destinationFilePath, data);
 }
