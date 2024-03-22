@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
+import '../controller.dart';
 
 import 'Tabs/albumPage.dart';
 import 'Tabs/notes.dart';
 import 'Tabs/passwords.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  Controller ctr;
+
+  HomePage({super.key, required this.ctr});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState(ctr);
 }
 
 class _HomePageState extends State<HomePage> {
+
+  Controller ctr;
+
+  _HomePageState(this.ctr);
 
   @override
   Widget build(BuildContext context) {
 
     // TODO: retrieve real security var that could be needed.
     // retrieve password from LoginPage:
-    Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    var password = args['AP'];
-
-    print("Retrieved password from HomePage: $password");
+    // Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return DefaultTabController(
       length: 3,

@@ -8,12 +8,12 @@ import 'package:pointycastle/pointycastle.dart' as pc;
 
 
 class Crypter {
-  Key? _key;
-  List<int>? _salt;
+  late Key _key;
+  late List<int> _salt;
 
   bool initialized = false;
 
-  String? saltPath;
+  late String saltPath;
 
   Crypter._create();
 
@@ -33,15 +33,15 @@ class Crypter {
     saltPath = salt_path;
 
     // TODO: temp code: for demo purpose
-    _salt = await _generateSalt();
+    _salt = await _loadSaltFromFile(salt_path);
 
-    //if (_salt!.isEmpty || _salt == []) { // if the file is empty or inexistant, we generate it
-      //_salt = await _generateSalt();
-      //await _saveSaltToFile(salt_path, _salt!);
-    //}
+    if (_salt.isEmpty || _salt == []) { // if the file is empty or inexistant, we generate it
+      _salt = await _generateSalt();
+      await _saveSaltToFile(salt_path, _salt);
+    }
 
     // Now, we can use the salt + the password to load the key
-    _key = await _loadKey(password, _salt!);
+    _key = await _loadKey(password, _salt);
   }
 
   bool isInit() {

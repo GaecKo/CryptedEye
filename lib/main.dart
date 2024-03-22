@@ -4,26 +4,32 @@ import 'package:flutter/material.dart';
 
 import 'pages/login.dart';
 import 'pages/home.dart';
-import 'pages/test_crypted.dart';
+import 'pages/signup.dart';
+
+import 'controller.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  Controller ctr = Controller.create();
 
   @override
   Widget build(BuildContext context) {
 
+
+
     return MaterialApp(
       title: 'CryptedEye Demo',
       routes: {
-      '/login': (context) => LoginPage(),
-      '/HomePage': (context) => HomePage(),
-      '/HashPage': (context) => HashPage(),
+      '/login': (context) => LoginPage(ctr: ctr),
+      '/HomePage': (context) => HomePage(ctr:ctr),
+      '/SignUp': (context) => SignUpPage(ctr: ctr)
       },
-      home: const LoginPage(),
+      home: LoginPage(ctr: ctr),
       debugShowCheckedModeBanner: false,
     ); // Material App
   }
