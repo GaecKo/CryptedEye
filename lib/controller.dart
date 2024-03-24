@@ -36,7 +36,7 @@ class Controller {
   void loadApp(String AP, String VaultName, {bool fromSignup=false}) {
     VaultName = VaultName;
     // untar image
-    img.unTarFile("$localPath/$VaultName", "$localPath/$VaultName");
+    img.unTarFile("$localPath/$VaultName.CryptedEye.tar", "$localPath/$VaultName");
 
     // get salt path
     String saltPath = "$localPath/$VaultName/app/salt.key";
@@ -61,54 +61,25 @@ class Controller {
     
     // save hash into file
     // 1. create hash file
-    rwm.create_file("$VaultName/app/AP.hash");
+    rwm.create_file("$VaultName/app/AP.hash").createSync();
     // 2. save AP to hash file as hashed AP
     saveHashPassword(AP, "$VaultName/app/AP.hash");
-    
+
+    // create key file
+    rwm.create_file("$VaultName/app/salt.key").createSync();
+
     // create project structure image and delete file structure for basic loadApp
     // -> we created the project structure temporaly, to save it to .cryptedEye.tar
     // -> when we'll load the app, we will again untar it
 
-    img.createTarFile("$localPath/$VaultName", "$localPath/$VaultName");
+    img.createTarFile("$localPath/$VaultName", "$localPath/$VaultName.CryptedEye.tar");
     rwm.deleteDirectory(VaultName);
 
     loadApp(AP, VaultName, fromSignup: true);
   }
 
-  void createAppSettingFile() {
-    // create settings.json at localPath with nb_vault to 0.
-    Map<String, dynamic> settings = {
-      'nb_vault': 1,
-    };
-
-    String json = jsonEncode(settings);
-    File("$localPath/settings.json").writeAsStringSync(json);
-  }
-
-  void increaseNbVault() {
-    Map<String, dynamic> settings = jsonDecode(File("$localPath/settings.json").readAsStringSync());
-    settings['nb_vault'] += 1;
-    File("$localPath/settings.json").writeAsStringSync(jsonEncode(settings));
-  }
-
-  void decreaseNbVault() {
-    Map<String, dynamic> settings = jsonDecode(File("$localPath/settings.json").readAsStringSync());
-    settings['nb_vault'] -= 1;
-    File("$localPath/settings.json").writeAsStringSync(jsonEncode(settings));
-  }
-
   bool isStartup() {
-    File settingsFile = File("$localPath/settings.json");
-    if (!settingsFile.existsSync()) {
-      return true;
-    } else {
-      Map<String, dynamic> settings = jsonDecode(settingsFile.readAsStringSync());
-      if (settings['nb_vault'] == 0) {
-        return true;
-      } else {
-        return false;
-      }
-    }
+    return rwm.getListofVault().isEmpty;
   }
 
   void saveHashPassword(String AP, String hashFilePath) {

@@ -31,7 +31,6 @@ class CryptedEye extends StatelessWidget {
     if (isStartup) {
       // put singup as first page and create settings.json file
       firstPage = SignUpPage(ctr: ctr);
-      ctr.createAppSettingFile();
     } else {
       firstPage = LoginPage(ctr: ctr);
     }
