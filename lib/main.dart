@@ -13,7 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Controller ctr = await Controller.create();
-  bool isStartup = await ctr.isStartup();
+  bool isStartup = ctr.isStartup();
 
   runApp(CryptedEye(ctr: ctr, isStartup: isStartup,));
 }

@@ -39,7 +39,7 @@ class Controller {
     img.unTarFile("$localPath/$VaultName", "$localPath/$VaultName");
 
     // get salt path
-    String saltPath = "$localPath$VaultName/app/salt.key";
+    String saltPath = "$localPath/$VaultName/app/salt.key";
 
     crypter.init(AP, saltPath);
 
@@ -51,11 +51,6 @@ class Controller {
   void closeApp() {
     img.createTarFile("$localPath/$VaultName", "$localPath/$VaultName.CryptedEye.tar");
   }
-
-  // TODO: create function
-  // think on class instanciation: when should we instantiate the class? Before Login? At Login?
-  // Load App function -> will instantiate the different API
-  // static Future<Controller> create() 
 
   void initApp(String AP, String VaultName) async {
     // Init and then load App
@@ -102,7 +97,7 @@ class Controller {
     File("$localPath/settings.json").writeAsStringSync(jsonEncode(settings));
   }
 
-  Future<bool> isStartup() async {
+  bool isStartup() {
     File settingsFile = File("$localPath/settings.json");
     if (!settingsFile.existsSync()) {
       return true;
