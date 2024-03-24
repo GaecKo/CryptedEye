@@ -31,7 +31,7 @@ class RWM {
   Future<void> modify_content(String filePath, String newData) async {
     File file = File("$localPath/$filePath");
     if (!file.existsSync()) {
-      throw Exception("Erreur fichier");
+      throw Exception("Erreur fichier: $localPath");
     }
 
     String currentContent = await file.readAsString();
@@ -44,7 +44,7 @@ class RWM {
   Future<String> get_content(String filePath) async {
     File file = File("$localPath/$filePath");
     if (!file.existsSync()) {
-      throw Exception("Erreur fichier");
+      throw Exception("Erreur fichier: $filePath");
     }
     return file.readAsStringSync();
   }
@@ -52,16 +52,19 @@ class RWM {
   Future<void> write_content(String filePath, String data) async{
     File file = File("$localPath/$filePath");
     if (!file.existsSync()) {
-      throw Exception("Erreur fichier");
+      var t = file.path;
+      throw Exception("Erreur fichier: $t");
     }
     file.writeAsStringSync(data);
   }
 
   void create_folder(String folderPath) {
+    // create folder at localPath/filePath
     Directory("$localPath/$folderPath").createSync(recursive: true);
   }
 
   File create_file(String filePath) {
+    // create file at localPath/filePath
     return File("$localPath/$filePath");
   }
 
@@ -70,10 +73,16 @@ class RWM {
     dir.deleteSync(recursive: true);
   }
 
-  Future<List<FileSystemEntity>> getListofVault() async {
+  List<File> getListofVault() {
     final dir = Directory(localPath);
 
-    return await dir.list().toList();
+    final List<FileSystemEntity> entities = dir.listSync().toList();
+
+    final List<File> files = entities.whereType<File>().where((entity) {
+      return entity.path.endsWith('.CrytpedEye.tar');
+    }).toList();
+
+    return files;
 
   }
 
