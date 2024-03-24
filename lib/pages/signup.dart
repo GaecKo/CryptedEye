@@ -11,6 +11,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  TextEditingController _VaultNameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
   Controller ctr;
@@ -29,6 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _signUp() {
+    String VaultName = _VaultNameController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
@@ -54,7 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _passwordContainerColor = Colors.white;
         _confirmPasswordContainerColor = Colors.white;
         print("Passwords match");
-        ctr.loadApp(password, "structure/app/salt.key");
+        ctr.loadApp(password, VaultName);
         Navigator.pushReplacementNamed(context, '/HomePage');
 
         // Passwords match, proceed with signup logic
@@ -103,6 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextFormField(
+                    controller: _VaultNameController,
                     decoration: InputDecoration(
                       labelText: 'Vault Name',
                       labelStyle: TextStyle(color: Colors.white),
