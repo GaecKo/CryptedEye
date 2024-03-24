@@ -26,8 +26,6 @@ class IMG {
       }
     }
 
-    // Delete l'archive
-    await source.delete();
     print('Extraction terminée.');
   }
 
