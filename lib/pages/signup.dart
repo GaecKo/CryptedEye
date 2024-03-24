@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
 import '../controller.dart';
 
-// @everyone working on this file:
-// -> We need a VaultName prompt
-//        -> (will contain the name of the Vault, really important for sharing/...)
-// -> We need a Password prompt
-//        -> 2 prompt: one to set it, one to confirm the password, as its really important not to make a mistake in it
-//        -> it shouldn't be possible to copy / paste in these prompts but its a detail
-// -> We need a button (for later, not to be worked on rn) to let people add Vault from other sources (from example if they downloaded one)
-
-// -> The code below is simply a basic start template.
-
 class SignUpPage extends StatefulWidget {
-  Controller ctr;
+  final Controller ctr;
 
-  SignUpPage({super.key, required this.ctr});
+  SignUpPage({Key? key, required this.ctr}) : super(key: key);
 
   @override
   _SignUpPageState createState() => _SignUpPageState(ctr);
@@ -22,26 +12,58 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
   Controller ctr;
+  String? _passwordError;
+  String? _confirmPasswordError;
+  Color _passwordContainerColor = Colors.white;
+  Color _confirmPasswordContainerColor = Colors.white;
 
   _SignUpPageState(this.ctr);
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  // Function to handle the SignUp action
-  void _SignUp() {
-    // @GaecKo: I will do the logic of that part, just call the _SignUp function from the main button
+  void _signUp() {
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    setState(() {
+      if (password.isEmpty || confirmPassword.isEmpty) {
+        // Show error message for empty fields and change container color
+        _passwordError = 'Password fields are required';
+        _confirmPasswordError = 'Password fields are required';
+        _passwordContainerColor = Colors.red;
+        _confirmPasswordContainerColor = Colors.red;
+        print("Password fields are required");
+      } else if (password != confirmPassword) {
+        // Show error message for mismatched passwords and change container color
+        _passwordError = 'Passwords do not match';
+        _confirmPasswordError = 'Passwords do not match';
+        _passwordContainerColor = Colors.red;
+        _confirmPasswordContainerColor = Colors.red;
+        print("Passwords do not match");
+      } else {
+        // Reset error messages and container colors
+        _passwordError = null;
+        _confirmPasswordError = null;
+        _passwordContainerColor = Colors.white;
+        _confirmPasswordContainerColor = Colors.white;
+        print("Passwords match");
+
+        // Passwords match, proceed with signup logic
+        // You can call your signup function here
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Color.fromRGBO(64, 64, 64, 1),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -49,10 +71,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 SizedBox(height: 50),
-
-                // Top title (lock - name - >SignUp)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -62,7 +81,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.white,
                     ),
                     SizedBox(width: 10),
-
                     Text(
                       "CryptedEye",
                       style: TextStyle(
@@ -78,6 +96,75 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontWeight: FontWeight.bold),
                     ),
                   ],
+                ),
+                SizedBox(height: 30),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Vault Name',
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(color: Colors.white),
+               
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _passwordContainerColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _passwordContainerColor),
+                      ),
+                      errorText: _passwordError,
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm Password',
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _confirmPasswordContainerColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _confirmPasswordContainerColor),
+                      ),
+                      errorText: _confirmPasswordError,
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _signUp,
+                  child: Text('Sign Up'),
                 ),
               ],
             ),
