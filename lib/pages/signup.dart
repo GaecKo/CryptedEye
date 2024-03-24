@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import '../controller.dart';
 
+// @everyone working on this file:
+// -> We need a VaultName prompt
+//        -> (will contain the name of the Vault, really important for sharing/...)
+// -> We need a Password prompt
+//        -> 2 prompt: one to set it, one to confirm the password, as its really important not to make a mistake in it
+//        -> it shouldn't be possible to copy / paste in these prompts but its a detail
+// -> We need a button (for later, not to be worked on rn) to let people add Vault from other sources (from example if they downloaded one)
+
+// -> The code below is simply a basic start template.
+
 class SignUpPage extends StatefulWidget {
   Controller ctr;
 
@@ -23,37 +33,13 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  void _callSignUp() {
-    Navigator.pushReplacementNamed(context, '/SignUp');
-  }
-
   // Function to handle the SignUp action
   void _SignUp() {
-    String password = _passwordController.text;
-    print('Entered password from SignUpPage: $password');
-
-    // TODO:
-    //  SignUp logic
-
-    if (password == 'test') {
-      Navigator.pushReplacementNamed(context, '/HashPage', arguments: {'AP' : password});
-    } else {
-      print('Invalid password');
-    }
+    // @GaecKo: I will do the logic of that part, just call the _SignUp function from the main button
   }
 
   @override
   Widget build(BuildContext context) {
-
-    // TODO:
-    //  When keyboard appears, widget are moved up and then cropped by the SafeArea
-    //  (so they don't go to the very top of the screen)
-    // -> This is looking ugly, should be fixed
-
-    // TODO:
-    // When keyboard apperas, SignUp button is hidden. It should however be easily clickable and thus visible
-    // even with keyboard active
-    // -> This should be fix and quite important!
 
     return const Scaffold(
       backgroundColor: Color.fromRGBO(64, 64, 64, 1),
