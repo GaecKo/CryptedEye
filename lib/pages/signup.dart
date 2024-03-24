@@ -56,7 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _passwordContainerColor = Colors.white;
         _confirmPasswordContainerColor = Colors.white;
         print("Passwords match");
-        ctr.loadApp(password, VaultName);
+        ctr.initApp(password, VaultName);
         Navigator.pushReplacementNamed(context, '/HomePage');
 
         // Passwords match, proceed with signup logic
