@@ -90,6 +90,18 @@ class Controller {
     File("$localPath/settings.json").writeAsStringSync(json);
   }
 
+  void increaseNbVault() {
+    Map<String, dynamic> settings = jsonDecode(File("$localPath/settings.json").readAsStringSync());
+    settings['nb_vault'] += 1;
+    File("$localPath/settings.json").writeAsStringSync(jsonEncode(settings));
+  }
+
+  void decreaseNbVault() {
+    Map<String, dynamic> settings = jsonDecode(File("$localPath/settings.json").readAsStringSync());
+    settings['nb_vault'] -= 1;
+    File("$localPath/settings.json").writeAsStringSync(jsonEncode(settings));
+  }
+
   Future<bool> isStartup() async {
     File settingsFile = File("$localPath/settings.json");
     if (!settingsFile.existsSync()) {
