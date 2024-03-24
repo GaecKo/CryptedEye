@@ -12,6 +12,22 @@ class RWM {
 
   late String localPath;
 
+  RWM._create();
+
+  static Future<RWM> create() async {
+    RWM rwm = RWM._create();
+
+    rwm.localPath = await rwm.getLocalPath();
+
+    return rwm;
+  }
+
+  Future<String> getLocalPath() async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
   Future<void> modify_content(String filePath, String newData) async {
     File file = File("$localPath/$filePath");
     if (!file.existsSync()) {
@@ -43,22 +59,6 @@ class RWM {
 
   void create_folder(String folderPath) {
     Directory("$localPath/$folderPath").createSync(recursive: true);
-  }
-
-  RWM._create();
-
-  static Future<RWM> create() async {
-    RWM rwm = RWM._create();
-
-    rwm.localPath = await rwm.getLocalPath();
-
-    return rwm;
-  }
-
-  Future<String> getLocalPath() async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    return directory.path;
   }
 
   File create_file(String filePath) {
