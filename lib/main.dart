@@ -10,18 +10,31 @@ import 'controller.dart';
 
 void main() async {
 
-  Controller ctr = await Controller.create();
+  WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(CryptedEye(ctr: ctr));
+  Controller ctr = await Controller.create();
+  bool isStartup = await ctr.isStartup();
+
+  runApp(CryptedEye(ctr: ctr, isStartup: isStartup,));
 }
 
 class CryptedEye extends StatelessWidget {
   Controller ctr;
+  bool isStartup;
 
-  CryptedEye({super.key, required this.ctr});
+  CryptedEye({super.key, required this.ctr, required this.isStartup});
 
   @override
-  Future<Widget> build(BuildContext context) async {
+  Widget build(BuildContext context) {
+
+    Widget firstPage;
+    if (isStartup) {
+      // put singup as first page and create settings.json file
+      firstPage = SignUpPage(ctr: ctr);
+      ctr.createAppSettingFile();
+    } else {
+      firstPage = LoginPage(ctr: ctr);
+    }
 
     return MaterialApp(
       title: 'CryptedEye',
@@ -30,7 +43,7 @@ class CryptedEye extends StatelessWidget {
       '/HomePage': (context) => HomePage(ctr:ctr),
       '/SignUp': (context) => SignUpPage(ctr: ctr)
       },
-      home: LoginPage(ctr: ctr),
+      home: firstPage,
       debugShowCheckedModeBanner: false,
     ); // Material App
   }

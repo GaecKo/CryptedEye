@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'dart:convert';
 
 import 'API/crypter.dart';
 import 'API/img.dart';
 import 'API/rwm.dart';
-
-import 'dart:io';
 
 class Controller {
   late Crypter crypter;
@@ -20,12 +19,12 @@ class Controller {
   static Future<Controller> create() async {
     var ctr = Controller._create();
 
-    ctr.initAPI();
+    await ctr.initAPI();
 
     return ctr;
   }
 
-  void initAPI() async {
+  Future<void> initAPI() async {
     crypter = Crypter.create();
     img = IMG();
 
@@ -47,6 +46,10 @@ class Controller {
     if (kDebugMode) {
       print("Controller has loaded the vault $VaultName at $localPath/$VaultName");
     }
+  }
+
+  void closeApp() {
+    img.createTarFile("$localPath/$VaultName", "$localPath/$VaultName.CryptedEye.tar");
   }
 
   // TODO: create function
@@ -77,14 +80,27 @@ class Controller {
     loadApp(AP, VaultName, fromSignup: true);
   }
 
+  void createAppSettingFile() {
+    // create settings.json at localPath with nb_vault to 0.
+    Map<String, dynamic> settings = {
+      'nb_vault': 1,
+    };
+
+    String json = jsonEncode(settings);
+    File("$localPath/settings.json").writeAsStringSync(json);
+  }
 
   Future<bool> isStartup() async {
-    List<FileSystemEntity> files = await rwm.getListofVault();
-    
-    if (files.isEmpty) {
+    File settingsFile = File("$localPath/settings.json");
+    if (!settingsFile.existsSync()) {
       return true;
     } else {
-      return false;
+      Map<String, dynamic> settings = jsonDecode(settingsFile.readAsStringSync());
+      if (settings['nb_vault'] == 0) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
