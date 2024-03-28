@@ -41,7 +41,7 @@ class RWM {
     await file.writeAsString(modifiedContent);
   }
 
-  Future<String> get_content(String filePath) async {
+  String get_content(String filePath) {
     File file = File("$localPath/$filePath");
     if (!file.existsSync()) {
       throw Exception("Erreur fichier: $filePath");
@@ -49,7 +49,7 @@ class RWM {
     return file.readAsStringSync();
   }
 
-  Future<void> write_content(String filePath, String data) async{
+  void write_content(String filePath, String data) {
     File file = File("$localPath/$filePath");
     if (!file.existsSync()) {
       var t = file.path;
@@ -68,21 +68,30 @@ class RWM {
     return File("$localPath/$filePath");
   }
 
-  void deleteDirectory(String filePath) {
-    final dir = Directory("$localPath/$filePath");
+  void deleteDirectory(String dirPath) {
+    final dir = Directory("$localPath/$dirPath");
     dir.deleteSync(recursive: true);
+    print("Dossier supprimer");
   }
 
-  List<File> getListofVault() {
+  void deleteFile(String filePath) {
+    final file = File("$localPath/$filePath");
+    file.deleteSync();
+    print("Fichier supprimer");
+  }
+
+  List<Directory> getListofVault() {
     final dir = Directory(localPath);
 
     final List<FileSystemEntity> entities = dir.listSync().toList();
 
-    final List<File> files = entities.whereType<File>().where((entity) {
-      return entity.path.endsWith('.CrytpedEye.tar');
+    final List<Directory> vaults = entities.whereType<Directory>().where((entity) {
+      return entity.path.endsWith('.CryptedEye');
     }).toList();
 
-    return files;
+    print("Vaults: $vaults");
+
+    return vaults;
 
   }
 
