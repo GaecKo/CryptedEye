@@ -49,6 +49,7 @@ class Controller {
   }
 
   void closeApp() {
+    print("CLOSING APP");
     img.createTarFile("$localPath/$VaultName", "$localPath/$VaultName.CryptedEye.tar");
     rwm.deleteDirectory("$VaultName");
   }
