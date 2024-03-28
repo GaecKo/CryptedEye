@@ -35,11 +35,12 @@ class _LoginPageState extends State<LoginPage> {
     String password = _passwordController.text;
     print('Entered password from LoginPage: $password');
 
-    // TODO:
-    //  login logic
+    String tempVaultName = ctr.getTempOnlyVault();
+    print("temp vault name: $tempVaultName");
 
-    if (password == 'test') {
-      ctr.loadApp(password, "structure/app/salt.key");
+
+    if (ctr.verifyPassword(password, tempVaultName)) {
+      ctr.loadApp(password, tempVaultName);
       Navigator.pushReplacementNamed(context, '/HomePage');
     } else {
       print('Invalid password');
