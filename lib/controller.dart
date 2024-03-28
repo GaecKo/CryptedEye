@@ -50,6 +50,7 @@ class Controller {
 
   void closeApp() {
     img.createTarFile("$localPath/$VaultName", "$localPath/$VaultName.CryptedEye.tar");
+    rwm.deleteDirectory("$VaultName");
   }
 
   void initApp(String AP, String VaultName) async {

@@ -15,6 +15,11 @@ void main() async {
   Controller ctr = await Controller.create();
   bool isStartup = ctr.isStartup();
 
+  // create app observer and add it to App, so when it get closed we can
+  // close the app cleanly
+  MyAppLifecycleObserver observer = MyAppLifecycleObserver(ctr: ctr);
+  WidgetsBinding.instance.addObserver(observer);
+
   runApp(CryptedEye(ctr: ctr, isStartup: isStartup,));
 }
 
@@ -45,8 +50,23 @@ class CryptedEye extends StatelessWidget {
       },
       home: firstPage,
       debugShowCheckedModeBanner: false,
-    ); // Material App
+
+    );
   }
 
 }
 
+class MyAppLifecycleObserver with WidgetsBindingObserver {
+  Controller ctr;
+
+  MyAppLifecycleObserver({required this.ctr});
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      ctr.closeApp();
+      // Perform cleanup when the app is paused (e.g., closed).
+      // Call your cleanup functions here.
+    }
+  }
+}

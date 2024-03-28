@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 
 class IMG {
-  void unTarFile(String sourceFile, String targetDir) async {
+  void unTarFile(String sourceFile, String targetDir)  {
     // Vérifier si le fichier source existe
     File source = File(sourceFile);
     if (!source.existsSync()) {
@@ -11,7 +11,7 @@ class IMG {
     }
 
     // Lire les données de l'archive tar
-    List<int> bytes = await source.readAsBytes();
+    List<int> bytes = source.readAsBytesSync();
     Archive archive = TarDecoder().decodeBytes(bytes);
 
     // Extraire les fichiers de l'archive
@@ -29,7 +29,7 @@ class IMG {
     print('Extraction terminée.');
   }
 
-  void createTarFile(String sourceDir, String targetFile) async {
+  void createTarFile(String sourceDir, String targetFile) {
     // Créer une liste de tous les fichiers et sous-répertoires dans le dossier source
     List<FileSystemEntity> fileList =
         Directory(sourceDir).listSync(recursive: true);
@@ -41,7 +41,7 @@ class IMG {
     for (var file in fileList) {
       String filePath = file.path;
       if (FileSystemEntity.isFileSync(filePath)) {
-        List<int> bytes = await (file as File).readAsBytes();
+        List<int> bytes = (file as File).readAsBytesSync();
         ArchiveFile af = ArchiveFile(filePath, bytes.length, bytes);
         archive.addFile(af);
       }
