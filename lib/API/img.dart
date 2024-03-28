@@ -18,7 +18,7 @@ class IMG {
     for (var file in archive) {
       if (file.isFile) {
         List<int> data = file.content as List<int>;
-        String filePath = '$targetDir/${file.name}';
+        String filePath = file.name;
         File(filePath)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
