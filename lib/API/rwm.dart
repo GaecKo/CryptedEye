@@ -5,8 +5,8 @@
 // TODO: create function to create file
 
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'dart:convert';
 
 class RWM {
 
@@ -92,6 +92,19 @@ class RWM {
     print("Vaults: $vaults");
 
     return vaults;
+
+  }
+
+  void writeJSONData(String path, Map<String, dynamic> content) {
+    File file = File("$localPath/$path");
+    String json = jsonEncode(content);
+    file.writeAsStringSync(json);
+  }
+
+  Map<String, dynamic> getJSONData(String path) {
+    String content = File("$localPath/$path").readAsStringSync();
+    Map<String, dynamic> json = jsonDecode(content);
+    return json;
 
   }
 

@@ -1,0 +1,24 @@
+{
+  "secureContext": {
+    "aeroplane": {
+      "default": false,
+      "policy": true
+    },
+    "wifi": {
+      "default": true,
+      "policy": false
+    },
+    "bluetooth": {
+      "default": false,
+      "policy": false
+    },
+    "data": {
+      "default": false,
+      "policy": true
+    },
+    "location": {
+      "default": true,
+      "policy": true
+    }
+  }
+}

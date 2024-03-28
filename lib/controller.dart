@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'dart:io';
-import 'dart:convert';
 
 import 'API/crypter.dart';
 import 'API/img.dart';
@@ -18,6 +17,8 @@ class Controller {
 
   late String localPath;
   late String VaultName;
+  late Map<String, dynamic> settings;
+  late bool secureContext;
 
   Controller._create();
 
@@ -61,7 +62,9 @@ class Controller {
     // Init and then load App
 
     // 1. create settings.json file with secureContextSetting
-    print(secureContext);
+    this.secureContext = secureContext;
+
+    settings = initSettings(secureContext);
 
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");
@@ -79,6 +82,32 @@ class Controller {
     // 5. load app
     loadApp(AP, VaultName, fromSignup: true);
   }
+
+  Map<String, dynamic> initSettings(bool secureContext) {
+    Map<String, dynamic> set = {
+      "secureContext": {
+        "aeroplane": {
+          "default": getAeroplaneStatus(),
+          "policy": secureContext
+        },
+        "wifi": {
+          "default": true,
+          "policy": !secureContext
+        },
+        "bluetooth": {
+          "default": false,
+          "policy": !secureContext
+        },
+        "data": {
+          "default": false,
+          "policy": !secureContext
+        }
+      }
+    };
+    return set;
+  }
+
+
 
   bool isStartup() {
     return rwm.getListofVault().isEmpty;
@@ -104,6 +133,14 @@ class Controller {
     // name = VAULT.CryptedEye -> need to split with . and take first elem
     return name.split('.')[0];
 
+  }
+
+  void writeSettings(Map<String, dynamic> content) {
+    rwm.writeJSONData("settings.json", content);
+  }
+
+  Map<String, dynamic> loadSettings() {
+    return rwm.getJSONData("settings.json");
   }
 
   String getHashedPassword(String vaultName) {
