@@ -57,11 +57,11 @@ class Controller {
     print("CLOSING APP");
   }
 
-  void initApp(String AP, String VaultName, bool secureContext) async {
+  void initApp(String AP, String VaultName, bool secureContext) {
     // Init and then load App
 
     // 1. create settings.json file with secureContextSetting
-
+    print(secureContext);
 
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");

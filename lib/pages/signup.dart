@@ -19,6 +19,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String? _confirmPasswordError;
   Color _passwordContainerColor = Colors.white;
   Color _confirmPasswordContainerColor = Colors.white;
+  bool _loadWithSecureContext = true; // Default value
 
   _SignUpPageState(this.ctr);
 
@@ -56,7 +57,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _passwordContainerColor = Colors.white;
         _confirmPasswordContainerColor = Colors.white;
         print("Passwords match");
-        ctr.initApp(password, VaultName);
+        ctr.initApp(password, VaultName, _loadWithSecureContext);
         Navigator.pushReplacementNamed(context, '/HomePage');
 
         // Passwords match, proceed with signup logic
@@ -68,15 +69,15 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(64, 64, 64, 1),
+      backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 50),
-                Row(
+                const SizedBox(height: 50),
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
@@ -101,36 +102,35 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextFormField(
                     controller: _VaultNameController,
                     decoration: InputDecoration(
                       labelText: 'Vault Name',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: const TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.white),
+                        borderSide: const BorderSide(color: Colors.white),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.white),
+                        borderSide: const BorderSide(color: Colors.white),
                       ),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextFormField(
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: Colors.white),
-               
+                      labelStyle: const TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: _passwordContainerColor),
@@ -141,18 +141,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       errorText: _passwordError,
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Confirm Password',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: const TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: _confirmPasswordContainerColor),
@@ -163,13 +163,33 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       errorText: _confirmPasswordError,
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Load with Secure Context',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    const SizedBox(width: 10,),
+                    Switch(
+                      value: _loadWithSecureContext,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _loadWithSecureContext = value;
+                        });
+                      },
+                      activeColor: Colors.blue,
+                      inactiveTrackColor: Colors.grey,
+                    ),
+                  ],
+                ),
                 ElevatedButton(
                   onPressed: _signUp,
-                  child: Text('Sign Up'),
+                  child: const Text('Sign Up'),
                 ),
               ],
             ),
