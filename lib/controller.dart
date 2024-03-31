@@ -4,6 +4,7 @@ import 'dart:io';
 import 'API/crypter.dart';
 import 'API/img.dart';
 import 'API/rwm.dart';
+import 'API/securityContext.dart';
 
 // TODO: tar / untar will only be done for sharing purposes
 // no untar / tar operation will be done otherwise, and full file structure will always be kept and updated
@@ -14,6 +15,7 @@ class Controller {
   late Crypter crypter;
   late IMG img;
   late RWM rwm;
+  late securityContext sCtx;
 
   late String localPath;
   late String VaultName;
@@ -35,14 +37,19 @@ class Controller {
     img = IMG();
 
     rwm = await RWM.create();
-
     localPath = rwm.localPath;
+
+    sCtx = await securityContext.create();
   }
 
   void loadApp(String AP, String VaultName, {bool fromSignup=false}) {
     this.VaultName = VaultName;
 
-    // 1. create secure context loaded fro
+    // 1. create secure context if not from signup (otherwise its done in initApp)
+    if (!fromSignup) {
+      sCtx.loadSettings(localPath);
+      sCtx.applyPolicySettings();
+    }
 
     // get salt path
     String saltPath = "$localPath/$VaultName.CryptedEye/app/salt.key";
@@ -52,19 +59,31 @@ class Controller {
     if (kDebugMode) {
       print("Controller has loaded the vault $VaultName at $localPath/$VaultName.CryptedEye");
     }
+
   }
 
   void closeApp() {
+    // put wifi / bluetooth back to onLaunch settings:
+    sCtx.applyOnLaunchSettings();
+    // save settings.json
+    sCtx.writeSettingsToFile(localPath);
+
+
     print("CLOSING APP");
   }
 
-  void initApp(String AP, String VaultName, bool secureContext) {
+  Future<void> initApp(String AP, String VaultName, bool secureContext) async {
     // Init and then load App
 
     // 1. create settings.json file with secureContextSetting
+    rwm.create_file("settings.json").createSync();
     this.secureContext = secureContext;
 
-    settings = initSettings(secureContext);
+    Map<String, dynamic> init_settings = await  sCtx.initSettings(secureContext, localPath);
+    rwm.writeJSONData("settings.json", init_settings);
+
+    // apply policy settings
+    sCtx.applyPolicySettings();
 
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");
@@ -79,42 +98,19 @@ class Controller {
     // 4. create key file
     rwm.create_file("$VaultName.CryptedEye/app/salt.key").createSync();
 
-    // 5. load app
+    // 5. create passwords json file
+    rwm.create_file("$VaultName.CryptedEye/passwords/passwords.json").createSync();
+
+    // 6. load app
     loadApp(AP, VaultName, fromSignup: true);
   }
-
-  Map<String, dynamic> initSettings(bool secureContext) {
-    Map<String, dynamic> set = {
-      "secureContext": {
-        "aeroplane": {
-          "default": getAeroplaneStatus(),
-          "policy": secureContext
-        },
-        "wifi": {
-          "default": true,
-          "policy": !secureContext
-        },
-        "bluetooth": {
-          "default": false,
-          "policy": !secureContext
-        },
-        "data": {
-          "default": false,
-          "policy": !secureContext
-        }
-      }
-    };
-    return set;
-  }
-
-
 
   bool isStartup() {
     return rwm.getListofVault().isEmpty;
   }
 
   List<Directory> getListOfVault() {
-    // TODO: make it return a List<String> with just the VaultName (so not full path, and without CryptedEye/)
+    // TODO: make it return a List<String> with just the VaultName (so not full path, and without .CryptedEye/)
     return rwm.getListofVault();
   }
 
