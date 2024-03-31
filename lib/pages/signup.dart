@@ -30,40 +30,50 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  void _signUp() {
+  void _signUp() async {
     String VaultName = _VaultNameController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    setState(() {
-      if (password.isEmpty || confirmPassword.isEmpty) {
-        // Show error message for empty fields and change container color
+    if (password.isEmpty || confirmPassword.isEmpty) {
+      // Show error message for empty fields and change container color
+      setState(() {
         _passwordError = 'Password fields are required';
         _confirmPasswordError = 'Password fields are required';
         _passwordContainerColor = Colors.red;
         _confirmPasswordContainerColor = Colors.red;
-        print("Password fields are required");
-      } else if (password != confirmPassword) {
-        // Show error message for mismatched passwords and change container color
+      });
+      print("Password fields are required");
+    } else if (password != confirmPassword) {
+      // Show error message for mismatched passwords and change container color
+      setState(() {
         _passwordError = 'Passwords do not match';
         _confirmPasswordError = 'Passwords do not match';
         _passwordContainerColor = Colors.red;
         _confirmPasswordContainerColor = Colors.red;
-        print("Passwords do not match");
-      } else {
-        // Reset error messages and container colors
+      });
+      print("Passwords do not match");
+    } else {
+      // Reset error messages and container colors
+      setState(() {
         _passwordError = null;
         _confirmPasswordError = null;
         _passwordContainerColor = Colors.white;
         _confirmPasswordContainerColor = Colors.white;
-        print("Passwords match");
-        ctr.initApp(password, VaultName, _loadWithSecureContext);
-        Navigator.pushReplacementNamed(context, '/HomePage');
+      });
+      print("Passwords match");
 
+      // Perform async operation outside of setState
+      await ctr.initApp(password, VaultName, _loadWithSecureContext);
+
+      // Once async operation is complete, update UI using setState
+      setState(() {
+        Navigator.pushReplacementNamed(context, '/HomePage');
         // Passwords match, proceed with signup logic
         // You can call your signup function here
-      }
-    });
+      });
+    }
+
   }
 
   @override
