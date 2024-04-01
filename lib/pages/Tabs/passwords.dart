@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-
+import "../../controller.dart";
+import  "../../main.dart";
 
 class PasswordManagerPage extends StatelessWidget {
-  const PasswordManagerPage({Key? key});
+
+  const PasswordManagerPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,8 +14,8 @@ class PasswordManagerPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search Password...',
@@ -24,28 +26,14 @@ class PasswordManagerPage extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              // Handle add new password action
-              print('Add new password');
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AddPasswordItem();
+                },
+              );
             },
             child: Text('Add New Password'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 5, // Replace 5 with the actual number of passwords
-              itemBuilder: (BuildContext context, int index) {
-                return PasswordItem(
-                  website: 'Website $index',
-                  onEyePressed: () {
-                    // Handle view password action
-                    print('View password for website $index');
-                  },
-                  onPenPressed: () {
-                    // Handle edit password action
-                    print('Edit password for website $index');
-                  },
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -82,6 +70,118 @@ class PasswordItem extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class AddPasswordItem extends StatefulWidget {
+  @override
+  _AddPasswordItemState createState() => _AddPasswordItemState();
+}
+
+
+class _AddPasswordItemState extends State<AddPasswordItem> {
+  TextEditingController websiteController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool showError = false;
+  bool obscurePassword = true;
+  String psw = "TEST";
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Add New Password'),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: websiteController,
+                    decoration: InputDecoration(
+                      labelText: 'Website',
+                      errorText: showError && websiteController.text.isEmpty
+                          ? 'Please enter website'
+                          : null,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      errorText: showError &&
+                              usernameController.text.isEmpty
+                          ? 'Please enter username'
+                          : null,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.autorenew),
+                  onPressed: () {
+                    setState(() {
+                      passwordController.text = psw;
+                    });
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      errorText: showError && passwordController.text.isEmpty
+                          ? 'Please enter password'
+                          : null,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); 
+          },
+          child: Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              showError = true;
+            });
+            if (websiteController.text.isNotEmpty &&
+                usernameController.text.isNotEmpty &&
+                passwordController.text.isNotEmpty) {
+              
+              // fonction controller
+              Navigator.of(context).pop(); 
+            }
+          },
+          child: Text('Save'),
+        ),
+      ],
     );
   }
 }
