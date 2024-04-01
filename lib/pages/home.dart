@@ -64,10 +64,10 @@ class _HomePageState extends State<HomePage> {
         ), 
       
         // tabbar view
-        body: const SafeArea(
+        body: SafeArea(
           child: TabBarView(
             children: <Widget>[
-              PasswordManagerPage(),
+              PasswordManagerPage(ctr : ctr),
               AlbumsPage(),
               NotesPage(),
             ],),

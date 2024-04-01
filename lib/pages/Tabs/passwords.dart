@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import "../../controller.dart";
-import  "../../main.dart";
+import '../../controller.dart';
+import '../../main.dart';
 
 class PasswordManagerPage extends StatelessWidget {
+  final Controller ctr;
 
-  const PasswordManagerPage({super.key});
+  const PasswordManagerPage({Key? key, required this.ctr}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +31,7 @@ class PasswordManagerPage extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AddPasswordItem();
+                  return AddPasswordItem(ctr: ctr); // Pass the controller to AddPasswordItem
                 },
               );
             },
@@ -75,18 +77,25 @@ class PasswordItem extends StatelessWidget {
 }
 
 class AddPasswordItem extends StatefulWidget {
+  final Controller ctr;
+
+  const AddPasswordItem({Key? key, required this.ctr}) : super(key: key);
+
   @override
-  _AddPasswordItemState createState() => _AddPasswordItemState();
+  _AddPasswordItemState createState() => _AddPasswordItemState(ctr: ctr);
 }
 
-
 class _AddPasswordItemState extends State<AddPasswordItem> {
+  final Controller ctr;
+
   TextEditingController websiteController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool showError = false;
   bool obscurePassword = true;
   String psw = "TEST";
+
+  _AddPasswordItemState({required this.ctr});
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +184,6 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                 usernameController.text.isNotEmpty &&
                 passwordController.text.isNotEmpty) {
               
-              // fonction controller
               Navigator.of(context).pop(); 
             }
           },
