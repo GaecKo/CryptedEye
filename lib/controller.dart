@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 
@@ -22,6 +24,8 @@ class Controller {
   late Map<String, dynamic> settings;
   late bool secureContext;
 
+  late Map<String, dynamic> password_data;
+
   Controller._create();
 
   static Future<Controller> create() async {
@@ -44,6 +48,7 @@ class Controller {
 
   void loadApp(String AP, String VaultName, {bool fromSignup=false}) {
     this.VaultName = VaultName;
+    password_data = {};
 
     // 1. create secure context if not from signup (otherwise its done in initApp)
     if (!fromSignup) {
@@ -149,6 +154,34 @@ class Controller {
     rwm.write_content(hashFilePath, crypter.secureHash(AP));
   }
 
+
+  void getPasswordsFromJson() {
+    // load password infos in password_data from password.json
+    // infos are crypted
+
+    String path = "$VaultName.CryptedEye/passwords/passwords.json";
+    
+    Map<String, dynamic> jsonData = rwm.getJSONData(path);
+    
+    jsonData.forEach((key, value) {
+      password_data[key] = value;
+    });
+  }
+
+  void writePasswordsToJson() {
+    // Write password_data in password.json
+    // Call in closeApp()
+    File file = File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
+
+    String jsonContent = json.encode(password_data);
+    file.writeAsStringSync(jsonContent);
+  }
+
+  void addPasswordData(String website, String username, String psw){
+    // add new password to password_data
+    // call in password.dart
+    password_data[crypter.encrypt(website)] = [crypter.encrypt(username), crypter.encrypt(psw)];
+  }
 }
 
 void main() {

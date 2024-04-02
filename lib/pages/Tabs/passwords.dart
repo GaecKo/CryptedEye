@@ -37,6 +37,29 @@ class PasswordManagerPage extends StatelessWidget {
             },
             child: Text('Add New Password'),
           ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: ctr.password_data.length,
+              itemBuilder: (BuildContext context, int index) {
+                String website = ctr.password_data.keys.elementAt(index);
+                List<dynamic> userData = ctr.password_data.values.elementAt(index);
+                String username = userData[0];
+                String password = userData[1];
+
+                return PasswordItem(
+                  website: ctr.crypter.decrypt(website),
+                  username: ctr.crypter.decrypt(username),
+                  password: password,
+                  onEyePressed: () {
+                    // Action when eye icon is pressed
+                  },
+                  onPenPressed: () {
+                    // Action when pen icon is pressed
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -45,36 +68,62 @@ class PasswordManagerPage extends StatelessWidget {
 
 class PasswordItem extends StatelessWidget {
   final String website;
+  final String username;
+  final String password;
   final VoidCallback onEyePressed;
   final VoidCallback onPenPressed;
 
   const PasswordItem({
     Key? key,
     required this.website,
+    required this.username,
+    required this.password,
     required this.onEyePressed,
     required this.onPenPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(website),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(Icons.remove_red_eye),
-            onPressed: onEyePressed,
-          ),
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: onPenPressed,
-          ),
-        ],
+    return Card(
+      elevation: 3,
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: ListTile(
+        title: Text(
+          website,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 8),
+            Text(
+              'Username: $username',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text('Password: $password',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.remove_red_eye),
+              onPressed: onEyePressed,
+            ),
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: onPenPressed,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class AddPasswordItem extends StatefulWidget {
   final Controller ctr;
@@ -184,7 +233,9 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                 usernameController.text.isNotEmpty &&
                 passwordController.text.isNotEmpty) {
               
-              Navigator.of(context).pop(); 
+              // Controller fonction
+              ctr.addPasswordData(websiteController.text, usernameController.text, passwordController.text);
+              Navigator.of(context).pop();
             }
           },
           child: Text('Save'),
