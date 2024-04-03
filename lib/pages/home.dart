@@ -41,8 +41,9 @@ class _HomePageState extends State<HomePage> {
 
           actions : <Widget>[
             IconButton(
-              icon : const Icon(Icons.settings, size: 30, color: Colors.white,),
-              onPressed: (){},
+              icon : const Icon(Icons.warning_amber_rounded, size: 30, color: Colors.white,),
+              onPressed: (){
+                ctr.resetPasswordJson();},
               )
           ],
         

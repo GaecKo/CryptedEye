@@ -24,7 +24,9 @@ class Controller {
   late Map<String, dynamic> settings;
   late bool secureContext;
 
-  late Map<String, dynamic> password_data;
+  // variable for password management
+  late Map<String, dynamic> password_data = {};
+  late bool displaypassword = false;
 
   Controller._create();
 
@@ -48,7 +50,6 @@ class Controller {
 
   void loadApp(String AP, String VaultName, {bool fromSignup=false}) {
     this.VaultName = VaultName;
-    password_data = {};
 
     // 1. create secure context if not from signup (otherwise its done in initApp)
     if (!fromSignup) {
@@ -65,6 +66,10 @@ class Controller {
       print("Controller has loaded the vault $VaultName at $localPath/$VaultName.CryptedEye");
     }
 
+
+    // load password_data
+    getPasswordsFromJson();
+
   }
 
   void closeApp() {
@@ -72,6 +77,10 @@ class Controller {
     sCtx.applyOnLaunchSettings();
     // save settings.json
     sCtx.writeSettingsToFile(localPath);
+    // reset display password for passwordpages
+    restDisplayPassword();
+    // save password in json
+    writePasswordsToJson();
 
 
     print("CLOSING APP");
@@ -181,6 +190,26 @@ class Controller {
     // add new password to password_data
     // call in password.dart
     password_data[crypter.encrypt(website)] = [crypter.encrypt(username), crypter.encrypt(psw)];
+  }
+
+  void editPasswordData(String initialwebsite, String newwebsite, String newusername, String newpsw){
+    // edit password_data avec le nouveau user name et psw
+    password_data.remove(initialwebsite); 
+    password_data[crypter.encrypt(newwebsite)] = [crypter.encrypt(newusername), crypter.encrypt(newpsw)];
+  }
+
+  void resetPasswordJson(){
+    File file = File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
+    file.writeAsStringSync('{}');
+    password_data = {};
+  }
+
+  void restDisplayPassword(){
+    displaypassword = false;
+  }
+
+  void updateDisplatPassword(){
+    displaypassword = true;
   }
 }
 

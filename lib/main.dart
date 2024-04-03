@@ -24,10 +24,10 @@ void main() async {
 }
 
 class CryptedEye extends StatelessWidget {
-  Controller ctr;
-  bool isStartup;
+  final Controller ctr;
+  final bool isStartup;
 
-  CryptedEye({super.key, required this.ctr, required this.isStartup});
+  const CryptedEye({super.key, required this.ctr, required this.isStartup});
 
   @override
   Widget build(BuildContext context) {

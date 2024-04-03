@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../controller.dart';
-import '../../main.dart';
 
-class PasswordManagerPage extends StatelessWidget {
+class PasswordManagerPage extends StatefulWidget {
   final Controller ctr;
 
   const PasswordManagerPage({Key? key, required this.ctr}) : super(key: key);
-  
+
+  @override
+  _PasswordManagerPageState createState() => _PasswordManagerPageState();
+}
+
+class _PasswordManagerPageState extends State<PasswordManagerPage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,47 +36,76 @@ class PasswordManagerPage extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AddPasswordItem(ctr: ctr); // Pass the controller to AddPasswordItem
+                  return AddPasswordItem(ctr: widget.ctr); // Pass the controller to AddPasswordItem
                 },
               );
             },
             child: Text('Add New Password'),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: ctr.password_data.length,
-              itemBuilder: (BuildContext context, int index) {
-                String website = ctr.password_data.keys.elementAt(index);
-                List<dynamic> userData = ctr.password_data.values.elementAt(index);
-                String username = userData[0];
-                String password = userData[1];
+            child: widget.ctr.displaypassword
+                ? ListView.builder(
+                    itemCount: widget.ctr.password_data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      String website = widget.ctr.password_data.keys.elementAt(index);
+                      List<dynamic> userData = widget.ctr.password_data.values.elementAt(index);
+                      String username = userData[0];
+                      String password = userData[1];
 
-                return PasswordItem(
-                  website: ctr.crypter.decrypt(website),
-                  username: ctr.crypter.decrypt(username),
-                  password: password,
-                  onEyePressed: () {
-                    // Action when eye icon is pressed
-                  },
-                  onPenPressed: () {
-                    // Action when pen icon is pressed
-                  },
-                );
-              },
-            ),
+                      return PasswordItem(
+                        website: widget.ctr.crypter.decrypt(website),
+                        username: widget.ctr.crypter.decrypt(username),
+                        password: password,
+                        ctr: widget.ctr,
+                        onEyePressed: () {
+                          // Action when eye icon is pressed
+                        },
+                        onPenPressed: () {
+                          // Action when pen icon is pressed
+                          _editPassword(website, username, password);
+                        },
+                      );
+                    },
+                  )
+                : SizedBox(), // Placeholder for password list
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            widget.ctr.updateDisplatPassword();
+          });
+        },
+        child: Icon(Icons.refresh),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+    );
+  }
+
+  // Function to edit an existing password
+  void _editPassword(String website, String username, String password) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return EditPasswordItem(
+          ctr: widget.ctr,
+          initialWebsite: website,
+          initialUsername: username,
+          initialPassword: password,
+        );
+      },
     );
   }
 }
 
-class PasswordItem extends StatelessWidget {
+class PasswordItem extends StatefulWidget {
   final String website;
   final String username;
   final String password;
   final VoidCallback onEyePressed;
   final VoidCallback onPenPressed;
+  final Controller ctr;
 
   const PasswordItem({
     Key? key,
@@ -80,7 +114,15 @@ class PasswordItem extends StatelessWidget {
     required this.password,
     required this.onEyePressed,
     required this.onPenPressed,
+    required this.ctr,
   }) : super(key: key);
+
+  @override
+  _PasswordItemState createState() => _PasswordItemState();
+}
+
+class _PasswordItemState extends State<PasswordItem> {
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +131,7 @@ class PasswordItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
         title: Text(
-          website,
+          widget.website,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
@@ -97,12 +139,13 @@ class PasswordItem extends StatelessWidget {
           children: [
             SizedBox(height: 8),
             Text(
-              'Username: $username',
+              'Username: ${widget.username}',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text('Password: $password',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+            Text(
+              'Password: ${_isPasswordVisible ? widget.ctr.crypter.decrypt(widget.password) : '********'}',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -110,12 +153,17 @@ class PasswordItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(Icons.remove_red_eye),
-              onPressed: onEyePressed,
+              icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+              onPressed: () {
+                setState(() {
+                  _isPasswordVisible = !_isPasswordVisible;
+                });
+                widget.onEyePressed(); // Trigger callback
+              },
             ),
             IconButton(
               icon: Icon(Icons.edit),
-              onPressed: onPenPressed,
+              onPressed: widget.onPenPressed,
             ),
           ],
         ),
@@ -123,7 +171,6 @@ class PasswordItem extends StatelessWidget {
     );
   }
 }
-
 
 class AddPasswordItem extends StatefulWidget {
   final Controller ctr;
@@ -160,9 +207,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     controller: websiteController,
                     decoration: InputDecoration(
                       labelText: 'Website',
-                      errorText: showError && websiteController.text.isEmpty
-                          ? 'Please enter website'
-                          : null,
+                      errorText: showError && websiteController.text.isEmpty ? 'Please enter website' : null,
                     ),
                   ),
                 ),
@@ -172,10 +217,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     controller: usernameController,
                     decoration: InputDecoration(
                       labelText: 'Username',
-                      errorText: showError &&
-                              usernameController.text.isEmpty
-                          ? 'Please enter username'
-                          : null,
+                      errorText: showError && usernameController.text.isEmpty ? 'Please enter username' : null,
                     ),
                   ),
                 ),
@@ -198,9 +240,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     obscureText: obscurePassword,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      errorText: showError && passwordController.text.isEmpty
-                          ? 'Please enter password'
-                          : null,
+                      errorText: showError && passwordController.text.isEmpty ? 'Please enter password' : null,
                     ),
                   ),
                 ),
@@ -220,7 +260,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); 
+            Navigator.of(context).pop();
           },
           child: Text('Cancel'),
         ),
@@ -232,9 +272,131 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
             if (websiteController.text.isNotEmpty &&
                 usernameController.text.isNotEmpty &&
                 passwordController.text.isNotEmpty) {
-              
               // Controller fonction
               ctr.addPasswordData(websiteController.text, usernameController.text, passwordController.text);
+              Navigator.of(context).pop();
+            }
+          },
+          child: Text('Save'),
+        ),
+      ],
+    );
+  }
+}
+
+class EditPasswordItem extends StatefulWidget {
+  final Controller ctr;
+  final String initialWebsite;
+  final String initialUsername;
+  final String initialPassword;
+
+  const EditPasswordItem({
+    Key? key,
+    required this.ctr,
+    required this.initialWebsite,
+    required this.initialUsername,
+    required this.initialPassword,
+  }) : super(key: key);
+
+  @override
+  _EditPasswordItemState createState() => _EditPasswordItemState();
+}
+
+class _EditPasswordItemState extends State<EditPasswordItem> {
+  TextEditingController websiteController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool showError = false;
+  bool obscurePassword = true;
+  String psw = "TEST";
+
+  @override
+  void initState() {
+    super.initState();
+    websiteController.text = widget.ctr.crypter.decrypt(widget.initialWebsite);
+    usernameController.text = widget.ctr.crypter.decrypt(widget.initialUsername);
+    passwordController.text = widget.ctr.crypter.decrypt(widget.initialPassword);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Edit ${widget.ctr.crypter.decrypt(widget.initialWebsite)} Password'),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 8),
+            TextField(
+              controller: websiteController,
+              decoration: InputDecoration(
+                labelText: 'Website',
+              ),
+            ),
+            SizedBox(height: 8),
+            TextField(
+              controller: usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                errorText: showError && usernameController.text.isEmpty ? 'Please enter username' : null,
+              ),
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.autorenew),
+                  onPressed: () {
+                    setState(() {
+                      passwordController.text = psw;
+                    });
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      errorText: showError && passwordController.text.isEmpty ? 'Please enter password' : null,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              showError = true;
+            });
+            if (
+                usernameController.text.isNotEmpty &&
+                passwordController.text.isNotEmpty
+            ) {
+              // Controller function
+              widget.ctr.editPasswordData(
+                  widget.initialWebsite, 
+                  websiteController.text, 
+                  usernameController.text, 
+                  passwordController.text
+              );
               Navigator.of(context).pop();
             }
           },
