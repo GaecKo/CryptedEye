@@ -39,6 +39,7 @@ dependencies:
   pointycastle: ^3.7.4
   archive: ^3.4.10
   path_provider: ^2.1.2
+  restart_app: ^1.2.1
   # permission_handler: ^9.2.0
   # android_flutter_wifi: ^0.1.2
   # bluetooth_state: ^0.0.1
