@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../controller.dart';
+import 'login.dart';
+
 
 class SignUpPage extends StatefulWidget {
   final Controller ctr;
@@ -87,31 +89,47 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Alignement à gauche
                   children: [
-                    Icon(
-                      Icons.lock,
-                      size: 40,
-                      color: Colors.white,
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white, // Couleur blanche
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushReplacementNamed('/login'); // Utiliser pushReplacementNamed pour revenir à la page login
+                      },
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      "CryptedEye",
-                      style: TextStyle(
-                          fontSize: 26,
+                    SizedBox(height: 20), // Espace entre l'IconButton et le reste des éléments
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.lock,
+                          size: 40,
                           color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      " > Sign-Up",
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "CryptedEye",
+                          style: TextStyle(
+                              fontSize: 26,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          " > Sign-Up",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
