@@ -186,7 +186,8 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 10,),
 
-                InkWell(
+                // TEMP: as we only have one vault at the moment, we don't want to signup
+                /*InkWell(
                   onTap: _callSignUp,
                   child: const Text(
                     "No account? Sign-up!",
@@ -197,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                   ),
-                ),
+                ),*/
 
               ],
             ),
