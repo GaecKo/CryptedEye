@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AlbumsPage extends StatelessWidget {
   const AlbumsPage({Key? key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,6 +13,65 @@ class AlbumsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Row pour aligner les boutons côte à côte
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Premier bouton (Ajouter une photo)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Code pour afficher la boîte de dialogue ici
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Augmenter la largeur du bouton
+                        backgroundColor: Colors.blue, // Couleur de fond bleu
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20), // Coins arrondis
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Ajouter une photo',
+                            style: TextStyle(
+                              fontSize: 16, // Taille du texte
+                              fontWeight: FontWeight.bold, // Gras
+                              color: Colors.white, // Couleur du texte blanc
+                            ),
+                          ),
+                          Icon(
+                            Icons.add,
+                            color: Colors.white, // Couleur de l'icône blanche
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10), // Petit espacement entre les boutons
+                  // Deuxième bouton (Bouton carré avec le logo +)
+                  Container(
+                    height: 50, // Hauteur du bouton carré
+                    width: 50, // Largeur du bouton carré
+                    decoration: BoxDecoration(
+                      color: Colors.blue, // Couleur de fond bleu
+                      borderRadius: BorderRadius.circular(20), // Coins arrondis
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        // Action lorsque le bouton est pressé
+                      },
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.white, // Couleur de l'icône blanche
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20), // Espacement entre les boutons et les autres éléments
+              // Autres éléments de la page
               AlbumRow(
                 albums: [
                   Album(title: 'Family', imageUrl: 'lib/images/family.jpeg'),
@@ -37,6 +97,7 @@ class AlbumsPage extends StatelessWidget {
     );
   }
 }
+
 
 class AlbumRow extends StatelessWidget {
   final List<Album> albums;
