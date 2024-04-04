@@ -65,10 +65,8 @@ class _SignUpPageState extends State<SignUpPage> {
       });
       print("Passwords match");
 
-      // Perform async operation outside of setState
-      await ctr.initApp(password, VaultName, _loadWithSecureContext);
-
-      // Once async operation is complete, update UI using setState
+      // secure Vault is set to false at the moment, to be fixed later
+      await ctr.initApp(password, VaultName, false);
       setState(() {
         Navigator.pushReplacementNamed(context, '/HomePage');
         // Passwords match, proceed with signup logic
@@ -195,7 +193,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
+                 // REMOVED TEMPORALLY AS BACKEND ISN'T WORKING
+                 /*Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
@@ -214,7 +213,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       inactiveTrackColor: Colors.grey,
                     ),
                   ],
-                ),
+                ),*/
                 ElevatedButton(
                   onPressed: _signUp,
                   child: const Text('Sign Up'),
