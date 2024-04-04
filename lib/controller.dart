@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 
@@ -83,6 +83,7 @@ class Controller {
     writePasswordsToJson();
 
 
+
     print("CLOSING APP");
   }
 
@@ -114,6 +115,7 @@ class Controller {
 
     // 5. create passwords json file
     rwm.create_file("$VaultName.CryptedEye/passwords/passwords.json").createSync();
+    rwm.writeJSONData("$VaultName.CryptedEye/passwords/passwords.json", {});
 
     // 6. load app
     loadApp(AP, VaultName, fromSignup: true);
@@ -132,7 +134,7 @@ class Controller {
     return crypter.secureHash(AP) == getHashedPassword(vaultName);
   }
 
-  String getTempOnlyVault() {
+  String  getTempOnlyVault() {
     // as the app is WIP, for the first version we will only be able to create one vault at a time
     // this is used to get the String of that only vault, later we will use getListOfVault
     List<Directory> vaults = rwm.getListofVault();
@@ -208,9 +210,28 @@ class Controller {
     displaypassword = false;
   }
 
-  void updateDisplatPassword(){
+  void updateDisplayPassword(){
     displaypassword = true;
   }
+
+  String generateRandomPassword() {
+    const String charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()_-+=<>?/[]{},.:;';
+
+    Random random = Random();
+    // len of password is between 15 and 25, can be changed
+    int length = random.nextInt(10) + 15;
+
+
+    String password = '';
+
+    for (int i = 0; i < length; i++) {
+      int randomIndex = random.nextInt(charset.length);
+      password += charset[randomIndex];
+    }
+
+    return password;
+  }
+
 }
 
 void main() {

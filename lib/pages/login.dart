@@ -113,9 +113,9 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 50),
 
                 // Login text
-                const Text(
-                  "Login to Vault",
-                  style: TextStyle(
+                Text(
+                  "Login to Vault '${ctr.getTempOnlyVault()}'",
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

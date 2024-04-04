@@ -16,7 +16,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Password Manager'),
+        title: const Text('Password Manager'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -40,7 +40,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 },
               );
             },
-            child: Text('Add New Password'),
+            child: const Text('Add New Password'),
           ),
           Expanded(
             child: widget.ctr.displaypassword
@@ -67,17 +67,17 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                       );
                     },
                   )
-                : SizedBox(), // Placeholder for password list
+                : const SizedBox(), // Placeholder for password list
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            widget.ctr.updateDisplatPassword();
+            widget.ctr.updateDisplayPassword();
           });
         },
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
@@ -128,24 +128,24 @@ class _PasswordItemState extends State<PasswordItem> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
         title: Text(
           widget.website,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Username: ${widget.username}',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Password: ${_isPasswordVisible ? widget.ctr.crypter.decrypt(widget.password) : '********'}',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -162,7 +162,7 @@ class _PasswordItemState extends State<PasswordItem> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.edit),
+              icon: const Icon(Icons.edit),
               onPressed: widget.onPenPressed,
             ),
           ],
@@ -189,14 +189,13 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
   TextEditingController passwordController = TextEditingController();
   bool showError = false;
   bool obscurePassword = true;
-  String psw = "TEST";
 
   _AddPasswordItemState({required this.ctr});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add New Password'),
+      title: const Text('Add New Password'),
       content: SingleChildScrollView(
         child: Column(
           children: [
@@ -211,7 +210,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(
                   child: TextField(
                     controller: usernameController,
@@ -223,14 +222,14 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.autorenew),
+                  icon: const Icon(Icons.autorenew),
                   onPressed: () {
                     setState(() {
-                      passwordController.text = psw;
+                      passwordController.text = widget.ctr.generateRandomPassword();
                     });
                   },
                 ),
@@ -245,7 +244,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.visibility),
+                  icon: const Icon(Icons.visibility),
                   onPressed: () {
                     setState(() {
                       obscurePassword = !obscurePassword;
@@ -262,7 +261,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -275,9 +274,12 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
               // Controller fonction
               ctr.addPasswordData(websiteController.text, usernameController.text, passwordController.text);
               Navigator.of(context).pop();
+              Navigator.of(context).setState(() {
+                ctr.updateDisplayPassword();
+              });
             }
           },
-          child: Text('Save'),
+          child: const Text('Save'),
         ),
       ],
     );
@@ -308,7 +310,6 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
   TextEditingController passwordController = TextEditingController();
   bool showError = false;
   bool obscurePassword = true;
-  String psw = "TEST";
 
   @override
   void initState() {
@@ -325,14 +326,14 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
       content: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               controller: websiteController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Website',
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               controller: usernameController,
               decoration: InputDecoration(
@@ -340,14 +341,14 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
                 errorText: showError && usernameController.text.isEmpty ? 'Please enter username' : null,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.autorenew),
+                  icon: const Icon(Icons.autorenew),
                   onPressed: () {
                     setState(() {
-                      passwordController.text = psw;
+                      passwordController.text = widget.ctr.generateRandomPassword();
                     });
                   },
                 ),
@@ -362,7 +363,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.visibility),
+                  icon: const Icon(Icons.visibility),
                   onPressed: () {
                     setState(() {
                       obscurePassword = !obscurePassword;
@@ -379,7 +380,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -400,7 +401,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
               Navigator.of(context).pop();
             }
           },
-          child: Text('Save'),
+          child: const Text('Save'),
         ),
       ],
     );

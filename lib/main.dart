@@ -8,6 +8,8 @@ import 'pages/signup.dart';
 
 import 'controller.dart';
 
+import 'package:restart_app/restart_app.dart';
+
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,5 +69,7 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
       // Perform cleanup when the app is paused (e.g., closed).
       // Call your cleanup functions here.
     }
+    Restart.restartApp();
+
   }
 }
