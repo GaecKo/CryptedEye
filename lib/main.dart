@@ -62,14 +62,18 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
 
   MyAppLifecycleObserver({required this.ctr});
 
+  // TODO: Bug: function is not called anymore
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
+    print("changing to ${state.toString()}");
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive || state == AppLifecycleState.hidden) {
+
       ctr.closeApp();
       // Perform cleanup when the app is paused (e.g., closed).
       // Call your cleanup functions here.
+      // Restart.restartApp();
     }
-    Restart.restartApp();
+
 
   }
 }

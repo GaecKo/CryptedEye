@@ -66,23 +66,24 @@ class Controller {
       print("Controller has loaded the vault $VaultName at $localPath/$VaultName.CryptedEye");
     }
 
-
     // load password_data
     getPasswordsFromJson();
 
   }
 
   void closeApp() {
+    print("started closing");
     // put wifi / bluetooth back to onLaunch settings:
     sCtx.applyOnLaunchSettings();
     // save settings.json
     sCtx.writeSettingsToFile(localPath);
-    // reset display password for passwordpages
-    restDisplayPassword();
-    // save password in json
-    writePasswordsToJson();
+    // reset display password for password pages
 
-
+    if (crypter.initialized) {
+      restDisplayPassword();
+      // save password in json
+      writePasswordsToJson();
+    }
 
     print("CLOSING APP");
   }
@@ -181,6 +182,7 @@ class Controller {
   }
 
   void writePasswordsToJson() {
+    print(password_data.toString());
     // Write password_data in password.json
     // Call in closeApp()
     File file = File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
@@ -193,17 +195,20 @@ class Controller {
     // add new password to password_data
     // call in password.dart
     password_data[crypter.encrypt(website)] = [crypter.encrypt(username), crypter.encrypt(psw)];
+    writePasswordsToJson();
   }
 
   void editPasswordData(String initialwebsite, String newwebsite, String newusername, String newpsw){
     // edit password_data avec le nouveau user name et psw
     password_data.remove(initialwebsite); 
     password_data[crypter.encrypt(newwebsite)] = [crypter.encrypt(newusername), crypter.encrypt(newpsw)];
+    writePasswordsToJson();
   }
 
   void deletePassword(String website) {
     print("delted");
     password_data.remove(website);
+    writePasswordsToJson();
   }
 
   void resetPasswordJson(){
