@@ -17,7 +17,6 @@ class _LoginPageState extends State<LoginPage> {
 
   // Front-End controllers / ...
   final TextEditingController _passwordController = TextEditingController();
-  Color _passwordContainerColor = Colors.red;
   Color _passwordContainerColor = Colors.white;
   String? _passwordError;
   late String _selectedVault;
@@ -216,6 +215,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(
                   height: 10,
+                ),
+                // TEMP: as we only have one vault at the moment, we don't want to signup
+                InkWell(
+                  onTap: _callSignUp,
+                  child: const Text(
+                    "New Vault? Create One!",
+                  ),
                 ),
               ],
             ),
