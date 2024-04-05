@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     // Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return DefaultTabController(
-      length: 3,
+      length: 1,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
@@ -39,20 +39,22 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.bold
           ),),
 
-          actions : <Widget>[
-            IconButton(
+          actions : const <Widget>[
+            Text("Alpha Version"),
+            SizedBox(width: 10,)
+            /*IconButton(
               icon : const Icon(Icons.warning_amber_rounded, size: 30, color: Colors.white,),
               onPressed: (){
                 ctr.resetPasswordJson();},
-              )
+              )*/
           ],
         
       
         bottom: TabBar(
           tabs: const [
             Tab(icon: Icon(Icons.lock),),
-            Tab(icon: Icon(Icons.panorama_outlined),),
-            Tab(icon: Icon(Icons.note_outlined),),
+            /*Tab(icon: Icon(Icons.panorama_outlined),),
+            Tab(icon: Icon(Icons.note_outlined),),*/
             ],
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorColor: Colors.blue,
@@ -69,8 +71,8 @@ class _HomePageState extends State<HomePage> {
           child: TabBarView(
             children: <Widget>[
               PasswordManagerPage(ctr : ctr),
-              AlbumsPage(),
-              NotesPage(),
+              /*AlbumsPage(),
+              NotesPage(),*/
             ],),
         )
       
