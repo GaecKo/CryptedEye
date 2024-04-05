@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../controller.dart';
 
+import '../controller.dart';
 
 class SignUpPage extends StatefulWidget {
   final Controller ctr;
@@ -14,7 +14,8 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _VaultNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   Controller ctr;
   String? _passwordError;
   String? _confirmPasswordError;
@@ -29,6 +30,10 @@ class _SignUpPageState extends State<SignUpPage> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _callLogIn() {
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   void _signUp() async {
@@ -72,11 +77,26 @@ class _SignUpPageState extends State<SignUpPage> {
         // You can call your signup function here
       });
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget? canLog;
+    Widget login = InkWell(
+        child: Text(
+          "Connect to existing Vault",
+          style: TextStyle(
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        onTap: _callLogIn);
+
+    if (ctr.getListOfVault().length > 0) {
+      canLog = login;
+    } else {
+      canLog = null;
+    }
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
       body: SafeArea(
@@ -87,9 +107,12 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 const SizedBox(height: 50),
                 const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Alignement à gauche
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Alignement à gauche
                   children: [
-                    SizedBox(height: 20), // Espace entre l'IconButton et le reste des éléments
+                    SizedBox(
+                        height:
+                            20), // Espace entre l'IconButton et le reste des éléments
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -171,11 +194,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       labelStyle: const TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: _confirmPasswordContainerColor),
+                        borderSide:
+                            BorderSide(color: _confirmPasswordContainerColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: _confirmPasswordContainerColor),
+                        borderSide:
+                            BorderSide(color: _confirmPasswordContainerColor),
                       ),
                       errorText: _confirmPasswordError,
                     ),
@@ -183,8 +208,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                 // REMOVED TEMPORALLY AS BACKEND ISN'T WORKING
-                 /*Row(
+                // REMOVED TEMPORALLY AS BACKEND ISN'T WORKING
+                /*Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
@@ -206,8 +231,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),*/
                 ElevatedButton(
                   onPressed: _signUp,
-                  child: const Text('Sign Up'),
+                  child: const Text('Create Vault'),
                 ),
+                canLog!,
               ],
             ),
           ),
