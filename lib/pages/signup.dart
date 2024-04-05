@@ -87,18 +87,9 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start, // Alignement à gauche
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white, // Couleur blanche
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('/login'); // Utiliser pushReplacementNamed pour revenir à la page login
-                      },
-                    ),
                     SizedBox(height: 20), // Espace entre l'IconButton et le reste des éléments
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
