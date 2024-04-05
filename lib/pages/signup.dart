@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import '../controller.dart';
-import 'login.dart';
 
 
 class SignUpPage extends StatefulWidget {
   final Controller ctr;
 
-  SignUpPage({Key? key, required this.ctr}) : super(key: key);
+  const SignUpPage({super.key, required this.ctr});
 
   @override
   _SignUpPageState createState() => _SignUpPageState(ctr);
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  TextEditingController _VaultNameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _VaultNameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   Controller ctr;
   String? _passwordError;
   String? _confirmPasswordError;
   Color _passwordContainerColor = Colors.white;
   Color _confirmPasswordContainerColor = Colors.white;
-  bool _loadWithSecureContext = true; // Default value
+  final bool _loadWithSecureContext = true; // Default value
 
   _SignUpPageState(this.ctr);
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AlbumsPage extends StatelessWidget {
-  const AlbumsPage({Key? key});
+  const AlbumsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,13 @@ class AlbumsPage extends StatelessWidget {
                           // Code pour afficher la boîte de dialogue ici
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Augmenter la largeur du bouton
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 30), // Augmenter la largeur du bouton
                           backgroundColor: Colors.blue, // Couleur de fond bleu
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20), // Coins arrondis
+                            borderRadius:
+                                BorderRadius.circular(20), // Coins arrondis
                           ),
                         ),
                         child: const Row(
@@ -50,14 +53,16 @@ class AlbumsPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10), // Petit espacement entre les boutons
+                    const SizedBox(
+                        width: 10), // Petit espacement entre les boutons
                     // Deuxième bouton (Bouton carré avec le logo +)
                     Container(
                       height: 50, // Hauteur du bouton carré
                       width: 50, // Largeur du bouton carré
                       decoration: BoxDecoration(
                         color: Colors.blue, // Couleur de fond bleu
-                        borderRadius: BorderRadius.circular(20), // Coins arrondis
+                        borderRadius:
+                            BorderRadius.circular(20), // Coins arrondis
                       ),
                       child: IconButton(
                         onPressed: () {
@@ -71,7 +76,9 @@ class AlbumsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20), // Espacement entre les boutons et les autres éléments
+                const SizedBox(
+                    height:
+                        20), // Espacement entre les boutons et les autres éléments
                 // Autres éléments de la page
                 AlbumRow(
                   albums: [
@@ -82,7 +89,8 @@ class AlbumsPage extends StatelessWidget {
                 AlbumRow(
                   albums: [
                     Album(title: 'Nature', imageUrl: 'lib/images/nature.jpeg'),
-                    Album(title: 'Friends', imageUrl: 'lib/images/friends.jpeg'),
+                    Album(
+                        title: 'Friends', imageUrl: 'lib/images/friends.jpeg'),
                   ],
                 ),
                 AlbumRow(
@@ -100,11 +108,10 @@ class AlbumsPage extends StatelessWidget {
   }
 }
 
-
 class AlbumRow extends StatelessWidget {
   final List<Album> albums;
 
-  const AlbumRow({Key? key, required this.albums}) : super(key: key);
+  const AlbumRow({super.key, required this.albums});
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +134,7 @@ class AlbumRow extends StatelessWidget {
 class AlbumBox extends StatelessWidget {
   final Album album;
 
-  const AlbumBox({Key? key, required this.album}) : super(key: key);
+  const AlbumBox({super.key, required this.album});
 
   @override
   Widget build(BuildContext context) {

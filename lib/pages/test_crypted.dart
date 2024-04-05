@@ -3,16 +3,16 @@ import '/API/crypter.dart';
 import 'package:flutter/services.dart'; // Needed for clipboard
 
 class HashPage extends StatefulWidget {
-  const HashPage({Key? key}) : super(key: key);
+  const HashPage({super.key});
 
   @override
   _HashPageState createState() => _HashPageState();
 }
 
 class _HashPageState extends State<HashPage> {
-  TextEditingController _textController = TextEditingController();
-  TextEditingController _encryptedTextController = TextEditingController();
-  TextEditingController _hashTextController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
+  final TextEditingController _encryptedTextController = TextEditingController();
+  final TextEditingController _hashTextController = TextEditingController();
   String _cryptedString = '';
   String _decryptedString = '';
   String _hashedString = '';
@@ -26,7 +26,7 @@ class _HashPageState extends State<HashPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Crypted text Generator'),
+        title: const Text('Crypted text Generator'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -36,11 +36,11 @@ class _HashPageState extends State<HashPage> {
             children: [
               TextField(
                 controller: _textController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Enter a string',
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   if (!cr.isInit()) {
@@ -50,23 +50,23 @@ class _HashPageState extends State<HashPage> {
                     _cryptedString = cr.encrypt(_textController.text);
                   });
                 },
-                child: Text('Generate crypt'),
+                child: const Text('Generate crypt'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
                       'Hashed String: $_cryptedString',
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.content_copy),
+                    icon: const Icon(Icons.content_copy),
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: _cryptedString));
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Copied to clipboard'),
                         duration: Duration(seconds: 1),
                       ));
@@ -74,47 +74,47 @@ class _HashPageState extends State<HashPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextField(
                 controller: _encryptedTextController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Enter encrypted string',
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   setState(() {
                     _decryptedString = cr.decrypt(_encryptedTextController.text);
                   });
                 },
-                child: Text('Decrypt'),
+                child: const Text('Decrypt'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 'Decrypted String: $_decryptedString',
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextField(
                 controller: _hashTextController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Enter string to hash',
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   setState(() {
                     _hashedString = cr.secureHash(_hashTextController.text);
                   });
                 },
-                child: Text('Hash'),
+                child: const Text('Hash'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 'Hashed String: $_hashedString',
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             ],
           ),

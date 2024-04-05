@@ -89,8 +89,6 @@ class RWM {
       return entity.path.endsWith('.CryptedEye');
     }).toList();
 
-    print("Vaults: $vaults");
-
     return vaults;
 
   }

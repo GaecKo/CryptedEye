@@ -26,18 +26,18 @@ class Crypter {
     return crypter;
   }
 
-  Future<void> init(String password, String salt_path) async {
+  Future<void> init(String password, String saltPath) async {
     // first, we init our _salt var, that will contain 
     // our bytes for the key later on
     initialized = true;
-    saltPath = salt_path;
+    saltPath = saltPath;
 
     // TODO: temp code: for demo purpose
-    _salt = await _loadSaltFromFile(salt_path);
+    _salt = await _loadSaltFromFile(saltPath);
 
     if (_salt.isEmpty || _salt == []) { // if the file is empty or inexistant, we generate it
       _salt = await _generateSalt();
-      await _saveSaltToFile(salt_path, _salt);
+      await _saveSaltToFile(saltPath, _salt);
     }
 
     // Now, we can use the salt + the password to load the key
@@ -87,7 +87,7 @@ class Crypter {
     final iv = IV.fromSecureRandom(16);
     
     // encrypted bases on Key
-    final encrypter = Encrypter(AES(_key!));
+    final encrypter = Encrypter(AES(_key));
 
     // IV + AES on text to encrypt using encrypted
     final encrypted = encrypter.encrypt(toEncrypt, iv: iv);
@@ -107,7 +107,7 @@ class Crypter {
     final iv = IV(Uint8List.fromList(base64.decode(parts[1])));
     
     // AES using Key
-    final encrypter = Encrypter(AES(_key!));
+    final encrypter = Encrypter(AES(_key));
     
     // decrypted text with IV and Key from encrypter
     final decrypted = encrypter.decrypt(encrypted, iv: iv);
@@ -140,7 +140,7 @@ class Crypter {
 }
 
 void main() async {
-  Crypter cr = await Crypter.create();
+  Crypter cr = Crypter.create();
   await cr.init("test", "temp.key");
   print("init done");
 

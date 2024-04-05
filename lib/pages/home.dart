@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controller.dart';
 
-import 'Tabs/albumPage.dart';
-import 'Tabs/notes.dart';
 import 'Tabs/passwords.dart';
 
 class HomePage extends StatefulWidget {

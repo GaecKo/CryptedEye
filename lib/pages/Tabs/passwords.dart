@@ -4,7 +4,7 @@ import '../../controller.dart';
 class PasswordManagerPage extends StatefulWidget {
   final Controller ctr;
 
-  const PasswordManagerPage({Key? key, required this.ctr}) : super(key: key);
+  const PasswordManagerPage({super.key, required this.ctr});
 
   @override
   _PasswordManagerPageState createState() => _PasswordManagerPageState();
@@ -18,7 +18,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
     return Scaffold(
       appBar: AppBar(
         
-        title: new Center(child: const Text('Password Manager', 
+        title: const Center(child: Text('Password Manager', 
         style: TextStyle(
             fontSize: 30,
             color: Colors.black,
@@ -127,14 +127,14 @@ class PasswordItem extends StatefulWidget {
   final Controller ctr;
 
   const PasswordItem({
-    Key? key,
+    super.key,
     required this.website,
     required this.username,
     required this.password,
     required this.onEyePressed,
     required this.onPenPressed,
     required this.ctr,
-  }) : super(key: key);
+  });
 
   @override
   _PasswordItemState createState() => _PasswordItemState();
@@ -194,7 +194,7 @@ class _PasswordItemState extends State<PasswordItem> {
 class AddPasswordItem extends StatefulWidget {
   final Controller ctr;
 
-  AddPasswordItem({Key? key, required this.ctr}) : super(key: key);
+  const AddPasswordItem({super.key, required this.ctr});
 
   @override
   _AddPasswordItemState createState() => _AddPasswordItemState(ctr: ctr);
@@ -312,12 +312,12 @@ class EditPasswordItem extends StatefulWidget {
   final String initialPassword;
 
   const EditPasswordItem({
-    Key? key,
+    super.key,
     required this.ctr,
     required this.initialWebsite,
     required this.initialUsername,
     required this.initialPassword,
-  }) : super(key: key);
+  });
 
   @override
   _EditPasswordItemState createState() => _EditPasswordItemState();
