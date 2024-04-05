@@ -16,6 +16,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
   Controller ctr;
+  Color _passwordContainerColor =  Colors.red;
+  String? _passwordError;
 
   _LoginPageState(this.ctr);
 
@@ -43,6 +45,10 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacementNamed(context, '/HomePage');
     } else {
       print('Invalid password');
+      setState(() {
+        _passwordContainerColor = Colors.red; // Set color to red
+        _passwordError = 'Invalid password';
+      });
     }
   }
 
@@ -108,14 +114,30 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 50),
-                // Champ de mot de passe
+
+                
+                // Text field for error message
+                Text(
+                  _passwordError ?? '', 
+                  style: TextStyle(
+                    color: Colors.red, 
+                    fontSize: 12.0, 
+                  ),
+                ),
+
+                // Container for password field
                 Container(
                   width: 250,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                     color: Colors.grey[500],
                     borderRadius: BorderRadius.circular(10),
+                    border: Border(
+                      top: BorderSide(width: 3.0, color: _passwordContainerColor),
+                      bottom: BorderSide(width: 3.0, color: _passwordContainerColor),
+                      left: BorderSide(width: 3.0, color: _passwordContainerColor),
+                      right: BorderSide(width: 3.0, color: _passwordContainerColor),
+                    ),
                   ),
                   child: TextField(
                     controller: _passwordController,
@@ -126,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: const TextStyle(color: Colors.black),
                     obscureText: true,
                     onSubmitted: (_) {
-                      _login(); // Appeler la fonction _login() lorsque la touche "OK" est appuyée
+                      _login(); // Call the _login function when the "OK" button is pressed
                     },
                   ),
                 ),
