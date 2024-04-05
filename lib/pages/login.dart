@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     print("temp vault name: $tempVaultName");
 
     if (ctr.verifyPassword(password, tempVaultName)) {
-      ctr.loadApp(password, tempVaultName);
+      await ctr.loadApp(password, tempVaultName);
       Navigator.pushReplacementNamed(context, '/HomePage');
     } else {
       print('Invalid password');

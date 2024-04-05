@@ -43,7 +43,7 @@ class securityContext {
     settings["secureContext"][service]["policy"] = newValue;
   }
   
-  void loadSettings(String localPath) async {
+  Future<void> loadSettings(String localPath) async {
     settings = jsonDecode(readSettingsFile(localPath));
     
     // update onLaunch val with current
