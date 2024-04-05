@@ -1,17 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'pages/login.dart';
-import 'pages/home.dart';
-import 'pages/signup.dart';
-
-import 'controller.dart';
-
 import 'package:restart_app/restart_app.dart';
 
-void main() async {
+import 'controller.dart';
+import 'pages/home.dart';
+import 'pages/login.dart';
+import 'pages/signup.dart';
 
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Controller ctr = await Controller.create();
@@ -22,7 +20,10 @@ void main() async {
   MyAppLifecycleObserver observer = MyAppLifecycleObserver(ctr: ctr);
   WidgetsBinding.instance.addObserver(observer);
 
-  runApp(CryptedEye(ctr: ctr, isStartup: isStartup,));
+  runApp(CryptedEye(
+    ctr: ctr,
+    isStartup: isStartup,
+  ));
 }
 
 class CryptedEye extends StatelessWidget {
@@ -33,7 +34,6 @@ class CryptedEye extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Widget firstPage;
     if (isStartup) {
       // put singup as first page and create settings.json file
@@ -45,16 +45,14 @@ class CryptedEye extends StatelessWidget {
     return MaterialApp(
       title: 'CryptedEye',
       routes: {
-      '/login': (context) => LoginPage(ctr: ctr),
-      '/HomePage': (context) => HomePage(ctr:ctr),
-      '/SignUp': (context) => SignUpPage(ctr: ctr)
+        '/login': (context) => LoginPage(ctr: ctr),
+        '/HomePage': (context) => HomePage(ctr: ctr),
+        '/SignUp': (context) => SignUpPage(ctr: ctr)
       },
       home: firstPage,
       debugShowCheckedModeBanner: false,
-
     );
   }
-
 }
 
 class MyAppLifecycleObserver with WidgetsBindingObserver {
@@ -70,8 +68,11 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
       ctr.closeApp();
       // Perform cleanup when the app is paused (e.g., closed).
       // Call your cleanup functions here.
-      Restart.restartApp();
-    } else if (state == AppLifecycleState.inactive || state == AppLifecycleState.hidden) {
+      if (!kDebugMode) {
+        Restart.restartApp();
+      }
+    } else if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
       ctr.closeApp();
     }
   }
