@@ -1,25 +1,40 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import '../controller.dart';
 
 class LoginPage extends StatefulWidget {
-  Controller ctr;
+  final Controller ctr;
 
-  LoginPage({super.key, required this.ctr});
+  LoginPage({Key? key, required this.ctr}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState(ctr);
+  _LoginPageState createState() => _LoginPageState(ctr: ctr);
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _passwordController = TextEditingController();
+  // Logic of Front - Controller
   Controller ctr;
-  Color _passwordContainerColor =  Colors.red;
-  String? _passwordError;
 
-  _LoginPageState(this.ctr);
+  // Front-End controllers / ...
+  final TextEditingController _passwordController = TextEditingController();
+  Color _passwordContainerColor = Colors.red;
+  String? _passwordError;
+  late String _selectedVault;
+
+  void _handleVaultChanged(String newValue) {
+    setState(() {
+      _selectedVault = newValue;
+    });
+  }
+
+  _LoginPageState({required this.ctr});
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedVault =
+        widget.ctr.getListOfVault().first; // Initialize with the first value
+  }
 
   @override
   void dispose() {
@@ -35,13 +50,11 @@ class _LoginPageState extends State<LoginPage> {
   // Function to handle the login action
   void _login() async {
     String password = _passwordController.text;
+    print("Selected vault name from LoginPage: $_selectedVault");
     print('Entered password from LoginPage: $password');
-
-    String tempVaultName = ctr.getTempOnlyVault();
-    print("temp vault name: $tempVaultName");
-
-    if (ctr.verifyPassword(password, tempVaultName)) {
-      await ctr.loadApp(password, tempVaultName);
+    if (ctr.verifyPassword(password, _selectedVault)) {
+      print("Access to vault ${_selectedVault} agreed");
+      await ctr.loadApp(password, _selectedVault);
       Navigator.pushReplacementNamed(context, '/HomePage');
     } else {
       print('Invalid password');
@@ -64,9 +77,11 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
-      resizeToAvoidBottomInset: true, // Ajustement automatique lorsque le clavier apparaît
+      resizeToAvoidBottomInset:
+          true, // Ajustement automatique lorsque le clavier apparaît
       body: SafeArea(
-        child: SingleChildScrollView( // Envelopper dans SingleChildScrollView pour faire défiler lorsque le clavier apparaît
+        child: SingleChildScrollView(
+          // Envelopper dans SingleChildScrollView pour faire défiler lorsque le clavier apparaît
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -105,23 +120,27 @@ class _LoginPageState extends State<LoginPage> {
                   size: 200,
                   color: Colors.black,
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 30),
                 // Texte de connexion
-                Text(
-                  "Login to Vault '${ctr.getTempOnlyVault()}'",
+                const Text(
+                  "Login to Vault:",
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
 
-                
+                // DropDown selector:
+                DropdownButtonVault(
+                  values: widget.ctr.getListOfVault(),
+                  onChanged: _handleVaultChanged,
+                ),
                 // Text field for error message
                 Text(
-                  _passwordError ?? '', 
-                  style: TextStyle(
-                    color: Colors.red, 
-                    fontSize: 12.0, 
+                  _passwordError ?? '',
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 12.0,
                   ),
                 ),
 
@@ -133,10 +152,14 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.grey[500],
                     borderRadius: BorderRadius.circular(10),
                     border: Border(
-                      top: BorderSide(width: 3.0, color: _passwordContainerColor),
-                      bottom: BorderSide(width: 3.0, color: _passwordContainerColor),
-                      left: BorderSide(width: 3.0, color: _passwordContainerColor),
-                      right: BorderSide(width: 3.0, color: _passwordContainerColor),
+                      top: BorderSide(
+                          width: 3.0, color: _passwordContainerColor),
+                      bottom: BorderSide(
+                          width: 3.0, color: _passwordContainerColor),
+                      left: BorderSide(
+                          width: 3.0, color: _passwordContainerColor),
+                      right: BorderSide(
+                          width: 3.0, color: _passwordContainerColor),
                     ),
                   ),
                   child: TextField(
@@ -190,11 +213,69 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DropdownButtonVault extends StatefulWidget {
+  final List<String> values;
+  final ValueChanged<String> onChanged;
+
+  DropdownButtonVault({Key? key, required this.values, required this.onChanged})
+      : super(key: key);
+
+  @override
+  State<DropdownButtonVault> createState() => _DropdownButtonVaultState();
+}
+
+class _DropdownButtonVaultState extends State<DropdownButtonVault> {
+  late String _curVal;
+
+  @override
+  void initState() {
+    super.initState();
+    _curVal = widget.values.first; // Initialize with the first value
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      child: DropdownButton<String>(
+        value: _curVal,
+        icon: const Icon(Icons.arrow_drop_down),
+        elevation: 16,
+        dropdownColor: Colors.grey,
+        borderRadius: BorderRadius.circular(10),
+        isExpanded: true,
+        style: const TextStyle(color: Colors.white),
+        underline: Container(
+          height: 2,
+          color: Colors.blue,
+        ),
+        onChanged: (String? value) {
+          if (value != null) {
+            setState(() {
+              _curVal = value;
+            });
+            widget.onChanged(value); // Notify parent widget about the change
+          }
+        },
+        items: widget.values.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+            alignment: Alignment.center,
+          );
+        }).toList(),
       ),
     );
   }
