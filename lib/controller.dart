@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
-import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 
 import 'API/crypter.dart';
 import 'API/img.dart';
@@ -23,6 +24,7 @@ class Controller {
   late String VaultName;
   late Map<String, dynamic> settings;
   late bool secureContext;
+  late bool initialized = false;
 
   // variable for password management
   late Map<String, dynamic> password_data = {};
@@ -48,7 +50,8 @@ class Controller {
     sCtx = await securityContext.create();
   }
 
-  Future<void> loadApp(String AP, String VaultName, {bool fromSignup=false}) async {
+  Future<void> loadApp(String AP, String VaultName,
+      {bool fromSignup = false}) async {
     this.VaultName = VaultName;
 
     // 1. create secure context if not from signup (otherwise its done in initApp)
@@ -63,23 +66,24 @@ class Controller {
     await crypter.init(AP, saltPath);
 
     if (kDebugMode) {
-      print("Controller has loaded the vault $VaultName at $localPath/$VaultName.CryptedEye");
+      print(
+          "Controller has loaded the vault $VaultName at $localPath/$VaultName.CryptedEye");
     }
 
     // load password_data
     getPasswordsFromJson();
-
+    initialized = true;
   }
 
   void closeApp() {
     print("started closing");
-    // put wifi / bluetooth back to onLaunch settings:
-    sCtx.applyOnLaunchSettings();
-    // save settings.json
-    sCtx.writeSettingsToFile(localPath);
-    // reset display password for password pages
+    if (initialized) {
+      // put wifi / bluetooth back to onLaunch settings:
+      sCtx.applyOnLaunchSettings();
+      // save settings.json
+      sCtx.writeSettingsToFile(localPath);
+      // reset display password for password pages
 
-    if (crypter.initialized) {
       restDisplayPassword();
       // save password in json
       writePasswordsToJson();
@@ -95,8 +99,9 @@ class Controller {
     rwm.create_file("settings.json").createSync();
     this.secureContext = secureContext;
 
-    Map<String, dynamic> init_settings = await  sCtx.initSettings(secureContext, localPath);
-    rwm.writeJSONData("settings.json", init_settings);
+    Map<String, dynamic> initSettings =
+        await sCtx.initSettings(secureContext, localPath);
+    rwm.writeJSONData("settings.json", initSettings);
 
     // apply policy settings
     sCtx.applyPolicySettings();
@@ -104,7 +109,7 @@ class Controller {
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");
     rwm.create_folder("$VaultName.CryptedEye/passwords");
-    
+
     // 3. save hash into file
     //    a. create hash file
     rwm.create_file("$VaultName.CryptedEye/app/AP.hash").createSync();
@@ -115,7 +120,9 @@ class Controller {
     rwm.create_file("$VaultName.CryptedEye/app/salt.key").createSync();
 
     // 5. create passwords json file
-    rwm.create_file("$VaultName.CryptedEye/passwords/passwords.json").createSync();
+    rwm
+        .create_file("$VaultName.CryptedEye/passwords/passwords.json")
+        .createSync();
     rwm.writeJSONData("$VaultName.CryptedEye/passwords/passwords.json", {});
 
     // 6. load app
@@ -126,16 +133,33 @@ class Controller {
     return rwm.getListofVault().isEmpty;
   }
 
-  List<Directory> getListOfVault() {
+  List<String> getListOfVault() {
     // TODO: make it return a List<String> with just the VaultName (so not full path, and without .CryptedEye/)
-    return rwm.getListofVault();
+    List<String> vaultsName = [];
+    List<Directory> brutDir = rwm.getListofVault();
+
+    for (var element in brutDir) {
+      String dirName = element.path.toString();
+
+      // get the last part of the path
+      List<String> tmp = dirName.split("/");
+      dirName = tmp[tmp.length - 1];
+
+      // get first part
+      tmp = dirName.split('.');
+
+      vaultsName.add(tmp[0]);
+    }
+    print(vaultsName);
+
+    return vaultsName;
   }
 
   bool verifyPassword(String AP, String vaultName) {
     return crypter.secureHash(AP) == getHashedPassword(vaultName);
   }
 
-  String  getTempOnlyVault() {
+  String getTempOnlyVault() {
     // as the app is WIP, for the first version we will only be able to create one vault at a time
     // this is used to get the String of that only vault, later we will use getListOfVault
     List<Directory> vaults = rwm.getListofVault();
@@ -145,7 +169,6 @@ class Controller {
 
     // name = VAULT.CryptedEye -> need to split with . and take first elem
     return name.split('.')[0];
-
   }
 
   void writeSettings(Map<String, dynamic> content) {
@@ -162,19 +185,18 @@ class Controller {
   }
 
   void saveHashPassword(String AP, String hashFilePath) {
-    // save hashed version of AP in the hashFile 
+    // save hashed version of AP in the hashFile
     rwm.write_content(hashFilePath, crypter.secureHash(AP));
   }
-
 
   void getPasswordsFromJson() {
     // load password infos in password_data from password.json
     // infos are crypted
 
     String path = "$VaultName.CryptedEye/passwords/passwords.json";
-    
+
     Map<String, dynamic> jsonData = rwm.getJSONData(path);
-    
+
     jsonData.forEach((key, value) {
       password_data[key] = value;
     });
@@ -185,23 +207,31 @@ class Controller {
     print(password_data.toString());
     // Write password_data in password.json
     // Call in closeApp()
-    File file = File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
+    File file =
+        File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
 
     String jsonContent = json.encode(password_data);
     file.writeAsStringSync(jsonContent);
   }
 
-  void addPasswordData(String website, String username, String psw){
+  void addPasswordData(String website, String username, String psw) {
     // add new password to password_data
     // call in password.dart
-    password_data[crypter.encrypt(website)] = [crypter.encrypt(username), crypter.encrypt(psw)];
+    password_data[crypter.encrypt(website)] = [
+      crypter.encrypt(username),
+      crypter.encrypt(psw)
+    ];
     writePasswordsToJson();
   }
 
-  void editPasswordData(String initialwebsite, String newwebsite, String newusername, String newpsw){
+  void editPasswordData(String initialwebsite, String newwebsite,
+      String newusername, String newpsw) {
     // edit password_data avec le nouveau user name et psw
-    password_data.remove(initialwebsite); 
-    password_data[crypter.encrypt(newwebsite)] = [crypter.encrypt(newusername), crypter.encrypt(newpsw)];
+    password_data.remove(initialwebsite);
+    password_data[crypter.encrypt(newwebsite)] = [
+      crypter.encrypt(newusername),
+      crypter.encrypt(newpsw)
+    ];
     writePasswordsToJson();
   }
 
@@ -211,27 +241,28 @@ class Controller {
     writePasswordsToJson();
   }
 
-  void resetPasswordJson(){
-    File file = File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
+  void resetPasswordJson() {
+    File file =
+        File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
     file.writeAsStringSync('{}');
     password_data = {};
   }
 
-  void restDisplayPassword(){
+  void restDisplayPassword() {
     displaypassword = false;
   }
 
-  void updateDisplayPassword(){
+  void updateDisplayPassword() {
     displaypassword = true;
   }
 
   String generateRandomPassword() {
-    const String charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()_-+=<>?/[]{},.:;';
+    const String charset =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()_-+=<>?/[]{},.:;';
 
     Random random = Random();
     // len of password is between 15 and 25, can be changed
     int length = random.nextInt(10) + 15;
-
 
     String password = '';
 
@@ -242,9 +273,6 @@ class Controller {
 
     return password;
   }
-
 }
 
-void main() {
-
-}
+void main() {}
