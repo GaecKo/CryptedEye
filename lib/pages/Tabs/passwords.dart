@@ -17,7 +17,14 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
     widget.ctr.updateDisplayPassword();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Password Manager'),
+        
+        title: new Center(child: const Text('Password Manager', 
+        style: TextStyle(
+            fontSize: 30,
+            color: Colors.black,
+            fontWeight: FontWeight.bold
+          ),),
+      ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
