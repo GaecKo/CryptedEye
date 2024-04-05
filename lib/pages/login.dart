@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   // Front-End controllers / ...
   final TextEditingController _passwordController = TextEditingController();
   Color _passwordContainerColor = Colors.red;
+  Color _passwordContainerColor = Colors.white;
   String? _passwordError;
   late String _selectedVault;
 
