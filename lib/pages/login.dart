@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
   Controller ctr;
-  Color _passwordContainerColor =  Colors.red;
+  Color _passwordContainerColor =  Colors.white;
   String? _passwordError;
 
   _LoginPageState(this.ctr);
