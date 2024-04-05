@@ -14,6 +14,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
 
   @override
   Widget build(BuildContext context) {
+    widget.ctr.updateDisplayPassword();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Password Manager'),
@@ -21,7 +22,8 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
+          // TEMP: as search is not yet implemented, remove it from the page for V1
+          /*const Padding(
             padding: EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
@@ -30,13 +32,14 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-          ),
+          ),*/
           ElevatedButton(
             onPressed: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AddPasswordItem(ctr: widget.ctr); // Pass the controller to AddPasswordItem
+                  Widget add = AddPasswordItem(ctr: widget.ctr);
+                  return  add; // Pass the controller to AddPasswordItem
                 },
               );
             },
@@ -52,19 +55,27 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                       String username = userData[0];
                       String password = userData[1];
 
-                      return PasswordItem(
-                        website: widget.ctr.crypter.decrypt(website),
-                        username: widget.ctr.crypter.decrypt(username),
-                        password: password,
-                        ctr: widget.ctr,
-                        onEyePressed: () {
-                          // Action when eye icon is pressed
+                      return Dismissible(
+                        key: Key(website),
+                        onDismissed: (direction) {
+                          widget.ctr.deletePassword(website);
                         },
-                        onPenPressed: () {
-                          // Action when pen icon is pressed
-                          _editPassword(website, username, password);
-                        },
+                        child:
+                          PasswordItem(
+                            website: widget.ctr.crypter.decrypt(website),
+                            username: widget.ctr.crypter.decrypt(username),
+                            password: password,
+                            ctr: widget.ctr,
+                            onEyePressed: () {
+                              // Action when eye icon is pressed
+                            },
+                            onPenPressed: () {
+                              // Action when pen icon is pressed
+                              _editPassword(website, username, password);
+                            },
+                          )
                       );
+
                     },
                   )
                 : const SizedBox(), // Placeholder for password list
@@ -79,7 +90,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
         },
         child: const Icon(Icons.refresh),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -97,6 +108,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
       },
     );
   }
+
 }
 
 class PasswordItem extends StatefulWidget {
@@ -175,7 +187,7 @@ class _PasswordItemState extends State<PasswordItem> {
 class AddPasswordItem extends StatefulWidget {
   final Controller ctr;
 
-  const AddPasswordItem({Key? key, required this.ctr}) : super(key: key);
+  AddPasswordItem({Key? key, required this.ctr}) : super(key: key);
 
   @override
   _AddPasswordItemState createState() => _AddPasswordItemState(ctr: ctr);
@@ -273,10 +285,10 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                 passwordController.text.isNotEmpty) {
               // Controller fonction
               ctr.addPasswordData(websiteController.text, usernameController.text, passwordController.text);
-              Navigator.of(context).pop();
-              Navigator.of(context).setState(() {
+              Navigator.of(super.context).setState(() {
                 ctr.updateDisplayPassword();
               });
+              Navigator.of(context).pop();
             }
           },
           child: const Text('Save'),
@@ -393,9 +405,9 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
             ) {
               // Controller function
               widget.ctr.editPasswordData(
-                  widget.initialWebsite, 
-                  websiteController.text, 
-                  usernameController.text, 
+                  widget.initialWebsite,
+                  websiteController.text,
+                  usernameController.text,
                   passwordController.text
               );
               Navigator.of(context).pop();

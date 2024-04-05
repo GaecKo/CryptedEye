@@ -48,19 +48,19 @@ class Controller {
     sCtx = await securityContext.create();
   }
 
-  void loadApp(String AP, String VaultName, {bool fromSignup=false}) {
+  Future<void> loadApp(String AP, String VaultName, {bool fromSignup=false}) async {
     this.VaultName = VaultName;
 
     // 1. create secure context if not from signup (otherwise its done in initApp)
     if (!fromSignup) {
-      sCtx.loadSettings(localPath);
+      await sCtx.loadSettings(localPath);
       sCtx.applyPolicySettings();
     }
 
     // get salt path
     String saltPath = "$localPath/$VaultName.CryptedEye/app/salt.key";
 
-    crypter.init(AP, saltPath);
+    await crypter.init(AP, saltPath);
 
     if (kDebugMode) {
       print("Controller has loaded the vault $VaultName at $localPath/$VaultName.CryptedEye");
@@ -177,6 +177,7 @@ class Controller {
     jsonData.forEach((key, value) {
       password_data[key] = value;
     });
+    print("Password data is loaded");
   }
 
   void writePasswordsToJson() {
@@ -198,6 +199,11 @@ class Controller {
     // edit password_data avec le nouveau user name et psw
     password_data.remove(initialwebsite); 
     password_data[crypter.encrypt(newwebsite)] = [crypter.encrypt(newusername), crypter.encrypt(newpsw)];
+  }
+
+  void deletePassword(String website) {
+    print("delted");
+    password_data.remove(website);
   }
 
   void resetPasswordJson(){
