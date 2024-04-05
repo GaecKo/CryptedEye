@@ -81,20 +81,24 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget? canLog;
+    Widget canLog;
+    String title;
+
     Widget login = InkWell(
-        child: Text(
+        onTap: _callLogIn,
+        child: const Text(
           "Connect to existing Vault",
           style: TextStyle(
             fontStyle: FontStyle.italic,
           ),
-        ),
-        onTap: _callLogIn);
+        ));
 
     if (ctr.getListOfVault().length > 0) {
       canLog = login;
+      title = " > New Vault";
     } else {
-      canLog = null;
+      canLog = const SizedBox();
+      title = " > Sign-Up";
     }
 
     return Scaffold(
@@ -106,23 +110,23 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-                const Column(
+                Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start, // Alignement à gauche
                   children: [
-                    SizedBox(
+                    const SizedBox(
                         height:
                             20), // Espace entre l'IconButton et le reste des éléments
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.lock,
                           size: 40,
                           color: Colors.white,
                         ),
-                        SizedBox(width: 10),
-                        Text(
+                        const SizedBox(width: 10),
+                        const Text(
                           "CryptedEye",
                           style: TextStyle(
                               fontSize: 26,
@@ -130,8 +134,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          " > Sign-Up",
-                          style: TextStyle(
+                          title,
+                          style: const TextStyle(
                               fontSize: 15,
                               color: Colors.grey,
                               fontWeight: FontWeight.bold),
@@ -233,7 +237,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   onPressed: _signUp,
                   child: const Text('Create Vault'),
                 ),
-                canLog!,
+                canLog,
               ],
             ),
           ),
