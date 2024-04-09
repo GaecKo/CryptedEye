@@ -31,7 +31,7 @@ class Controller {
   late bool displaypassword = false;
 
   // variable for notes management
-  late Map<String, dynamic> notes_data = {};
+  late Map<String, dynamic> notes_data;
 
   Controller._create();
 
@@ -277,8 +277,32 @@ class Controller {
 
     Map<String, dynamic> jsonData = rwm.getJSONData(path);
 
-    Map<String, dynamic> notes = jsonData["Notes"];
-    Map<String, dynamic> directories = jsonData["Directories"];
+    notes_data["Notes"] = jsonData["Notes"];
+    notes_data["Directories"] = jsonData["Directories"];
+
+    /*String uncrypted_key;
+    String uncrypted_value;
+    notes.forEach((key, value) {
+      uncrypted_key = crypter.decrypt(key);
+      uncrypted_value = crypter.decrypt(value);
+
+      notes.remove(key);
+      notes[uncrypted_key] = uncrypted_value;
+    });
+
+    directories.forEach((key, value) {
+      String new_key;
+      if (key != "child") {
+        new_key = crypter.decrypt(key);
+      } else {
+        new_key = key;
+      }
+      List<String> childs = value;
+      for (int i = 0; i < childs.length; i++) {
+
+      }
+
+    });*/
 
     print("Note data is loaded");
   }

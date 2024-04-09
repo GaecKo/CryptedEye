@@ -1,18 +1,10 @@
 {
   "Notes": {
-    "cr_title": {
-      "content": ""
-    },
-    "cr_title2": {
-      "content": ""
-    }
+    "cr_title": "",
+    "cr_title2": ""
   },
   "Directories": {
-    "cr_title": {
-      "child": ["cr_title"]
-    },
-    "cr_title2": {
-      "child": []
-    }
+    "child": ["cr_title2"],
+    "cr_title": ["cr_title"]
   }
 }

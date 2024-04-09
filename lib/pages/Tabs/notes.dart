@@ -18,7 +18,31 @@ class _NotesPageState extends State<NotesPage> {
   @override
   void initState() {
     ctr = widget.ctr;
+    Map<String, dynamic> notes_data = ctr.notes_data;
+    Map<String, dynamic> notes_content = notes_data["Notes"];
+    Map<String, dynamic> main_content = notes_data["Directories"];
 
+    main_content.forEach((key, value) {
+      if (key == "child") {
+        List<String> main_child_notes = value;
+        for (int i = 0; i < main_child_notes.length; i++) {
+          String title = main_child_notes[i];
+          String content = notes_content[title];
+          contents.add(Note(crypted_title: title, crypted_content: content,));
+        }
+      } else {
+        String dir_title = key;
+        List<String> child_nodes = value;
+        List<Note> child_notes_widget = [];
+
+        for (int i = 0; i < child_nodes.length; i ++) {
+          String title = child_nodes[i];
+          String content = notes_content[title];
+          child_notes_widget.add(Note(crypted_title: title, crypted_content: content));
+        }
+        contents.add(Folder(title: dir_title, content: child_notes_widget,))
+      }
+    });
 
     super.initState();
   }
@@ -26,17 +50,25 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
 
-    return const Scaffold();
+    return const Scaffold(
+      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+      body : Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+
+        ],
+      )
+    );
 
   }
 }
 
 class Note extends StatefulWidget {
 
-  String title;
+  String crypted_title;
   String crypted_content;
 
-  Note({super.key, required this.title, required this.crypted_content});
+  Note({super.key, required this.crypted_title, required this.crypted_content});
 
   @override
   _NoteState createState() => _NoteState();
@@ -68,10 +100,10 @@ class _NoteState extends State<Note> {
 
 class Folder extends StatefulWidget {
   final String title;
-  final List<String> childNotes;
+  final List<Note> content;
 
 
-  Folder({Key? key, required this.title, required this.childNotes}) : super(key: key);
+  Folder({Key? key, required this.title, required this.content}) : super(key: key);
 
   @override
   _FolderState createState() => _FolderState();
@@ -83,7 +115,6 @@ class _FolderState extends State<Folder> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0), // Adjust padding as needed
       child: Container(
-        child: Text(widget.title),
         width: double.infinity, // Take the full available width
         padding: const EdgeInsets.all(16.0), // Padding inside the container
         decoration: BoxDecoration(
@@ -100,6 +131,7 @@ class _FolderState extends State<Folder> {
         ),
         child: Row(
           children: [
+            Text(widget.title),
             const Icon(
               Icons.folder,
               size: 36.0, // Size of the folder icon
@@ -108,7 +140,7 @@ class _FolderState extends State<Folder> {
             const SizedBox(width: 16.0), // Spacer between icon and text
             Expanded(
               child: Text(
-                widget.name,
+                widget.title,
                 style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
@@ -121,4 +153,3 @@ class _FolderState extends State<Folder> {
     );
   }
 }
-
