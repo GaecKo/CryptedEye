@@ -30,6 +30,9 @@ class Controller {
   late Map<String, dynamic> password_data = {};
   late bool displaypassword = false;
 
+  // variable for notes management
+  late Map<String, dynamic> notes_data = {};
+
   Controller._create();
 
   static Future<Controller> create() async {
@@ -72,6 +75,7 @@ class Controller {
 
     // load password_data
     getPasswordsFromJson();
+    loadNotesFromJson();
     initialized = true;
   }
 
@@ -109,6 +113,7 @@ class Controller {
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");
     rwm.create_folder("$VaultName.CryptedEye/passwords");
+    rwm.create_folder("$VaultName.CryptedEye/notes");
 
     // 3. save hash into file
     //    a. create hash file
@@ -125,6 +130,12 @@ class Controller {
         .createSync();
     rwm.writeJSONData("$VaultName.CryptedEye/passwords/passwords.json", {});
 
+    // 5. create notes json file
+    rwm
+        .create_file("$VaultName.CryptedEye/notes/notes.json")
+        .createSync();
+    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {"Notes": {}, "Directories": {}});
+
     // 6. load app
     loadApp(AP, VaultName, fromSignup: true);
   }
@@ -134,7 +145,6 @@ class Controller {
   }
 
   List<String> getListOfVault() {
-    // TODO: make it return a List<String> with just the VaultName (so not full path, and without .CryptedEye/)
     List<String> vaultsName = [];
     List<Directory> brutDir = rwm.getListofVault();
 
@@ -157,18 +167,6 @@ class Controller {
 
   bool verifyPassword(String AP, String vaultName) {
     return crypter.secureHash(AP) == getHashedPassword(vaultName);
-  }
-
-  String getTempOnlyVault() {
-    // as the app is WIP, for the first version we will only be able to create one vault at a time
-    // this is used to get the String of that only vault, later we will use getListOfVault
-    List<Directory> vaults = rwm.getListofVault();
-    String vault = vaults[0].path;
-    List<String> pathOfVault = vault.split('/');
-    String name = pathOfVault[pathOfVault.length - 1];
-
-    // name = VAULT.CryptedEye -> need to split with . and take first elem
-    return name.split('.')[0];
   }
 
   void writeSettings(Map<String, dynamic> content) {
@@ -273,6 +271,19 @@ class Controller {
 
     return password;
   }
+
+  void loadNotesFromJson() {
+    String path = "$VaultName.CryptedEye/notes/notes.json";
+
+    Map<String, dynamic> jsonData = rwm.getJSONData(path);
+
+    Map<String, dynamic> notes = jsonData["Notes"];
+    Map<String, dynamic> directories = jsonData["Directories"];
+
+    print("Note data is loaded");
+  }
+
+
 }
 
 void main() {}

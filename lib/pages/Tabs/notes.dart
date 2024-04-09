@@ -1,80 +1,124 @@
 import 'package:flutter/material.dart';
+import '../../controller.dart';
 
-class NotesPage extends StatelessWidget {
-  const NotesPage({super.key});
+class NotesPage extends StatefulWidget {
+  Controller ctr;
+
+  NotesPage({super.key, required this.ctr});
+
+  @override
+  _NotesPageState createState() => _NotesPageState();
+
+}
+
+class _NotesPageState extends State<NotesPage> {
+
+  late List<Widget> contents;
+  late Controller ctr;
+  @override
+  void initState() {
+    ctr = widget.ctr;
+
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: const Color.fromRGBO(64, 64, 64, 1),
-        child: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              NoteRow(),
-              NoteRow(),
-              NoteRow(),
-            ],
-          ),
-        ),
-      ),
-    );
+
+    return const Scaffold();
+
   }
 }
 
-class NoteRow extends StatelessWidget {
-  const NoteRow({super.key});
+class Note extends StatefulWidget {
+
+  String title;
+  String crypted_content;
+
+  Note({super.key, required this.title, required this.crypted_content});
 
   @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    bool isTwoNotes = screenWidth >
-        600; // If screen width is more than 600, display two notes per row
+  _NoteState createState() => _NoteState();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          isTwoNotes ? const NoteBox() : const Expanded(child: NoteBox()),
-          isTwoNotes
-              ? const NoteBox()
-              : Container(), // If only one note per row, add an empty container
-        ],
-      ),
-    );
-  }
 }
 
-class NoteBox extends StatelessWidget {
-  const NoteBox({super.key});
+class _NoteState extends State<Note> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Handle tap event here
-        print('Note tapped!');
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width *
-            0.4, // Adjust width of the note box
-        height: 100, // Fixed height for the note box
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.circular(20.0), // Round the corners
-        ),
-        child: const Center(
-          child: Text(
-            'Your Note',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20.0,
+    // TODO: implement build
+    return Card(
+        elevation: 3,
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: ListTile(
+            title: Text(
+              widget.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-          ),
+            subtitle: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              ],
+            )
+        )
+    );
+  }
+}
+
+class Folder extends StatefulWidget {
+  final String title;
+  final List<String> childNotes;
+
+
+  Folder({Key? key, required this.title, required this.childNotes}) : super(key: key);
+
+  @override
+  _FolderState createState() => _FolderState();
+}
+
+class _FolderState extends State<Folder> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Adjust padding as needed
+      child: Container(
+        child: Text(widget.title),
+        width: double.infinity, // Take the full available width
+        padding: const EdgeInsets.all(16.0), // Padding inside the container
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0), // Rounded corners
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 2,
+              offset: const Offset(0, 2), // Shadow position, adjust as needed
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.folder,
+              size: 36.0, // Size of the folder icon
+              color: Colors.blue,
+            ),
+            const SizedBox(width: 16.0), // Spacer between icon and text
+            Expanded(
+              child: Text(
+                widget.name,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
