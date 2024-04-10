@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../controller.dart';
 
@@ -13,7 +14,7 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
 
-  late List<Widget> contents;
+  late List<Widget> contents = [];
   late Controller ctr;
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _NotesPageState extends State<NotesPage> {
         for (int i = 0; i < main_child_notes.length; i++) {
           String title = main_child_notes[i];
           String content = notes_content[title];
-          contents.add(Note(crypted_title: title, crypted_content: content,));
+          contents.add(Note(crypted_title: title, crypted_content: content, ctr: ctr,));
         }
       } else {
         String dir_title = key;
@@ -38,24 +39,50 @@ class _NotesPageState extends State<NotesPage> {
         for (int i = 0; i < child_nodes.length; i ++) {
           String title = child_nodes[i];
           String content = notes_content[title];
-          child_notes_widget.add(Note(crypted_title: title, crypted_content: content));
+          child_notes_widget.add(Note(crypted_title: title, crypted_content: content, ctr: ctr,));
         }
-        contents.add(Folder(title: dir_title, content: child_notes_widget,))
+        contents.add(Folder(title: dir_title, content: child_notes_widget, ctr: ctr,));
       }
     });
 
     super.initState();
   }
 
+  void rebuildNotesPage() {
+    setState(() {
+      // Trigger a rebuild of NotesPageState
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    return const Scaffold(
+    print("acutlized");
+    return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body : Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) =>
+                    NoteScreen(
+                      ctr: ctr,
+                      contents: contents,
+                      rebuiltParent: rebuildNotesPage,)
+                    ,)
+                );
+              },
+              child: const Text("Add Note")
+          ),
+          Expanded(
+            child: ListView.builder(
+                itemCount: contents.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return contents[index];
+                },
+            ),
+          )
         ],
       )
     );
@@ -64,11 +91,11 @@ class _NotesPageState extends State<NotesPage> {
 }
 
 class Note extends StatefulWidget {
-
+  Controller ctr;
   String crypted_title;
   String crypted_content;
 
-  Note({super.key, required this.crypted_title, required this.crypted_content});
+  Note({super.key, required this.crypted_title, required this.crypted_content, required this.ctr});
 
   @override
   _NoteState createState() => _NoteState();
@@ -85,7 +112,7 @@ class _NoteState extends State<Note> {
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: ListTile(
             title: Text(
-              widget.title,
+              widget.ctr.crypter.decrypt(widget.crypted_title),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: const Column(
@@ -99,11 +126,12 @@ class _NoteState extends State<Note> {
 }
 
 class Folder extends StatefulWidget {
-  final String title;
-  final List<Note> content;
+  String title;
+  List<Note> content;
+  Controller ctr;
 
 
-  Folder({Key? key, required this.title, required this.content}) : super(key: key);
+  Folder({Key? key, required this.title, required this.content, required this.ctr}) : super(key: key);
 
   @override
   _FolderState createState() => _FolderState();
@@ -131,7 +159,7 @@ class _FolderState extends State<Folder> {
         ),
         child: Row(
           children: [
-            Text(widget.title),
+            Text(widget.ctr.crypter.decrypt(widget.title)),
             const Icon(
               Icons.folder,
               size: 36.0, // Size of the folder icon
@@ -151,5 +179,106 @@ class _FolderState extends State<Folder> {
         ),
       ),
     );
+  }
+}
+
+class NoteScreen extends StatefulWidget {
+  VoidCallback rebuiltParent;
+  Controller ctr;
+  List<Widget> contents;
+
+  NoteScreen({Key? key, required this.ctr, required this.contents, required this.rebuiltParent}) : super(key: key);
+
+  @override
+  _NoteScreenState createState() => _NoteScreenState();
+}
+
+class _NoteScreenState extends State<NoteScreen> {
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _contentController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create new note"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Title",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(
+                hintText: "Enter title...",
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Content",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Expanded(
+              child: TextField(
+                controller: _contentController,
+                maxLines: null, // Allow multiline input
+                expands: true,
+                decoration: const InputDecoration(
+                  hintText: "Enter content...",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.save),
+        onPressed: () {
+          String title = _titleController.text;
+          String content = _contentController.text;
+
+          // Call a method or function to handle saving the note with title and content
+          _saveNote(title, content);
+        },
+      ),
+    );
+  }
+
+  void _saveNote(String title, String content) {
+    // Implement your logic here to save the note
+    // You can use `widget.ctr` to access the controller if needed
+    // For example:
+    widget.contents.add(
+      Note(
+        crypted_title: widget.ctr.crypter.encrypt(title),
+        crypted_content: widget.ctr.crypter.encrypt(content),
+        ctr: widget.ctr,
+      ),
+    );
+    widget.rebuiltParent();
+
+    // After saving, you might want to navigate back or show a confirmation message
+    Navigator.of(context).pop(); // Example: Navigate back to previous screen
+    // or show a SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Note saved successfully!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controllers when the widget is disposed
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
   }
 }
