@@ -91,6 +91,7 @@ class Controller {
       restDisplayPassword();
       // save password in json
       writePasswordsToJson();
+      writeNotesToJson();
     }
 
     print("CLOSING APP");
@@ -134,7 +135,7 @@ class Controller {
     rwm
         .create_file("$VaultName.CryptedEye/notes/notes.json")
         .createSync();
-    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {"Notes": {}, "Directories": {}});
+    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {"Notes": {}, "Directories": {"child": []}});
 
     // 6. load app
     await loadApp(AP, VaultName, fromSignup: true);
@@ -202,7 +203,6 @@ class Controller {
   }
 
   void writePasswordsToJson() {
-    print(password_data.toString());
     // Write password_data in password.json
     // Call in closeApp()
     File file =
@@ -307,6 +307,32 @@ class Controller {
     print("Note data is loaded");
   }
 
+  writeNotesToJson() {
+      // Write notes_data in password.json
+      // Call in closeApp()
+      rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", notes_data);
+
+  }
+
+  void saveNewNote(String cr_note_title, String cr_content, {String cr_dir_name = "child"}) {
+    // {Notes: { "cr_title": "cr_content", ...}, Directories: ...}
+    notes_data["Notes"][cr_note_title] = cr_content;
+
+    // {Notes: ..., Directories: "child": ["cr_title", ...], "cr_dir_name": [...], ...}
+    notes_data["Directories"][cr_dir_name].add(cr_note_title);
+  }
+
+  void updateNewNote(String old_cr_note, String new_cr_note, String new_cr_content, {String cr_dir_name = "child"}){
+
+    // update note
+    notes_data["Notes"].remove(old_cr_note);
+    notes_data["Notes"][new_cr_note] = new_cr_content;
+
+    // actualize note in its directory
+    notes_data["Directories"][cr_dir_name].remove(old_cr_note);
+    notes_data["Directories"][cr_dir_name].add(new_cr_note);
+
+  }
 
 }
 

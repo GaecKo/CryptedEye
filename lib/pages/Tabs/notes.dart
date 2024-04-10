@@ -25,7 +25,7 @@ class _NotesPageState extends State<NotesPage> {
 
     main_content.forEach((key, value) {
       if (key == "child") {
-        List<String> main_child_notes = value;
+        List<dynamic> main_child_notes = value;
         for (int i = 0; i < main_child_notes.length; i++) {
           String title = main_child_notes[i];
           String content = notes_content[title];
@@ -33,7 +33,7 @@ class _NotesPageState extends State<NotesPage> {
         }
       } else {
         String dir_title = key;
-        List<String> child_nodes = value;
+        List<dynamic> child_nodes = value;
         List<Note> child_notes_widget = [];
 
         for (int i = 0; i < child_nodes.length; i ++) {
@@ -41,7 +41,7 @@ class _NotesPageState extends State<NotesPage> {
           String content = notes_content[title];
           child_notes_widget.add(Note(crypted_title: title, crypted_content: content, ctr: ctr,));
         }
-        contents.add(Folder(title: dir_title, content: child_notes_widget, ctr: ctr,));
+        contents.add(Folder(name: dir_title, content: child_notes_widget, ctr: ctr,));
       }
     });
 
@@ -56,7 +56,6 @@ class _NotesPageState extends State<NotesPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("acutlized");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body : Column(
@@ -126,12 +125,12 @@ class _NoteState extends State<Note> {
 }
 
 class Folder extends StatefulWidget {
-  String title;
+  String name;
   List<Note> content;
   Controller ctr;
 
 
-  Folder({Key? key, required this.title, required this.content, required this.ctr}) : super(key: key);
+  Folder({Key? key, required this.name, required this.content, required this.ctr}) : super(key: key);
 
   @override
   _FolderState createState() => _FolderState();
@@ -159,7 +158,7 @@ class _FolderState extends State<Folder> {
         ),
         child: Row(
           children: [
-            Text(widget.ctr.crypter.decrypt(widget.title)),
+            Text(widget.ctr.crypter.decrypt(widget.name)),
             const Icon(
               Icons.folder,
               size: 36.0, // Size of the folder icon
@@ -168,7 +167,7 @@ class _FolderState extends State<Folder> {
             const SizedBox(width: 16.0), // Spacer between icon and text
             Expanded(
               child: Text(
-                widget.title,
+                widget.name,
                 style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
@@ -262,6 +261,10 @@ class _NoteScreenState extends State<NoteScreen> {
       ),
     );
     widget.rebuiltParent();
+    widget.ctr.saveNewNote(
+        widget.ctr.crypter.encrypt(title),
+        widget.ctr.crypter.encrypt(content)
+    );
 
     // After saving, you might want to navigate back or show a confirmation message
     Navigator.of(context).pop(); // Example: Navigate back to previous screen

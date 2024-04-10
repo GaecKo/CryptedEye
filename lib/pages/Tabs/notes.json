@@ -5,6 +5,6 @@
   },
   "Directories": {
     "child": ["cr_title2"],
-    "cr_title": ["cr_title"]
+    "dr_name": ["cr_title"]
   }
 }
