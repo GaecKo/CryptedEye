@@ -93,7 +93,7 @@ class Controller {
       writePasswordsToJson();
       writeNotesToJson();
     }
-
+    print(notes_data.toString());
     print("CLOSING APP");
   }
 
@@ -135,7 +135,7 @@ class Controller {
     rwm
         .create_file("$VaultName.CryptedEye/notes/notes.json")
         .createSync();
-    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {"Notes": {}, "Directories": {"child": []}});
+    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {"Directories": {"child": []}, "Notes": {}});
 
     // 6. load app
     await loadApp(AP, VaultName, fromSignup: true);
@@ -331,7 +331,16 @@ class Controller {
     // actualize note in its directory
     notes_data["Directories"][cr_dir_name].remove(old_cr_note);
     notes_data["Directories"][cr_dir_name].add(new_cr_note);
+  }
 
+  void createNewFolder(String cr_name) {
+    notes_data["Directories"][cr_name] = [];
+  }
+
+  void updateFolderName(String old_cr_name, new_cr_name) {
+    List<int> cor_notes = notes_data["Directories"][old_cr_name];
+    notes_data["Directories"].remove(old_cr_name);
+    notes_data["Directories"][new_cr_name] = [cor_notes];
   }
 
 }
