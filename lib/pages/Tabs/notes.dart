@@ -22,6 +22,7 @@ class _NotesPageState extends State<NotesPage> {
     Map<String, dynamic> notesContent = notesData["Notes"];
     Map<String, dynamic> mainContent = notesData["Directories"];
 
+    //when pressing on a folder, the folder's name is passed to the OpenDir widget
     mainContent.forEach((key, value) {
       if (key != "child") {
 
@@ -171,28 +172,42 @@ class _FolderState extends State<Folder> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: ListTile(
-          title: Text(
-            widget.ctr.crypter.decrypt(widget.name),
-            style: const TextStyle(fontWeight: FontWeight.bold),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushReplacementNamed(
+            context,
+            '/OpenDir',
+            arguments: {
+              'ctr': widget.ctr,
+              'dirName': widget.ctr.crypter.decrypt(widget.name),
+            },
+          );
+           
+        },
+        child: Container(
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          leading: const Icon(
-            Icons.folder,
-            size: 36.0,
-            color: Colors.blue,
+          child: ListTile(
+            title: Text(
+              widget.ctr.crypter.decrypt(widget.name),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            leading: const Icon(
+              Icons.folder,
+              size: 36.0,
+              color: Colors.blue,
+            ),
           ),
         ),
       ),

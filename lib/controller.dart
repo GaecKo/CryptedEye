@@ -32,6 +32,7 @@ class Controller {
 
   // variable for notes management
   late Map<String, dynamic> notes_data = {};
+  late String currentDir = "None";
 
   Controller._create();
 

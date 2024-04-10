@@ -8,6 +8,7 @@ import 'controller.dart';
 import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/signup.dart';
+import 'pages/Tabs/openDir.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +48,8 @@ class CryptedEye extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(ctr: ctr),
         '/HomePage': (context) => HomePage(ctr: ctr),
-        '/SignUp': (context) => SignUpPage(ctr: ctr)
+        '/SignUp': (context) => SignUpPage(ctr: ctr),
+        '/OpenDir': (context) => OpenDir(ctr: ctr, dirName: ctr.currentDir),
       },
       home: firstPage,
       debugShowCheckedModeBanner: false,
