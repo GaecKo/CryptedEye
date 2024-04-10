@@ -31,7 +31,7 @@ class Controller {
   late bool displaypassword = false;
 
   // variable for notes management
-  late Map<String, dynamic> notes_data;
+  late Map<String, dynamic> notes_data = {};
 
   Controller._create();
 
@@ -137,7 +137,7 @@ class Controller {
     rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {"Notes": {}, "Directories": {}});
 
     // 6. load app
-    loadApp(AP, VaultName, fromSignup: true);
+    await loadApp(AP, VaultName, fromSignup: true);
   }
 
   bool isStartup() {
