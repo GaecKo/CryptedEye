@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../controller.dart';
 
+//TODO : Make something so when we add a note it goes in the current directory
+//TODO : Put a return button to left the directory page
+//TODO : remove que button to create a folder and all the code related to it
+
 class OpenDir extends StatefulWidget {
   final Controller ctr;
   final String dirName;
@@ -26,7 +30,7 @@ class _OpenDirState extends State<OpenDir> {
     Map<String, dynamic> mainContent = notesData["Directories"];
 
     mainContent.forEach((key, value) {
-      
+      //TODO: Decrypt key
       //print(ctr.crypter.decrypt(key));
       //print("dirTitle: $dirTitle");
         if (key == dirName) {
