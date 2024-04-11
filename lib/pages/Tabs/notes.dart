@@ -174,7 +174,10 @@ class _FolderState extends State<Folder> {
       child: GestureDetector(
         onTap: () {
           // need to change the current directory in the controller
+          // TODO: no need to change anything in controller, everything done in front end here
           widget.ctr.currentDir = widget.ctr.crypter.decrypt(widget.name);
+          // TODO: check line 74: use MaterialPageRoute
+          // FolderScreen should take 3 args: crypted name (= widget.name), childs, and ctr
           Navigator.pushReplacementNamed(
             context,
             '/OpenDir',
