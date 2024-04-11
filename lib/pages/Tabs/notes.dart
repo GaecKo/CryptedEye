@@ -22,7 +22,6 @@ class _NotesPageState extends State<NotesPage> {
     Map<String, dynamic> notesContent = notesData["Notes"];
     Map<String, dynamic> mainContent = notesData["Directories"];
 
-    //when pressing on a folder, the folder's name is passed to the OpenDir widget
     mainContent.forEach((key, value) {
       if (key != "child") {
 
@@ -174,6 +173,8 @@ class _FolderState extends State<Folder> {
       padding: const EdgeInsets.all(16.0),
       child: GestureDetector(
         onTap: () {
+          // need to change the current directory in the controller
+          widget.ctr.currentDir = widget.ctr.crypter.decrypt(widget.name);
           Navigator.pushReplacementNamed(
             context,
             '/OpenDir',
