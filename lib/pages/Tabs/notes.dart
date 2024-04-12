@@ -1,3 +1,4 @@
+import 'package:CryptedEye/pages/Tabs/openDir.dart';
 import 'package:flutter/material.dart';
 import '../../controller.dart';
 
@@ -26,11 +27,11 @@ class _NotesPageState extends State<NotesPage> {
       if (key != "child") {
 
         String dirTitle = key;
-        List<dynamic> childNodes = value;
+        List<dynamic> childNotes = value;
         List<Note> childNotesWidget = [];
 
-        for (int i = 0; i < childNodes.length; i++) {
-          String title = childNodes[i];
+        for (int i = 0; i < childNotes.length; i++) {
+          String title = childNotes[i];
           String content = notesContent[title];
           childNotesWidget.add(Note(
             cryptedTitle: title,
@@ -40,7 +41,7 @@ class _NotesPageState extends State<NotesPage> {
         }
         contents.add(Folder(
           name: dirTitle,
-          content: childNotesWidget,
+          content: childNotes,
           ctr: ctr,
         ));
       } 
@@ -153,7 +154,7 @@ class _NoteState extends State<Note> {
 
 class Folder extends StatefulWidget {
   final String name;
-  final List<Note> content;
+  final List<dynamic> content;
   final Controller ctr;
 
   Folder({
@@ -173,18 +174,17 @@ class _FolderState extends State<Folder> {
       padding: const EdgeInsets.all(16.0),
       child: GestureDetector(
         onTap: () {
-          // need to change the current directory in the controller
-          // TODO: no need to change anything in controller, everything done in front end here
-          widget.ctr.currentDir = widget.ctr.crypter.decrypt(widget.name);
-          // TODO: check line 74: use MaterialPageRoute
-          // FolderScreen should take 3 args: crypted name (= widget.name), childs, and ctr
-          Navigator.pushReplacementNamed(
+
+          Navigator.push(
             context,
-            '/OpenDir',
-            arguments: {
-              'ctr': widget.ctr,
-              'dirName': widget.ctr.crypter.decrypt(widget.name),
-            },
+            MaterialPageRoute(
+              builder: (_) => OpenDir(
+                ctr: widget.ctr,
+                dirName: widget.name,
+                childs: widget.content,
+
+              ),
+            ),
           );
            
         },

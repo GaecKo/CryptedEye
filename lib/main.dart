@@ -49,7 +49,7 @@ class CryptedEye extends StatelessWidget {
         '/login': (context) => LoginPage(ctr: ctr),
         '/HomePage': (context) => HomePage(ctr: ctr),
         '/SignUp': (context) => SignUpPage(ctr: ctr),
-        '/OpenDir': (context) => OpenDir(ctr: ctr, dirName: ctr.currentDir),
+        //'/OpenDir': (context) => OpenDir(ctr: ctr, dirName: ctr.currentDir),
       },
       home: firstPage,
       debugShowCheckedModeBanner: false,

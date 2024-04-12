@@ -8,8 +8,9 @@ import '../../controller.dart';
 class OpenDir extends StatefulWidget {
   final Controller ctr;
   final String dirName;
+  final List<dynamic> childs;
 
-  OpenDir({Key? key, required this.ctr, required this.dirName}) : super(key: key);
+  OpenDir({Key? key, required this.ctr, required this.dirName, required this.childs}) : super(key: key);
 
   @override
   _OpenDirState createState() => _OpenDirState();
