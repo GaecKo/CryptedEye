@@ -294,6 +294,7 @@ class _NoteScreenState extends State<NoteScreen> {
           widget.ctr.saveNewNote(
             widget.ctr.crypter.encrypt(title),
             widget.ctr.crypter.encrypt(content),
+            "child",
           );
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(

@@ -57,7 +57,7 @@ class _OpenDirState extends State<OpenDir> {
 
     print("poulet");
     print("dirName: $dirName");
-    print("mainContent: $mainContent");
+    print("childs: ${widget.childs}");
     
     
   }
@@ -66,7 +66,7 @@ class _OpenDirState extends State<OpenDir> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(dirName),
+        title: Text(widget.ctr.crypter.decrypt(dirName)),
       ),
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Column(
@@ -84,6 +84,7 @@ class _OpenDirState extends State<OpenDir> {
                         ctr: ctr,
                         contents: contents,
                         rebuildParent: rebuildNotesPage,
+                        dirName: dirName,
                       ),
                     ),
                   );
@@ -181,18 +182,6 @@ class _FolderState extends State<Folder> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GestureDetector(
-        onTap: () {
-          widget.ctr.currentDir = widget.ctr.crypter.decrypt(widget.name);
-          Navigator.pushReplacementNamed(
-            context,
-            '/OpenDir',
-            arguments: {
-              'ctr': widget.ctr,
-              'dirName': widget.ctr.crypter.decrypt(widget.name),
-            },
-          );
-           
-        },
         child: Container(
 
           decoration: BoxDecoration(
@@ -228,11 +217,14 @@ class NoteScreen extends StatefulWidget {
   final Controller ctr;
   final List<Widget> contents;
   final VoidCallback rebuildParent;
+  final String dirName;
+
 
   NoteScreen({
     required this.ctr,
     required this.contents,
     required this.rebuildParent,
+    required this.dirName,
   });
 
   @override
@@ -299,6 +291,7 @@ class _NoteScreenState extends State<NoteScreen> {
           widget.ctr.saveNewNote(
             widget.ctr.crypter.encrypt(title),
             widget.ctr.crypter.encrypt(content),
+            widget.dirName,
           );
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(

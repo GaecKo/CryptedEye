@@ -314,7 +314,7 @@ class Controller {
 
   }
 
-  void saveNewNote(String cr_note_title, String cr_content, {String cr_dir_name = "child"}) {
+  void saveNewNote(String cr_note_title, String cr_content, String cr_dir_name) {
     // {Notes: { "cr_title": "cr_content", ...}, Directories: ...}
     notes_data["Notes"][cr_note_title] = cr_content;
 
