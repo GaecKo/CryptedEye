@@ -31,7 +31,7 @@ class _OpenDirState extends State<OpenDir> {
     mainContent.forEach((key, value) {
       //TODO: Decrypt key
         if (key == dirName) {
-          print("ok");
+          print("Found the directory!");
           String dirTitle = key;
           List<dynamic> childNodes = value;
 
@@ -49,7 +49,6 @@ class _OpenDirState extends State<OpenDir> {
     print("poulet");
     print("dirName: $dirName");
     print("childs: ${widget.childs}");
-    
     
   }
 
