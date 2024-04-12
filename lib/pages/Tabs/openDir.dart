@@ -32,18 +32,15 @@ class _OpenDirState extends State<OpenDir> {
 
     mainContent.forEach((key, value) {
       //TODO: Decrypt key
-      //print(ctr.crypter.decrypt(key));
-      //print("dirTitle: $dirTitle");
         if (key == dirName) {
-          
+          print("ok");
           String dirTitle = key;
           List<dynamic> childNodes = value;
-          List<Note> childNotesWidget = [];
 
           for (int i = 0; i < childNodes.length; i++) {
             String title = childNodes[i];
             String content = notesContent[title];
-            childNotesWidget.add(Note(
+            contents.add(Note(
               cryptedTitle: title,
               cryptedContent: content,
               ctr: ctr,
@@ -51,6 +48,18 @@ class _OpenDirState extends State<OpenDir> {
           }
         }
       });
+    // List<dynamic> mainChildNotes = mainContent["child"];
+    // for (int i = 0; i < mainChildNotes.length; i++) {
+    //   String title = mainChildNotes[i];
+    //   String content = notesContent[title];
+    //   contents.add(Note(
+    //     cryptedTitle: title,
+    //     cryptedContent: content,
+    //     ctr: ctr,
+    //   ));
+    // }
+
+      
   
 
 
@@ -291,7 +300,7 @@ class _NoteScreenState extends State<NoteScreen> {
           widget.ctr.saveNewNote(
             widget.ctr.crypter.encrypt(title),
             widget.ctr.crypter.encrypt(content),
-            widget.dirName,
+            cr_dir_name:  widget.dirName,
           );
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
