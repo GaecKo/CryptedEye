@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../controller.dart';
 
-//TODO : Make something so when we add a note it goes in the current directory
-//TODO : Put a return button to left the directory page
 //TODO : remove que button to create a folder and all the code related to it
 
 class OpenDir extends StatefulWidget {
@@ -48,22 +46,6 @@ class _OpenDirState extends State<OpenDir> {
           }
         }
       });
-    // List<dynamic> mainChildNotes = mainContent["child"];
-    // for (int i = 0; i < mainChildNotes.length; i++) {
-    //   String title = mainChildNotes[i];
-    //   String content = notesContent[title];
-    //   contents.add(Note(
-    //     cryptedTitle: title,
-    //     cryptedContent: content,
-    //     ctr: ctr,
-    //   ));
-    // }
-
-      
-  
-
-
-
     print("poulet");
     print("dirName: $dirName");
     print("childs: ${widget.childs}");
