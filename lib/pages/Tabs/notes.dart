@@ -1,5 +1,6 @@
 import 'package:CryptedEye/pages/Tabs/openDir.dart';
 import 'package:flutter/material.dart';
+
 import '../../controller.dart';
 
 class NotesPage extends StatefulWidget {
@@ -25,7 +26,6 @@ class _NotesPageState extends State<NotesPage> {
 
     mainContent.forEach((key, value) {
       if (key != "child") {
-
         String dirTitle = key;
         List<dynamic> childNotes = value;
         List<Note> childNotesWidget = [];
@@ -44,7 +44,7 @@ class _NotesPageState extends State<NotesPage> {
           content: childNotes,
           ctr: ctr,
         ));
-      } 
+      }
     });
     List<dynamic> mainChildNotes = mainContent["child"];
     for (int i = 0; i < mainChildNotes.length; i++) {
@@ -64,7 +64,9 @@ class _NotesPageState extends State<NotesPage> {
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Column(
         children: [
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -94,7 +96,10 @@ class _NotesPageState extends State<NotesPage> {
                     ),
                   );
                 },
-                icon: const Icon(Icons.create_new_folder, color: Colors.blue,),
+                icon: const Icon(
+                  Icons.create_new_folder,
+                  color: Colors.blue,
+                ),
                 label: const Text("Create Folder"),
               ),
             ],
@@ -174,7 +179,6 @@ class _FolderState extends State<Folder> {
       padding: const EdgeInsets.all(16.0),
       child: GestureDetector(
         onTap: () {
-
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -182,14 +186,11 @@ class _FolderState extends State<Folder> {
                 ctr: widget.ctr,
                 dirName: widget.name,
                 childs: widget.content,
-
               ),
             ),
           );
-           
         },
         child: Container(
-
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -283,17 +284,20 @@ class _NoteScreenState extends State<NoteScreen> {
         onPressed: () {
           String title = _titleController.text;
           String content = _contentController.text;
+          String cr_title = widget.ctr.crypter.encrypt(title);
+          String cr_content = widget.ctr.crypter.encrypt(content);
+
           widget.contents.add(
             Note(
-              cryptedTitle: widget.ctr.crypter.encrypt(title),
-              cryptedContent: widget.ctr.crypter.encrypt(content),
+              cryptedTitle: cr_title,
+              cryptedContent: cr_content,
               ctr: widget.ctr,
             ),
           );
           widget.rebuildParent();
           widget.ctr.saveNewNote(
-            widget.ctr.crypter.encrypt(title),
-            widget.ctr.crypter.encrypt(content),
+            cr_title,
+            cr_content,
           );
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -338,16 +342,17 @@ class _FolderCreationState extends State<FolderCreation> {
     bool _showError = false;
 
     void _addFolder(String name) {
+      String cr_name = widget.ctr.crypter.encrypt(name);
       widget.contents.insert(
         0,
         Folder(
-          name: widget.ctr.crypter.encrypt(name),
+          name: cr_name,
           content: [],
           ctr: widget.ctr,
         ),
       );
       widget.rebuildParent();
-      widget.ctr.createNewFolder(widget.ctr.crypter.encrypt(name));
+      widget.ctr.createNewFolder(cr_name);
     }
 
     return AlertDialog(
@@ -359,7 +364,9 @@ class _FolderCreationState extends State<FolderCreation> {
               controller: _folderNameController,
               decoration: InputDecoration(
                 labelText: 'Folder Name',
-                errorText: _showError && _folderNameController.text.isEmpty ? 'Please enter a folder name' : null,
+                errorText: _showError && _folderNameController.text.isEmpty
+                    ? 'Please enter a folder name'
+                    : null,
               ),
             ),
           ],

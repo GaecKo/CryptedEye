@@ -110,6 +110,7 @@ class Controller {
 
     // apply policy settings
     sCtx.applyPolicySettings();
+    sCtx.applyPolicySettings();
 
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");
@@ -132,10 +133,11 @@ class Controller {
     rwm.writeJSONData("$VaultName.CryptedEye/passwords/passwords.json", {});
 
     // 5. create notes json file
-    rwm
-        .create_file("$VaultName.CryptedEye/notes/notes.json")
-        .createSync();
-    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {"Directories": {"child": []}, "Notes": {}});
+    rwm.create_file("$VaultName.CryptedEye/notes/notes.json").createSync();
+    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {
+      "Directories": {"child": []},
+      "Notes": {}
+    });
 
     // 6. load app
     await loadApp(AP, VaultName, fromSignup: true);
@@ -308,22 +310,25 @@ class Controller {
   }
 
   writeNotesToJson() {
-      // Write notes_data in password.json
-      // Call in closeApp()
-      rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", notes_data);
-
+    // Write notes_data in password.json
+    // Call in closeApp()
+    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", notes_data);
   }
 
-  void saveNewNote(String cr_note_title, String cr_content, {String cr_dir_name = "child"}) {
+  void saveNewNote(String cr_note_title, String cr_content,
+      {String cr_dir_name = "child"}) {
+    print("Dir name: $cr_dir_name, uncrypted: ${crypter.decrypt(cr_dir_name)}");
     // {Notes: { "cr_title": "cr_content", ...}, Directories: ...}
     notes_data["Notes"][cr_note_title] = cr_content;
-
+    print(
+        "Dirs: ${notes_data["Directories"]}, decryped: ${crypter.decrypt("a6K+2+8fJDIqOtHyZHjWVQ==:sInxvcH81sxEPy3wK4mE8w==")} ");
     // {Notes: ..., Directories: "child": ["cr_title", ...], "cr_dir_name": [...], ...}
     notes_data["Directories"][cr_dir_name].add(cr_note_title);
   }
 
-  void updateNewNote(String old_cr_note, String new_cr_note, String new_cr_content, {String cr_dir_name = "child"}){
-
+  void updateNewNote(
+      String old_cr_note, String new_cr_note, String new_cr_content,
+      {String cr_dir_name = "child"}) {
     // update note
     notes_data["Notes"].remove(old_cr_note);
     notes_data["Notes"][new_cr_note] = new_cr_content;
@@ -342,7 +347,6 @@ class Controller {
     notes_data["Directories"].remove(old_cr_name);
     notes_data["Directories"][new_cr_name] = [cor_notes];
   }
-
 }
 
 void main() {}
