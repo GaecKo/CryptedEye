@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart';
 
 // import 'package:android_flutter_wifi/android_flutter_wifi.dart';
 // import 'package:bluetooth_state/bluetooth_state.dart';
@@ -16,9 +17,25 @@ class securityContext {
   
   securityContext._create();
 
+  static late var platform;
+
   static Future<securityContext> create() async {
     securityContext secCtxt = securityContext._create();
+    platform = const MethodChannel('com.example.flutter.cryptedeye.cryptedeye/myCustomChannel');
+    print("Calling java code...");
+    secCtxt.TestChannel();
     return secCtxt;
+  }
+
+  void TestChannel() async {
+    String response = "";
+    try {
+      final String result = await  platform.invokeMethod('customJavaMethod'); // add {"arg1": "value", ...} to add parameters
+      response = result;
+    } on PlatformException catch (e) {
+      response = "Failed to Invoke: '${e.message}'.";
+    }
+    print(response);
   }
   
   Future<Map<String, dynamic>> initSettings(bool secureContext, String localPath) async {
