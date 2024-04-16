@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'API/crypter.dart';
 import 'API/img.dart';
 import 'API/rwm.dart';
-import 'API/securityContext.dart';
 
 // TODO: tar / untar will only be done for sharing purposes
 // no untar / tar operation will be done otherwise, and full file structure will always be kept and updated
@@ -18,12 +17,10 @@ class Controller {
   late Crypter crypter;
   late IMG img;
   late RWM rwm;
-  late securityContext sCtx;
 
   late String localPath;
   late String VaultName;
   late Map<String, dynamic> settings;
-  late bool secureContext;
   late bool initialized = false;
 
   // variable for password management
@@ -49,19 +46,11 @@ class Controller {
 
     rwm = await RWM.create();
     localPath = rwm.localPath;
-
-    sCtx = await securityContext.create();
   }
 
   Future<void> loadApp(String AP, String VaultName,
       {bool fromSignup = false}) async {
     this.VaultName = VaultName;
-
-    // 1. create secure context if not from signup (otherwise its done in initApp)
-    if (!fromSignup) {
-      await sCtx.loadSettings(localPath);
-      sCtx.applyPolicySettings();
-    }
 
     // get salt path
     String saltPath = "$localPath/$VaultName.CryptedEye/app/salt.key";
@@ -82,35 +71,17 @@ class Controller {
   void closeApp() {
     print("started closing");
     if (initialized) {
-      // put wifi / bluetooth back to onLaunch settings:
-      sCtx.applyOnLaunchSettings();
-      // save settings.json
-      sCtx.writeSettingsToFile(localPath);
       // reset display password for password pages
-
       restDisplayPassword();
       // save password in json
       writePasswordsToJson();
       writeNotesToJson();
     }
-    print(notes_data.toString());
     print("CLOSING APP");
   }
 
   Future<void> initApp(String AP, String VaultName, bool secureContext) async {
     // Init and then load App
-
-    // 1. create settings.json file with secureContextSetting
-    rwm.create_file("settings.json").createSync();
-    this.secureContext = secureContext;
-
-    Map<String, dynamic> initSettings =
-        await sCtx.initSettings(secureContext, localPath);
-    rwm.writeJSONData("settings.json", initSettings);
-
-    // apply policy settings
-    sCtx.applyPolicySettings();
-    sCtx.applyPolicySettings();
 
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");
