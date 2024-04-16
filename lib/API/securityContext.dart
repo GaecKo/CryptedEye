@@ -1,27 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/services.dart';
 
-// import 'package:android_flutter_wifi/android_flutter_wifi.dart';
-// import 'package:bluetooth_state/bluetooth_state.dart';
-
-// import 'package:location/location.dart';
-// import 'package:airplane_mode_checker/airplane_mode_checker.dart';
+// This code includes the security context, not worked on anymore on the main branch
 
 // TODO: create custom channel? gonna be really hard
 
 class securityContext {
-  
   late Map<String, dynamic> settings;
-  
+
   securityContext._create();
 
   static late var platform;
 
   static Future<securityContext> create() async {
     securityContext secCtxt = securityContext._create();
-    platform = const MethodChannel('com.example.flutter.cryptedeye.cryptedeye/myCustomChannel');
+    platform = const MethodChannel(
+        'com.example.flutter.cryptedeye.cryptedeye/myCustomChannel');
     print("Calling java code...");
     secCtxt.TestChannel();
     return secCtxt;
@@ -30,53 +27,60 @@ class securityContext {
   void TestChannel() async {
     String response = "";
     try {
-      final String result = await  platform.invokeMethod('customJavaMethod'); // add {"arg1": "value", ...} to add parameters
+      final String result = await platform.invokeMethod(
+          'customJavaMethod'); // add {"arg1": "value", ...} to add parameters
       response = result;
     } on PlatformException catch (e) {
       response = "Failed to Invoke: '${e.message}'.";
     }
     print(response);
   }
-  
-  Future<Map<String, dynamic>> initSettings(bool secureContext, String localPath) async {
+
+  Future<Map<String, dynamic>> initSettings(
+      bool secureContext, String localPath) async {
     // TODO: add many things: data + aeroplane mode + location
     settings = {
       "secureContext": {
         "wifi": {
           "onLaunch": await getWifiStatus(),
-          "policy": !secureContext // set to False (Wifi disabled) if secure context is on, otherwise True (nothing to do)
+          "policy":
+              !secureContext // set to False (Wifi disabled) if secure context is on, otherwise True (nothing to do)
         },
         "bluetooth": {
           "onLaunch": await getBluetoothStatus(),
-          "policy": !secureContext // set to False (Wifi disabled) if secure context is on, otherwise True (nothing to do)
+          "policy":
+              !secureContext // set to False (Wifi disabled) if secure context is on, otherwise True (nothing to do)
         },
       }
     };
     // return first time for init, so we can write it directly from controller (only for the first time)
     return settings;
   }
-  
+
   void updateSettings(String service, bool newValue) {
     settings["secureContext"][service]["policy"] = newValue;
   }
-  
+
   Future<void> loadSettings(String localPath) async {
     settings = jsonDecode(readSettingsFile(localPath));
-    
+
     // update onLaunch val with current
     settings["secureContext"]["wifi"]["onLaunch"] = await getWifiStatus();
-    settings["secureContext"]["bluetooth"]["onLaunch"] = await getBluetoothStatus();
+    settings["secureContext"]["bluetooth"]["onLaunch"] =
+        await getBluetoothStatus();
   }
-  
+
   void applyPolicySettings() {
-    if (settings["secureContext"]["wifi"]["policy"] == false) { // if false: put wifi to false
+    if (settings["secureContext"]["wifi"]["policy"] == false) {
+      // if false: put wifi to false
       setWifiStatus(false);
     }
-    if (settings["secureContext"]["bluetooth"]["policy"] == false) { // if false: put bluetooth to false
+    if (settings["secureContext"]["bluetooth"]["policy"] == false) {
+      // if false: put bluetooth to false
       setBluetoothStatus(false);
     }
   }
-  
+
   void applyOnLaunchSettings() {
     setWifiStatus(settings["secureContext"]["wifi"]["onLaunch"]);
     setBluetoothStatus(settings["secureContext"]["bluetooth"]["onLaunch"]);
@@ -97,7 +101,6 @@ class securityContext {
     sett.writeAsStringSync(jsonEncode(updatedSettings));
   }
 
-
   // TODO: below functions are nightmares. We should create a specific channel that takes care of all of that,
   // TODO: and so go through Java code and all. Currently, it does nothing.
   Future<bool> getBluetoothStatus() async {
@@ -117,9 +120,4 @@ class securityContext {
   Future<void> setWifiStatus(bool status) async {
     // status ? await AndroidFlutterWifi.enableWifi(): await AndroidFlutterWifi.disableWifi();
   }
-
 }
-
-
-
-
