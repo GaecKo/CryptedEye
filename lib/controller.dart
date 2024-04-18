@@ -288,11 +288,8 @@ class Controller {
 
   void saveNewNote(String cr_note_title, String cr_content,
       {String cr_dir_name = "child"}) {
-    print("Dir name: $cr_dir_name, uncrypted: ${crypter.decrypt(cr_dir_name)}");
     // {Notes: { "cr_title": "cr_content", ...}, Directories: ...}
     notes_data["Notes"][cr_note_title] = cr_content;
-    print(
-        "Dirs: ${notes_data["Directories"]}, decryped: ${crypter.decrypt("a6K+2+8fJDIqOtHyZHjWVQ==:sInxvcH81sxEPy3wK4mE8w==")} ");
     // {Notes: ..., Directories: "child": ["cr_title", ...], "cr_dir_name": [...], ...}
     notes_data["Directories"][cr_dir_name].add(cr_note_title);
   }
