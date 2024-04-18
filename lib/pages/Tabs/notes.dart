@@ -37,6 +37,8 @@ class _NotesPageState extends State<NotesPage> {
             cryptedTitle: title,
             cryptedContent: content,
             ctr: ctr,
+            rebuildParent: rebuildNotesPage,
+            contents: contents,
           ));
         }
         contents.add(Folder(
@@ -54,6 +56,8 @@ class _NotesPageState extends State<NotesPage> {
         cryptedTitle: title,
         cryptedContent: content,
         ctr: ctr,
+        rebuildParent: rebuildNotesPage,
+        contents: contents,
       ));
     }
   }
@@ -128,12 +132,15 @@ class Note extends StatefulWidget {
   final Controller ctr;
   final String cryptedTitle;
   final String cryptedContent;
+  List<Widget> contents;
+  final VoidCallback rebuildParent;
 
-  Note({
-    required this.cryptedTitle,
-    required this.cryptedContent,
-    required this.ctr,
-  });
+  Note(
+      {required this.cryptedTitle,
+      required this.cryptedContent,
+      required this.ctr,
+      required this.contents,
+      required this.rebuildParent});
 
   @override
   State<Note> createState() => _NoteState();
@@ -151,7 +158,21 @@ class _NoteState extends State<Note> {
         ),
         subtitle: Text(
           widget.ctr.crypter.decrypt(widget.cryptedContent),
+          maxLines: 3,
         ),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NoteScreen(
+                  ctr: widget.ctr,
+                  contents: widget.contents,
+                  rebuildParent: widget.rebuildParent,
+                  init_cr_content: widget.cryptedContent,
+                  init_cr_title: widget.cryptedTitle,
+                ),
+              ));
+        },
       ),
     );
   }
@@ -224,8 +245,13 @@ class NoteScreen extends StatefulWidget {
   final Controller ctr;
   final List<Widget> contents;
   final VoidCallback rebuildParent;
+  String? init_cr_title;
+  String? init_cr_content;
 
   NoteScreen({
+    super.key,
+    this.init_cr_title,
+    this.init_cr_content,
     required this.ctr,
     required this.contents,
     required this.rebuildParent,
@@ -236,7 +262,8 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
-  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _titleController =
+      TextEditingController(); // TODO: put text here!
   final TextEditingController _contentController = TextEditingController();
 
   @override
@@ -256,9 +283,12 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                hintText: "Enter title...",
-              ),
+              decoration: InputDecoration(
+                  hintText: "Enter title...",
+                  labelText: widget.init_cr_title == null
+                      ? widget.init_cr_title
+                      : widget.ctr.crypter
+                          .decrypt(widget.init_cr_title as String)),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -270,10 +300,13 @@ class _NoteScreenState extends State<NoteScreen> {
                 controller: _contentController,
                 maxLines: null,
                 expands: true,
-                decoration: const InputDecoration(
-                  hintText: "Enter content...",
-                  border: OutlineInputBorder(),
-                ),
+                decoration: InputDecoration(
+                    hintText: "Enter content...",
+                    labelText: widget.init_cr_content == null
+                        ? widget.init_cr_content
+                        : widget.ctr.crypter
+                            .decrypt(widget.init_cr_content as String),
+                    border: OutlineInputBorder()),
               ),
             ),
           ],
@@ -283,6 +316,7 @@ class _NoteScreenState extends State<NoteScreen> {
         child: const Icon(Icons.save),
         onPressed: () {
           String title = _titleController.text;
+          print("Title: $title");
           String content = _contentController.text;
           String cr_title = widget.ctr.crypter.encrypt(title);
           String cr_content = widget.ctr.crypter.encrypt(content);
@@ -292,13 +326,21 @@ class _NoteScreenState extends State<NoteScreen> {
               cryptedTitle: cr_title,
               cryptedContent: cr_content,
               ctr: widget.ctr,
+              contents: widget.contents,
+              rebuildParent: widget.rebuildParent,
             ),
           );
           widget.rebuildParent();
-          widget.ctr.saveNewNote(
-            cr_title,
-            cr_content,
-          );
+          if (widget.init_cr_title != null) {
+            widget.ctr.updateNewNote(
+                widget.init_cr_title as String, cr_title, cr_content);
+          } else {
+            widget.ctr.saveNewNote(
+              cr_title,
+              cr_content,
+            );
+          }
+
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
