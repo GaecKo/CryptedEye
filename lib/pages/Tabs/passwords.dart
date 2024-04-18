@@ -12,9 +12,14 @@ class PasswordManagerPage extends StatefulWidget {
 
 class _PasswordManagerPageState extends State<PasswordManagerPage> {
 
+  void rebuildParent() {
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    widget.ctr.updateDisplayPassword();
     return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Column(
@@ -36,7 +41,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  Widget add = AddPasswordItem(ctr: widget.ctr);
+                  Widget add = AddPasswordItem(ctr: widget.ctr, rebuildParent: rebuildParent,);
                   return  add; // Pass the controller to AddPasswordItem
                 },
               );
@@ -44,8 +49,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
             child: const Text('Add New Password'),
           ),
           Expanded(
-            child: widget.ctr.displaypassword
-                ? ListView.builder(
+            child: ListView.builder(
                     itemCount: widget.ctr.password_data.length,
                     itemBuilder: (BuildContext context, int index) {
                       String website = widget.ctr.password_data.keys.elementAt(index);
@@ -76,19 +80,9 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
 
                     },
                   )
-                : const SizedBox(), // Placeholder for password list
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            widget.ctr.updateDisplayPassword();
-          });
-        },
-        child: const Icon(Icons.refresh),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -102,6 +96,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
           initialWebsite: website,
           initialUsername: username,
           initialPassword: password,
+          rebuildParent: rebuildParent,
         );
       },
     );
@@ -184,8 +179,9 @@ class _PasswordItemState extends State<PasswordItem> {
 
 class AddPasswordItem extends StatefulWidget {
   final Controller ctr;
+  final VoidCallback rebuildParent;
 
-  const AddPasswordItem({super.key, required this.ctr});
+  const AddPasswordItem({super.key, required this.ctr, required this.rebuildParent});
 
   @override
   _AddPasswordItemState createState() => _AddPasswordItemState(ctr: ctr);
@@ -193,6 +189,7 @@ class AddPasswordItem extends StatefulWidget {
 
 class _AddPasswordItemState extends State<AddPasswordItem> {
   final Controller ctr;
+
 
   TextEditingController websiteController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -283,9 +280,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                 passwordController.text.isNotEmpty) {
               // Controller fonction
               ctr.addPasswordData(websiteController.text, usernameController.text, passwordController.text);
-              Navigator.of(super.context).setState(() {
-                ctr.updateDisplayPassword();
-              });
+              widget.rebuildParent();
               Navigator.of(context).pop();
             }
           },
@@ -301,6 +296,7 @@ class EditPasswordItem extends StatefulWidget {
   final String initialWebsite;
   final String initialUsername;
   final String initialPassword;
+  final VoidCallback rebuildParent;
 
   const EditPasswordItem({
     super.key,
@@ -308,6 +304,7 @@ class EditPasswordItem extends StatefulWidget {
     required this.initialWebsite,
     required this.initialUsername,
     required this.initialPassword,
+    required this.rebuildParent
   });
 
   @override
@@ -408,6 +405,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
                   usernameController.text,
                   passwordController.text
               );
+              widget.rebuildParent();
               Navigator.of(context).pop();
             }
           },

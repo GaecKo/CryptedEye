@@ -25,7 +25,6 @@ class Controller {
 
   // variable for password management
   late Map<String, dynamic> password_data = {};
-  late bool displaypassword = false;
 
   // variable for notes management
   late Map<String, dynamic> notes_data = {};
@@ -71,8 +70,6 @@ class Controller {
   void closeApp() {
     print("started closing");
     if (initialized) {
-      // reset display password for password pages
-      restDisplayPassword();
       // save password in json
       writePasswordsToJson();
       writeNotesToJson();
@@ -217,14 +214,6 @@ class Controller {
         File("$localPath/$VaultName.CryptedEye/passwords/passwords.json");
     file.writeAsStringSync('{}');
     password_data = {};
-  }
-
-  void restDisplayPassword() {
-    displaypassword = false;
-  }
-
-  void updateDisplayPassword() {
-    displaypassword = true;
   }
 
   String generateRandomPassword() {
