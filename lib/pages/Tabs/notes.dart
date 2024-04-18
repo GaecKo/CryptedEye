@@ -268,6 +268,12 @@ class _NoteScreenState extends State<NoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _titleController.text = (widget.init_cr_title == null
+        ? widget.init_cr_title
+        : widget.ctr.crypter.decrypt(widget.init_cr_title as String))!;
+    _contentController.text = (widget.init_cr_content == null
+        ? widget.init_cr_content
+        : widget.ctr.crypter.decrypt(widget.init_cr_content as String))!;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create New Note"),
@@ -300,13 +306,8 @@ class _NoteScreenState extends State<NoteScreen> {
                 controller: _contentController,
                 maxLines: null,
                 expands: true,
-                decoration: InputDecoration(
-                    hintText: "Enter content...",
-                    labelText: widget.init_cr_content == null
-                        ? widget.init_cr_content
-                        : widget.ctr.crypter
-                            .decrypt(widget.init_cr_content as String),
-                    border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                    hintText: "Enter content...", border: OutlineInputBorder()),
               ),
             ),
           ],
@@ -332,8 +333,17 @@ class _NoteScreenState extends State<NoteScreen> {
           );
           widget.rebuildParent();
           if (widget.init_cr_title != null) {
+            // update note in backend
             widget.ctr.updateNewNote(
                 widget.init_cr_title as String, cr_title, cr_content);
+
+            // remove note from frontend
+            widget.contents.removeWhere((content) {
+              if (content is Note) {
+                return content.cryptedTitle == widget.init_cr_title;
+              }
+              return false;
+            });
           } else {
             widget.ctr.saveNewNote(
               cr_title,

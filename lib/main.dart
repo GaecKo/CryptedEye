@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:restart_app/restart_app.dart';
 
@@ -8,7 +7,6 @@ import 'controller.dart';
 import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/signup.dart';
-import 'pages/Tabs/openDir.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,9 +67,7 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
       ctr.closeApp();
       // Perform cleanup when the app is paused (e.g., closed).
       // Call your cleanup functions here.
-      if (!kDebugMode) {
-        Restart.restartApp();
-      }
+      Restart.restartApp();
     } else if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
       ctr.closeApp();
