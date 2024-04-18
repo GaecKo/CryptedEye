@@ -295,6 +295,24 @@ class Controller {
     notes_data["Directories"][cr_dir_name].add(new_cr_note);
   }
 
+  void deleteNote(String cr_title) {
+    notes_data["Notes"].remove(cr_title);
+    notes_data["Directories"].forEach((dir, child) {
+      if (child.contains(cr_title)) {
+        notes_data["Directories"][dir].remove(cr_title);
+        print("deleted note successfully");
+      }
+    });
+  }
+
+  void deleteFolder(String name) {
+    List<String> notes = notes_data["Directories"][name];
+    notes.forEach((element) {
+      deleteNote(element);
+    });
+    notes_data["Directories"].remove(name);
+  }
+
   void createNewFolder(String cr_name) {
     notes_data["Directories"][cr_name] = [];
   }

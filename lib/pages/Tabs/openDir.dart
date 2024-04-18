@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+
 import '../../controller.dart';
 
 //TODO : remove que button to create a folder and all the code related to it
+// TODO : move this code to notes.dart, why would we want it here with duplicates of the initial classes ?
 
 class OpenDir extends StatefulWidget {
   final Controller ctr;
   final String dirName;
   final List<dynamic> childs;
 
-  OpenDir({Key? key, required this.ctr, required this.dirName, required this.childs}) : super(key: key);
+  OpenDir(
+      {Key? key,
+      required this.ctr,
+      required this.dirName,
+      required this.childs})
+      : super(key: key);
 
   @override
   _OpenDirState createState() => _OpenDirState();
@@ -30,23 +37,23 @@ class _OpenDirState extends State<OpenDir> {
 
     mainContent.forEach((key, value) {
       //TODO: Decrypt key
-        if (key == dirName) {
-          print("Found the directory!");
-          String dirTitle = key;
-          List<dynamic> childNodes = value;
+      if (key == dirName) {
+        print("Found the directory!");
+        String dirTitle = key;
+        List<dynamic> childNodes = value;
 
-          for (int i = 0; i < childNodes.length; i++) {
-            String title = childNodes[i];
-            String content = notesContent[title];
-            contents.add(Note(
-              cryptedTitle: title,
-              cryptedContent: content,
-              ctr: ctr,
-            ));
-          }
+        for (int i = 0; i < childNodes.length; i++) {
+          String title = childNodes[i];
+          String content = notesContent[title];
+          contents.add(Note(
+            cryptedTitle: title,
+            cryptedContent: content,
+            ctr: ctr,
+            folder: dirTitle,
+          ));
         }
-      });
-    
+      }
+    });
   }
 
   @override
@@ -58,7 +65,9 @@ class _OpenDirState extends State<OpenDir> {
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Column(
         children: [
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -100,17 +109,17 @@ class _OpenDirState extends State<OpenDir> {
   }
 }
 
-
 class Note extends StatefulWidget {
   final Controller ctr;
   final String cryptedTitle;
   final String cryptedContent;
+  String? folderName;
 
-  Note({
-    required this.cryptedTitle,
-    required this.cryptedContent,
-    required this.ctr,
-  });
+  Note(
+      {required this.cryptedTitle,
+      required this.cryptedContent,
+      required this.ctr,
+      this.folderName});
 
   @override
   State<Note> createState() => _NoteState();
@@ -156,7 +165,6 @@ class _FolderState extends State<Folder> {
       padding: const EdgeInsets.all(16.0),
       child: GestureDetector(
         child: Container(
-
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -191,7 +199,6 @@ class NoteScreen extends StatefulWidget {
   final List<Widget> contents;
   final VoidCallback rebuildParent;
   final String dirName;
-
 
   NoteScreen({
     required this.ctr,
@@ -264,7 +271,7 @@ class _NoteScreenState extends State<NoteScreen> {
           widget.ctr.saveNewNote(
             widget.ctr.crypter.encrypt(title),
             widget.ctr.crypter.encrypt(content),
-            cr_dir_name:  widget.dirName,
+            cr_dir_name: widget.dirName,
           );
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -330,7 +337,9 @@ class _FolderCreationState extends State<FolderCreation> {
               controller: _folderNameController,
               decoration: InputDecoration(
                 labelText: 'Folder Name',
-                errorText: _showError && _folderNameController.text.isEmpty ? 'Please enter a folder name' : null,
+                errorText: _showError && _folderNameController.text.isEmpty
+                    ? 'Please enter a folder name'
+                    : null,
               ),
             ),
           ],

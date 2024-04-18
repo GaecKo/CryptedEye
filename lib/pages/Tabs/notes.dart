@@ -112,8 +112,23 @@ class _NotesPageState extends State<NotesPage> {
             child: ListView.builder(
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
-                return contents[index];
-              },
+                return Dismissible(
+                    key: Key("$index"),
+                    child: contents[index],
+                    onDismissed: (direction) {
+                      Widget tmp = contents[index];
+                      if (tmp is Note) {
+                        tmp = tmp as Note;
+
+                        widget.ctr.deleteNote(tmp.cryptedTitle);
+                      } else {
+                        tmp = tmp as Folder;
+                        widget.ctr.deleteFolder(tmp.name);
+                      }
+                      }
+                      );
+                    },
+                ),
             ),
           ),
         ],
@@ -130,23 +145,33 @@ class _NotesPageState extends State<NotesPage> {
 
 class Note extends StatefulWidget {
   final Controller ctr;
-  final String cryptedTitle;
-  final String cryptedContent;
+  late final String cryptedTitle;
+  late final String cryptedContent;
   List<Widget> contents;
   final VoidCallback rebuildParent;
+  String? folderName;
 
-  Note(
-      {required this.cryptedTitle,
+  Note({
+      required this.cryptedTitle,
       required this.cryptedContent,
       required this.ctr,
       required this.contents,
-      required this.rebuildParent});
+      required this.rebuildParent,
+      this.folderName
+    });
 
   @override
   State<Note> createState() => _NoteState();
 }
 
 class _NoteState extends State<Note> {
+
+  rebuild() {
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -168,8 +193,9 @@ class _NoteState extends State<Note> {
                   ctr: widget.ctr,
                   contents: widget.contents,
                   rebuildParent: widget.rebuildParent,
-                  init_cr_content: widget.cryptedContent,
-                  init_cr_title: widget.cryptedTitle,
+                  rebuildNote: rebuild,
+                  note: widget,
+
                 ),
               ));
         },
@@ -245,13 +271,15 @@ class NoteScreen extends StatefulWidget {
   final Controller ctr;
   final List<Widget> contents;
   final VoidCallback rebuildParent;
-  String? init_cr_title;
-  String? init_cr_content;
+  VoidCallback? rebuildNote;
+  Note? note;
+  String? folderName;
 
   NoteScreen({
     super.key,
-    this.init_cr_title,
-    this.init_cr_content,
+    this.note,
+    this.rebuildNote,
+    this.folderName,
     required this.ctr,
     required this.contents,
     required this.rebuildParent,
@@ -263,17 +291,17 @@ class NoteScreen extends StatefulWidget {
 
 class _NoteScreenState extends State<NoteScreen> {
   final TextEditingController _titleController =
-      TextEditingController(); // TODO: put text here!
+      TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    _titleController.text = (widget.init_cr_title == null
-        ? widget.init_cr_title
-        : widget.ctr.crypter.decrypt(widget.init_cr_title as String))!;
-    _contentController.text = (widget.init_cr_content == null
-        ? widget.init_cr_content
-        : widget.ctr.crypter.decrypt(widget.init_cr_content as String))!;
+    _titleController.text = (widget.note == null
+        ? null
+        : widget.ctr.crypter.decrypt(widget.note!.cryptedTitle))!;
+    _contentController.text = (widget.note == null
+        ? null
+        : widget.ctr.crypter.decrypt(widget.note!.cryptedContent))!;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create New Note"),
@@ -289,12 +317,9 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   hintText: "Enter title...",
-                  labelText: widget.init_cr_title == null
-                      ? widget.init_cr_title
-                      : widget.ctr.crypter
-                          .decrypt(widget.init_cr_title as String)),
+                  ),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -317,33 +342,26 @@ class _NoteScreenState extends State<NoteScreen> {
         child: const Icon(Icons.save),
         onPressed: () {
           String title = _titleController.text;
-          print("Title: $title");
           String content = _contentController.text;
           String cr_title = widget.ctr.crypter.encrypt(title);
           String cr_content = widget.ctr.crypter.encrypt(content);
 
-          widget.contents.add(
-            Note(
-              cryptedTitle: cr_title,
-              cryptedContent: cr_content,
-              ctr: widget.ctr,
-              contents: widget.contents,
-              rebuildParent: widget.rebuildParent,
-            ),
-          );
           widget.rebuildParent();
-          if (widget.init_cr_title != null) {
+          if (widget.note != null) {
             // update note in backend
-            widget.ctr.updateNewNote(
-                widget.init_cr_title as String, cr_title, cr_content);
+            if (widget.folderName == null) { // if it has a defined folder name, then update
+              widget.ctr.updateNewNote(
+                  widget.note!.cryptedTitle, title, content);
+            } else {
+              widget.ctr.updateNewNote(
+                  widget.note!.cryptedTitle, title, content, cr_dir_name: widget.folderName!);
+            }
+
 
             // remove note from frontend
-            widget.contents.removeWhere((content) {
-              if (content is Note) {
-                return content.cryptedTitle == widget.init_cr_title;
-              }
-              return false;
-            });
+            widget.note?.cryptedTitle = cr_title;
+            widget.note?.cryptedContent = cr_content;
+
           } else {
             widget.ctr.saveNewNote(
               cr_title,
