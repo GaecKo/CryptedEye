@@ -46,9 +46,6 @@ class _OpenDirState extends State<OpenDir> {
           }
         }
       });
-    print("poulet");
-    print("dirName: $dirName");
-    print("childs: ${widget.childs}");
     
   }
 
@@ -80,20 +77,6 @@ class _OpenDirState extends State<OpenDir> {
                   );
                 },
                 child: const Text("Add Note"),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => FolderCreation(
-                      ctr: ctr,
-                      contents: contents,
-                      rebuildParent: rebuildNotesPage,
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.create_new_folder, color: Colors.blue,),
-                label: const Text("Create Folder"),
               ),
             ],
           ),
