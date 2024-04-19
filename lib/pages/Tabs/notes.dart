@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../controller.dart';
 
@@ -113,46 +114,65 @@ class _NotesPageState extends State<NotesPage> {
             child: ListView.builder(
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
-                return Dismissible(
-                    key: UniqueKey(),
-                    child: contents[index],
-                    onDismissed: (direction) {
-                      Widget tmp = contents[index];
-                      if (tmp is Note) {
-                        tmp = tmp as Note;
-                        if (tmp.folderName != null) {
-                          widget.ctr.deleteNote(tmp.cryptedTitle,
-                              folderName: tmp.folderName as String);
-                        } else {
-                          widget.ctr.deleteNote(tmp.cryptedTitle);
-                        }
-                        contents.removeWhere((elem) {
-                          if (elem is Note) {
-                            return elem.cryptedTitle ==
-                                (tmp as Note).cryptedTitle;
-                          }
-                          return false;
-                        });
-                      } else {
-                        // TODO: ERROR WHEN REMOVING FOLDER, TO CHECK
-                        tmp = tmp as Folder;
-                        // remove folder from backend, its child notes as well
-                        widget.ctr.deleteFolder(tmp.name);
-                        // remove folder from frontend
-                        contents.removeWhere((elem) {
-                          if (elem is Folder) {
-                            return elem.name == (tmp as Folder).name;
-                          }
-                          return false;
-                        });
-                      }
-                    });
+                return Slidable(
+                  key: UniqueKey(),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    dismissible: DismissiblePane(onDismissed: () {
+                      deleteWidget(index);
+                    }),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) {
+                          deleteWidget(index);
+                          setState(() {});
+                        },
+                        backgroundColor: Color(0xFFFE4A49),
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        label: 'Delete',
+                      ),
+                    ],
+                  ),
+                  child: contents[index],
+                );
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  void deleteWidget(int index) {
+    Widget tmp = contents[index];
+    if (tmp is Note) {
+      tmp = tmp as Note;
+      if (tmp.folderName != null) {
+        widget.ctr
+            .deleteNote(tmp.cryptedTitle, folderName: tmp.folderName as String);
+      } else {
+        widget.ctr.deleteNote(tmp.cryptedTitle);
+      }
+      contents.removeWhere((elem) {
+        if (elem is Note) {
+          return elem.cryptedTitle == (tmp as Note).cryptedTitle;
+        }
+        return false;
+      });
+    } else {
+      // TODO: ERROR WHEN REMOVING FOLDER, TO CHECK
+      tmp = tmp as Folder;
+      // remove folder from backend, its child notes as well
+      widget.ctr.deleteFolder(tmp.name);
+      // remove folder from frontend
+      contents.removeWhere((elem) {
+        if (elem is Folder) {
+          return elem.name == (tmp as Folder).name;
+        }
+        return false;
+      });
+    }
   }
 
   void rebuildNotesPage() {
@@ -585,18 +605,27 @@ class _OpenDirState extends State<OpenDir> {
             child: ListView.builder(
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
-                return Dismissible(
+                return Slidable(
                   key: UniqueKey(),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    dismissible: DismissiblePane(onDismissed: () {
+                      deleteWidget(index);
+                    }),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) {
+                          deleteWidget(index);
+                          setState(() {});
+                        },
+                        backgroundColor: Color(0xFFFE4A49),
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        label: 'Delete',
+                      ),
+                    ],
+                  ),
                   child: contents[index],
-                  onDismissed: (direction) {
-                    Note tmp = contents[index] as Note;
-
-                    widget.ctr
-                        .deleteNote(tmp.cryptedTitle, folderName: dirName);
-                    contents.removeWhere((elem) {
-                      return (elem as Note).cryptedTitle == tmp.cryptedTitle;
-                    });
-                  },
                 );
               },
             ),
@@ -604,6 +633,15 @@ class _OpenDirState extends State<OpenDir> {
         ],
       ),
     );
+  }
+
+  void deleteWidget(int index) {
+    Note tmp = contents[index] as Note;
+
+    widget.ctr.deleteNote(tmp.cryptedTitle, folderName: dirName);
+    contents.removeWhere((elem) {
+      return (elem as Note).cryptedTitle == tmp.cryptedTitle;
+    });
   }
 
   void rebuildDirPage() {
