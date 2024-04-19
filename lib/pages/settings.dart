@@ -71,6 +71,10 @@ class _SettingsList extends State<SettingsList> {
             _showLogoutConfirmationDialog(context);
           },
         ),
+
+        // TODO: add here the export part, that creates img tar file and put it in downloads
+        // TODO: should also ask to share the file
+
         const Divider(),
         ListTile(
           title: const Text(
