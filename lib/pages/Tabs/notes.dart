@@ -15,6 +15,13 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> {
   late List<Widget> contents = [];
   late Controller ctr;
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String newQuery) {
+    setState(() {
+      _searchQuery = newQuery;
+    });
+  }
 
   @override
   void initState() {
@@ -110,10 +117,45 @@ class _NotesPageState extends State<NotesPage> {
               ),
             ],
           ),
+          const SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: _updateSearchQuery,
+              decoration: const InputDecoration(
+                hintText: 'Search Password...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
+                Widget tmp = contents[index];
+
+                if (tmp is Note) {
+                  if (_searchQuery.isNotEmpty &&
+                      !widget.ctr.crypter
+                          .decrypt(tmp.cryptedTitle)
+                          .contains(_searchQuery) &&
+                      !widget.ctr.crypter
+                          .decrypt(tmp.cryptedContent)
+                          .contains(_searchQuery)) {
+                    return const SizedBox.shrink();
+                  }
+                } else if (tmp is Folder) {
+                  if (_searchQuery.isNotEmpty &&
+                      !widget.ctr.crypter
+                          .decrypt(tmp.name)
+                          .contains(_searchQuery)) {
+                    return const SizedBox.shrink();
+                  }
+                }
+
                 return Slidable(
                   key: UniqueKey(),
                   endActionPane: ActionPane(
