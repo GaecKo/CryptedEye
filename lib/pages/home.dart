@@ -29,12 +29,29 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
-            title: const Text(
-              "CryptedEye",
-              style: TextStyle(
-                  fontSize: 20,
+            title: Row(
+              children: [
+                const Icon(
+                  Icons.shield,
+                  size: 26,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  "CryptedEye",
+                  style: TextStyle(
+                      fontSize: 26,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  " > ${widget.ctr.VaultName}",
+                  style: const TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             actions: <Widget>[
               IconButton(
@@ -43,8 +60,9 @@ class _HomePageState extends State<HomePage> {
                   size: 30,
                   color: Colors.white,
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/Settings');
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/Settings');
+                  setState(() {});
                 },
               )
             ],
