@@ -39,10 +39,17 @@ class _SettingsList extends State<SettingsList> {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text('Delete Data'),
-          leading: Icon(Icons.delete),
+          title: Text('Delete All Notes'),
+          leading: Icon(Icons.delete_forever),
           onTap: () {
-            _showDeleteDataConfirmationDialog(context);
+            _showDeleteDataConfirmationDialog(context, 'notes');
+          },
+        ),
+        ListTile(
+          title: Text('Delete All Passwords'),
+          leading: Icon(Icons.delete_forever),
+          onTap: () {
+            _showDeleteDataConfirmationDialog(context, 'passwords');
           },
         ),
         Divider(),
@@ -65,17 +72,24 @@ class _SettingsList extends State<SettingsList> {
     );
   }
 
-  void _showDeleteDataConfirmationDialog(BuildContext context) {
+  void _showDeleteDataConfirmationDialog(BuildContext context, String type) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Delete Data'),
-          content: Text('Are you sure you want to delete all data?'),
+          content: Text('Are you sure you want to delete all $type data?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 // Perform delete data operation
+
+                if (type == "notes") {
+                  widget.ctr.deleteAllNotes();
+                } else if (type == "passwords") {
+                  widget.ctr.resetPasswordJson();
+                }
+
                 Navigator.of(context).pop(); // Close dialog
               },
               child: Text('Delete'),

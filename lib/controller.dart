@@ -20,7 +20,7 @@ class Controller {
 
   late String localPath;
   late String VaultName;
-  late Map<String, dynamic> settings;
+
   late bool initialized = false;
 
   // variable for password management
@@ -141,6 +141,14 @@ class Controller {
     VaultName = newVaultName;
   }
 
+  void deleteAllNotes() {
+    rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", {
+      "Directories": {"child": []},
+      "Notes": {}
+    });
+    loadNotesFromJson();
+  }
+
   bool verifyPassword(String AP, String vaultName) {
     return crypter.secureHash(AP) == getHashedPassword(vaultName);
   }
@@ -209,7 +217,6 @@ class Controller {
   }
 
   void deletePassword(String website) {
-    print("delted");
     password_data.remove(website);
     writePasswordsToJson();
   }
@@ -246,30 +253,6 @@ class Controller {
 
     notes_data["Notes"] = jsonData["Notes"];
     notes_data["Directories"] = jsonData["Directories"];
-
-    /*String uncrypted_key;
-    String uncrypted_value;
-    notes.forEach((key, value) {
-      uncrypted_key = crypter.decrypt(key);
-      uncrypted_value = crypter.decrypt(value);
-
-      notes.remove(key);
-      notes[uncrypted_key] = uncrypted_value;
-    });
-
-    directories.forEach((key, value) {
-      String new_key;
-      if (key != "child") {
-        new_key = crypter.decrypt(key);
-      } else {
-        new_key = key;
-      }
-      List<String> childs = value;
-      for (int i = 0; i < childs.length; i++) {
-
-      }
-
-    });*/
 
     print("Note data is loaded");
   }
