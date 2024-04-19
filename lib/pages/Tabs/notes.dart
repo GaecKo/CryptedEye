@@ -42,7 +42,7 @@ class _NotesPageState extends State<NotesPage> {
         }
         contents.add(Folder(
           name: dirTitle,
-          content: childNotes,
+          childNotes: childNotes,
           ctr: ctr,
         ));
       }
@@ -50,7 +50,6 @@ class _NotesPageState extends State<NotesPage> {
     List<dynamic> mainChildNotes = mainContent["child"];
     for (int i = 0; i < mainChildNotes.length; i++) {
       String title = mainChildNotes[i];
-      print("Content ${notesContent}");
 
       String content = notesContent[title];
 
@@ -115,7 +114,7 @@ class _NotesPageState extends State<NotesPage> {
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
                 return Dismissible(
-                    key: Key("$index"),
+                    key: UniqueKey(),
                     child: contents[index],
                     onDismissed: (direction) {
                       Widget tmp = contents[index];
@@ -127,10 +126,25 @@ class _NotesPageState extends State<NotesPage> {
                         } else {
                           widget.ctr.deleteNote(tmp.cryptedTitle);
                         }
+                        contents.removeWhere((elem) {
+                          if (elem is Note) {
+                            return elem.cryptedTitle ==
+                                (tmp as Note).cryptedTitle;
+                          }
+                          return false;
+                        });
                       } else {
                         // TODO: ERROR WHEN REMOVING FOLDER, TO CHECK
                         tmp = tmp as Folder;
+                        // remove folder from backend, its child notes as well
                         widget.ctr.deleteFolder(tmp.name);
+                        // remove folder from frontend
+                        contents.removeWhere((elem) {
+                          if (elem is Folder) {
+                            return elem.name == (tmp as Folder).name;
+                          }
+                          return false;
+                        });
                       }
                     });
               },
@@ -208,12 +222,12 @@ class _NoteState extends State<Note> {
 
 class Folder extends StatefulWidget {
   final String name;
-  final List<dynamic> content;
+  final List<dynamic> childNotes;
   final Controller ctr;
 
   Folder({
     required this.name,
-    required this.content,
+    required this.childNotes,
     required this.ctr,
   });
 
@@ -234,7 +248,7 @@ class _FolderState extends State<Folder> {
               builder: (_) => OpenDir(
                 ctr: widget.ctr,
                 dirName: widget.name,
-                childs: widget.content,
+                childs: widget.childNotes,
               ),
             ),
           );
@@ -433,7 +447,7 @@ class _FolderCreationState extends State<FolderCreation> {
         0,
         Folder(
           name: cr_name,
-          content: [],
+          childNotes: [],
           ctr: widget.ctr,
         ),
       );
@@ -513,9 +527,7 @@ class _OpenDirState extends State<OpenDir> {
     Map<String, dynamic> mainContent = notesData["Directories"];
 
     mainContent.forEach((key, value) {
-      //TODO: Decrypt key
       if (key == dirName) {
-        print("Found the directory!");
         String dirTitle = key;
         List<dynamic> childNodes = value;
 
@@ -573,7 +585,19 @@ class _OpenDirState extends State<OpenDir> {
             child: ListView.builder(
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
-                return contents[index];
+                return Dismissible(
+                  key: UniqueKey(),
+                  child: contents[index],
+                  onDismissed: (direction) {
+                    Note tmp = contents[index] as Note;
+
+                    widget.ctr
+                        .deleteNote(tmp.cryptedTitle, folderName: dirName);
+                    contents.removeWhere((elem) {
+                      return (elem as Note).cryptedTitle == tmp.cryptedTitle;
+                    });
+                  },
+                );
               },
             ),
           ),
