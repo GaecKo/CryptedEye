@@ -17,7 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: SettingsList(ctr: widget.ctr),
     );
@@ -34,38 +34,52 @@ class SettingsList extends StatefulWidget {
 }
 
 class _SettingsList extends State<SettingsList> {
+  TextEditingController passwordController = TextEditingController();
+  bool showError = false;
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text('Delete All Notes'),
-          leading: Icon(Icons.delete_forever),
+          title: const Text('Delete All Notes'),
+          leading: const Icon(Icons.delete_forever),
           onTap: () {
             _showDeleteDataConfirmationDialog(context, 'notes');
           },
         ),
         ListTile(
-          title: Text('Delete All Passwords'),
-          leading: Icon(Icons.delete_forever),
+          title: const Text('Delete All Passwords'),
+          leading: const Icon(Icons.delete_forever),
           onTap: () {
             _showDeleteDataConfirmationDialog(context, 'passwords');
           },
         ),
-        Divider(),
+        const Divider(),
         ListTile(
           title: Text('Rename Vault (${widget.ctr.VaultName})'),
-          leading: Icon(Icons.edit),
+          leading: const Icon(Icons.edit),
           onTap: () {
             _showRenameAccountDialog(context);
           },
         ),
-        Divider(),
+        const Divider(),
         ListTile(
-          title: Text('Logout'),
-          leading: Icon(Icons.exit_to_app),
+          title: const Text('Logout'),
+          leading: const Icon(Icons.exit_to_app),
           onTap: () {
             _showLogoutConfirmationDialog(context);
+          },
+        ),
+        const Divider(),
+        ListTile(
+          title: const Text(
+            'Delete Vault',
+            style: TextStyle(color: Colors.red),
+          ),
+          leading: const Icon(Icons.delete_forever, color: Colors.red),
+          onTap: () {
+            _showDeleteVaultConfirmationDialog(context);
           },
         ),
       ],
@@ -77,28 +91,25 @@ class _SettingsList extends State<SettingsList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Data'),
+          title: const Text('Delete Data'),
           content: Text('Are you sure you want to delete all $type data?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                // Perform delete data operation
-
                 if (type == "notes") {
                   widget.ctr.deleteAllNotes();
                 } else if (type == "passwords") {
                   widget.ctr.resetPasswordJson();
                 }
-
                 Navigator.of(context).pop(); // Close dialog
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close dialog
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -108,16 +119,15 @@ class _SettingsList extends State<SettingsList> {
 
   void _showRenameAccountDialog(BuildContext context) {
     TextEditingController newNameController = TextEditingController();
-    bool showError = false; // Flag to track whether to show error message
+    bool showError = false;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-          // StatefulBuilder used to rebuild the dialog based on state changes
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Rename Account'),
+              title: const Text('Rename Account'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -131,9 +141,7 @@ class _SettingsList extends State<SettingsList> {
                     controller: newNameController,
                     onChanged: (value) {
                       setState(() {
-                        // Check if error should be shown based on input length
-                        showError = value.trim().length <
-                            2; // Change to your desired condition
+                        showError = value.trim().length < 2;
                       });
                     },
                   ),
@@ -142,24 +150,22 @@ class _SettingsList extends State<SettingsList> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    // Perform rename account operation if input is valid
                     if (newNameController.text.trim().length >= 2) {
                       widget.ctr.renameVault(newNameController.text);
-                      Navigator.of(context).pop(); // Close dialog
+                      Navigator.of(context).pop();
                     } else {
-                      // Invalid input, show error
                       setState(() {
                         showError = true;
                       });
                     }
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
               ],
             );
@@ -174,25 +180,75 @@ class _SettingsList extends State<SettingsList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 widget.ctr.closeApp();
                 Restart.restartApp();
-                Navigator.of(context).pop(); // Close dialog
-                // Example: Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                Navigator.of(context).pop();
               },
-              child: Text('Logout'),
+              child: const Text('Logout'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteVaultConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: const Text('Delete Vault'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Enter password',
+                      errorText: showError ? 'Incorrect password' : null,
+                    ),
+                    controller: passwordController,
+                    obscureText: true,
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    if (widget.ctr.verifyPassword(
+                        passwordController.text, widget.ctr.VaultName)) {
+                      widget.ctr.deleteVault();
+                      Restart.restartApp();
+                      Navigator.of(context).pop();
+                    } else {
+                      setState(() {
+                        showError = true;
+                      });
+                    }
+                  },
+                  child: const Text('Delete Vault'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+              ],
+            );
+          },
         );
       },
     );

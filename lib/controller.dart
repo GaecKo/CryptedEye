@@ -149,6 +149,11 @@ class Controller {
     loadNotesFromJson();
   }
 
+  void deleteVault() {
+    Directory dir = Directory("$localPath/$VaultName.CryptedEye");
+    dir.deleteSync(recursive: true);
+  }
+
   bool verifyPassword(String AP, String vaultName) {
     return crypter.secureHash(AP) == getHashedPassword(vaultName);
   }
