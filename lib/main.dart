@@ -6,6 +6,7 @@ import 'package:restart_app/restart_app.dart';
 import 'controller.dart';
 import 'pages/home.dart';
 import 'pages/login.dart';
+import 'pages/settings.dart';
 import 'pages/signup.dart';
 
 void main() async {
@@ -47,6 +48,7 @@ class CryptedEye extends StatelessWidget {
         '/login': (context) => LoginPage(ctr: ctr),
         '/HomePage': (context) => HomePage(ctr: ctr),
         '/SignUp': (context) => SignUpPage(ctr: ctr),
+        '/Settings': (context) => SettingsPage(ctr: ctr)
       },
       home: firstPage,
       debugShowCheckedModeBanner: false,

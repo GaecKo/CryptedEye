@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restart_app/restart_app.dart';
 
 import '../controller.dart';
 import 'Tabs/notes.dart';
@@ -40,13 +39,12 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
               IconButton(
                 icon: const Icon(
-                  Icons.logout,
+                  Icons.settings,
                   size: 30,
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  ctr.closeApp();
-                  Restart.restartApp();
+                  Navigator.pushNamed(context, '/Settings');
                 },
               )
             ],
