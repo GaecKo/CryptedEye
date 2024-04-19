@@ -281,6 +281,7 @@ class Controller {
     notes_data["Notes"][cr_note_title] = cr_content;
     // {Notes: ..., Directories: "child": ["cr_title", ...], "cr_dir_name": [...], ...}
     notes_data["Directories"][cr_dir_name].add(cr_note_title);
+    writeNotesToJson();
   }
 
   void updateNewNote(
@@ -293,34 +294,34 @@ class Controller {
     // actualize note in its directory
     notes_data["Directories"][cr_dir_name].remove(old_cr_note);
     notes_data["Directories"][cr_dir_name].add(new_cr_note);
+    writeNotesToJson();
   }
 
-  void deleteNote(String cr_title) {
+  void deleteNote(String cr_title, {String folderName = "child"}) {
     notes_data["Notes"].remove(cr_title);
-    notes_data["Directories"].forEach((dir, child) {
-      if (child.contains(cr_title)) {
-        notes_data["Directories"][dir].remove(cr_title);
-        print("deleted note successfully");
-      }
-    });
+    notes_data["Directories"][folderName].remove(cr_title);
+    print("Note deleted successfully");
+    writeNotesToJson();
   }
 
   void deleteFolder(String name) {
-    List<String> notes = notes_data["Directories"][name];
-    notes.forEach((element) {
+    notes_data["Directories"][name].forEach((element) {
       deleteNote(element);
     });
     notes_data["Directories"].remove(name);
+    writeNotesToJson();
   }
 
   void createNewFolder(String cr_name) {
     notes_data["Directories"][cr_name] = [];
+    writeNotesToJson();
   }
 
   void updateFolderName(String old_cr_name, new_cr_name) {
     List<int> cor_notes = notes_data["Directories"][old_cr_name];
     notes_data["Directories"].remove(old_cr_name);
     notes_data["Directories"][new_cr_name] = [cor_notes];
+    writeNotesToJson();
   }
 }
 

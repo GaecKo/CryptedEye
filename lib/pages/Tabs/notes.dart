@@ -1,4 +1,3 @@
-import 'package:CryptedEye/pages/Tabs/openDir.dart';
 import 'package:flutter/material.dart';
 
 import '../../controller.dart';
@@ -51,7 +50,10 @@ class _NotesPageState extends State<NotesPage> {
     List<dynamic> mainChildNotes = mainContent["child"];
     for (int i = 0; i < mainChildNotes.length; i++) {
       String title = mainChildNotes[i];
+      print("Content ${notesContent}");
+
       String content = notesContent[title];
+
       contents.add(Note(
         cryptedTitle: title,
         cryptedContent: content,
@@ -119,16 +121,19 @@ class _NotesPageState extends State<NotesPage> {
                       Widget tmp = contents[index];
                       if (tmp is Note) {
                         tmp = tmp as Note;
-
-                        widget.ctr.deleteNote(tmp.cryptedTitle);
+                        if (tmp.folderName != null) {
+                          widget.ctr.deleteNote(tmp.cryptedTitle,
+                              folderName: tmp.folderName as String);
+                        } else {
+                          widget.ctr.deleteNote(tmp.cryptedTitle);
+                        }
                       } else {
+                        // TODO: ERROR WHEN REMOVING FOLDER, TO CHECK
                         tmp = tmp as Folder;
                         widget.ctr.deleteFolder(tmp.name);
                       }
-                      }
-                      );
-                    },
-                ),
+                    });
+              },
             ),
           ),
         ],
@@ -145,31 +150,27 @@ class _NotesPageState extends State<NotesPage> {
 
 class Note extends StatefulWidget {
   final Controller ctr;
-  late final String cryptedTitle;
-  late final String cryptedContent;
+  late String cryptedTitle;
+  late String cryptedContent;
   List<Widget> contents;
   final VoidCallback rebuildParent;
   String? folderName;
 
-  Note({
-      required this.cryptedTitle,
+  Note(
+      {required this.cryptedTitle,
       required this.cryptedContent,
       required this.ctr,
       required this.contents,
       required this.rebuildParent,
-      this.folderName
-    });
+      this.folderName});
 
   @override
   State<Note> createState() => _NoteState();
 }
 
 class _NoteState extends State<Note> {
-
   rebuild() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -189,13 +190,14 @@ class _NoteState extends State<Note> {
           Navigator.push(
               context,
               MaterialPageRoute(
+                // build NoteScreen for note update: ctr, contents, rebuildParent, rebuildNote, note widget
                 builder: (_) => NoteScreen(
                   ctr: widget.ctr,
                   contents: widget.contents,
                   rebuildParent: widget.rebuildParent,
                   rebuildNote: rebuild,
                   note: widget,
-
+                  folderName: widget.folderName,
                 ),
               ));
         },
@@ -290,18 +292,19 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
-  final TextEditingController _titleController =
-      TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    _titleController.text = (widget.note == null
-        ? null
-        : widget.ctr.crypter.decrypt(widget.note!.cryptedTitle))!;
-    _contentController.text = (widget.note == null
-        ? null
-        : widget.ctr.crypter.decrypt(widget.note!.cryptedContent))!;
+    if (widget.note != null) {
+      _titleController.text = (widget.note == null
+          ? null
+          : widget.ctr.crypter.decrypt(widget.note!.cryptedTitle))!;
+      _contentController.text = (widget.note == null
+          ? null
+          : widget.ctr.crypter.decrypt(widget.note!.cryptedContent))!;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create New Note"),
@@ -318,8 +321,8 @@ class _NoteScreenState extends State<NoteScreen> {
             TextField(
               controller: _titleController,
               decoration: const InputDecoration(
-                  hintText: "Enter title...",
-                  ),
+                hintText: "Enter title...",
+              ),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -348,25 +351,38 @@ class _NoteScreenState extends State<NoteScreen> {
 
           widget.rebuildParent();
           if (widget.note != null) {
+            // NOTE UPDATE
             // update note in backend
-            if (widget.folderName == null) { // if it has a defined folder name, then update
+            if (widget.folderName == null) {
+              // if it has a defined folder name, then update
               widget.ctr.updateNewNote(
-                  widget.note!.cryptedTitle, title, content);
+                  widget.note!.cryptedTitle, cr_title, cr_content);
             } else {
               widget.ctr.updateNewNote(
-                  widget.note!.cryptedTitle, title, content, cr_dir_name: widget.folderName!);
+                  widget.note!.cryptedTitle, cr_title, cr_content,
+                  cr_dir_name: widget.folderName!);
             }
 
-
-            // remove note from frontend
             widget.note?.cryptedTitle = cr_title;
             widget.note?.cryptedContent = cr_content;
-
+            widget.rebuildNote!();
           } else {
-            widget.ctr.saveNewNote(
-              cr_title,
-              cr_content,
-            );
+            widget.rebuildParent();
+            if (widget.folderName != null) {
+              widget.ctr.saveNewNote(cr_title, cr_content,
+                  cr_dir_name: widget.folderName as String);
+            } else {
+              widget.ctr.saveNewNote(cr_title, cr_content);
+            }
+
+            widget.contents.add(Note(
+              cryptedTitle: cr_title,
+              cryptedContent: cr_content,
+              ctr: widget.ctr,
+              contents: widget.contents,
+              rebuildParent: widget.rebuildParent,
+              folderName: widget.folderName,
+            ));
           }
 
           Navigator.of(context).pop();
@@ -463,5 +479,112 @@ class _FolderCreationState extends State<FolderCreation> {
         ),
       ],
     );
+  }
+}
+
+class OpenDir extends StatefulWidget {
+  final Controller ctr;
+  final String dirName;
+  final List<dynamic> childs;
+
+  OpenDir(
+      {Key? key,
+      required this.ctr,
+      required this.dirName,
+      required this.childs})
+      : super(key: key);
+
+  @override
+  _OpenDirState createState() => _OpenDirState();
+}
+
+class _OpenDirState extends State<OpenDir> {
+  late List<Widget> contents = [];
+  late Controller ctr;
+  late String dirName;
+
+  @override
+  void initState() {
+    super.initState();
+    ctr = widget.ctr;
+    dirName = widget.dirName;
+    Map<String, dynamic> notesData = ctr.notes_data;
+    Map<String, dynamic> notesContent = notesData["Notes"];
+    Map<String, dynamic> mainContent = notesData["Directories"];
+
+    mainContent.forEach((key, value) {
+      //TODO: Decrypt key
+      if (key == dirName) {
+        print("Found the directory!");
+        String dirTitle = key;
+        List<dynamic> childNodes = value;
+
+        for (int i = 0; i < childNodes.length; i++) {
+          String title = childNodes[i];
+          String content = notesContent[title];
+          contents.add(Note(
+            cryptedTitle: title,
+            cryptedContent: content,
+            contents: contents,
+            rebuildParent: rebuildDirPage,
+            ctr: ctr,
+            folderName: dirTitle,
+          ));
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.ctr.crypter.decrypt(dirName)),
+      ),
+      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      // build note screen for new note: ctr, contents, rebuildDirPage, dirName
+                      builder: (_) => NoteScreen(
+                        ctr: ctr,
+                        contents: contents,
+                        rebuildParent: rebuildDirPage,
+                        folderName: dirName,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text("Add Note"),
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: contents.length,
+              itemBuilder: (BuildContext context, int index) {
+                return contents[index];
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void rebuildDirPage() {
+    setState(() {
+      // Trigger a rebuild of NotesPageState
+    });
   }
 }
