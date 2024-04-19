@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:restart_app/restart_app.dart';
 
 import 'controller.dart';
 import 'pages/home.dart';
@@ -69,7 +68,7 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
       ctr.closeApp();
       // Perform cleanup when the app is paused (e.g., closed).
       // Call your cleanup functions here.
-      Restart.restartApp();
+      // Restart.restartApp();
     } else if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
       ctr.closeApp();

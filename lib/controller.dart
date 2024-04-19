@@ -131,9 +131,14 @@ class Controller {
 
       vaultsName.add(tmp[0]);
     }
-    print(vaultsName);
 
     return vaultsName;
+  }
+
+  void renameVault(String newVaultName) {
+    Directory dir = Directory("$localPath/$VaultName.CryptedEye");
+    dir.renameSync("$localPath/$newVaultName.CryptedEye");
+    VaultName = newVaultName;
   }
 
   bool verifyPassword(String AP, String vaultName) {
