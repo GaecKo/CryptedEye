@@ -77,6 +77,15 @@ class _SettingsList extends State<SettingsList> {
 
         const Divider(),
         ListTile(
+          title: const Text('Export Data'),
+          leading: const Icon(Icons.share),
+          onTap: () {
+            _showShareConfirmationDialog(context);
+          },
+        ),
+
+        const Divider(),
+        ListTile(
           title: const Text(
             'Delete Vault',
             style: TextStyle(color: Colors.red),
@@ -257,4 +266,31 @@ class _SettingsList extends State<SettingsList> {
       },
     );
   }
+
+void _showShareConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Export Data'),
+          content: const Text('Are you sure you want to export your data ?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Export'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
