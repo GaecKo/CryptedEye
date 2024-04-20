@@ -80,9 +80,18 @@ class _SettingsList extends State<SettingsList> {
           title: const Text('Export Data'),
           leading: const Icon(Icons.share),
           onTap: () {
-            _showShareConfirmationDialog(context);
+            _showExportConfirmationDialog(context);
           },
         ),
+
+        // const Divider(),
+        // ListTile(
+        //   title: const Text('Import Data (Test)'),
+        //   leading: const Icon(Icons.import_export),
+        //   onTap: () {
+        //     _showImportConfirmationDialog(context);
+        //   },
+        // ),
 
         const Divider(),
         ListTile(
@@ -267,7 +276,7 @@ class _SettingsList extends State<SettingsList> {
     );
   }
 
-void _showShareConfirmationDialog(BuildContext context) {
+  void _showExportConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -277,9 +286,58 @@ void _showShareConfirmationDialog(BuildContext context) {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                widget.ctr.exportData();
                 Navigator.of(context).pop();
+                _showExportSuccessMessage(context);
               },
               child: const Text('Export'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showExportSuccessMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Export Successful'),
+          content: const Text('Your data has been exported successfully !'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showImportConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Import Data'),
+          content: const Text('Are you sure you want to import data ?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                widget.ctr.importData();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Import'),
             ),
             TextButton(
               onPressed: () {
