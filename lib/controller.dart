@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 
 import 'API/crypter.dart';
@@ -47,14 +48,12 @@ class Controller {
     localPath = rwm.localPath;
   }
 
-  Future<void> loadApp(String AP, String VaultName,
+  Future<void> loadApp(String AP, String VaultName, E.Key crypterKey,
       {bool fromSignup = false}) async {
     this.VaultName = VaultName;
+    print("Vault is ${this.VaultName}");
 
-    // get salt path
-    String saltPath = "$localPath/$VaultName.CryptedEye/app/salt.key";
-
-    await crypter.init(AP, saltPath);
+    crypter.specifyKey(crypterKey);
 
     if (kDebugMode) {
       print(
@@ -65,6 +64,14 @@ class Controller {
     getPasswordsFromJson();
     loadNotesFromJson();
     initialized = true;
+  }
+
+  Future<E.Key> getCrypterKey(String Vault, String AP) async {
+    // get salt path
+    String saltPath = "$localPath/$Vault.CryptedEye/app/salt.key";
+
+    E.Key key = await crypter.init(AP, saltPath);
+    return key;
   }
 
   void closeApp() {
@@ -108,7 +115,8 @@ class Controller {
     });
 
     // 6. load app
-    await loadApp(AP, VaultName, fromSignup: true);
+    await loadApp(AP, VaultName, await getCrypterKey(AP, VaultName),
+        fromSignup: true);
   }
 
   bool isStartup() {

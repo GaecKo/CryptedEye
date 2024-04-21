@@ -1,6 +1,16 @@
+import 'dart:async';
+
+import 'package:encrypt/encrypt.dart' as E;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../controller.dart';
+
+Future<E.Key> callCrypterInit(List<dynamic> args) async {
+  String AP = args[1];
+  String VaultName = args[2];
+  return await args[0].getCrypterKey(AP, VaultName);
+}
 
 class LoginPage extends StatefulWidget {
   final Controller ctr;
@@ -12,14 +22,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Logic of Front - Controller
   Controller ctr;
-
-  // Front-End controllers / ...
   final TextEditingController _passwordController = TextEditingController();
   Color _passwordContainerColor = Colors.white;
   String? _passwordError;
   late String _selectedVault;
+  bool _isLoading = false;
+
+  _LoginPageState({required this.ctr});
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedVault = widget.ctr.getListOfVault().first;
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void _handleVaultChanged(String newValue) {
     setState(() {
@@ -27,67 +49,53 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _LoginPageState({required this.ctr});
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedVault =
-        widget.ctr.getListOfVault().first; // Initialize with the first value
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed
-    _passwordController.dispose();
-    super.dispose();
-  }
-
   void _callSignUp() {
     Navigator.pushReplacementNamed(context, '/SignUp');
   }
 
-  // Function to handle the login action
   void _login() async {
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
     String password = _passwordController.text;
+
     print("Selected vault name from LoginPage: $_selectedVault");
-    print('Entered password from LoginPage: $password');
+
     if (ctr.verifyPassword(password, _selectedVault)) {
       print("Access to vault ${_selectedVault} agreed");
-      await ctr.loadApp(password, _selectedVault);
+
+      E.Key key =
+          await compute(callCrypterInit, [ctr, password, _selectedVault]);
+
+      ctr.loadApp(password, _selectedVault, key);
+
       Navigator.pushReplacementNamed(context, '/HomePage');
     } else {
+      // Incorrect password handling
       print('Invalid password');
+
+      await Future.delayed(Duration(seconds: 1));
+
       setState(() {
-        _passwordContainerColor = Colors.red; // Set color to red
+        _passwordContainerColor = Colors.red;
         _passwordError = 'Invalid password';
+        _isLoading = false;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Lorsque le clavier apparaît, les widgets sont déplacés vers le haut et ensuite coupés par le SafeArea
-    // (pour qu'ils ne se rendent pas tout en haut de l'écran)
-    // -> Cela ne semble pas esthétique, cela devrait être corrigé
-
-    // TODO: Lorsque le clavier apparaît, le bouton de connexion est masqué. Il devrait cependant être facilement cliquable et donc visible
-    // même avec le clavier actif
-    // -> Ceci devrait être corrigé et assez important !
-
     return Scaffold(
       backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
-      resizeToAvoidBottomInset:
-          true, // Ajustement automatique lorsque le clavier apparaît
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
-          // Envelopper dans SingleChildScrollView pour faire défiler lorsque le clavier apparaît
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-                // Titre en haut (icône de verrouillage - nom - > connexion)
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -100,42 +108,39 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       "CryptedEye",
                       style: TextStyle(
-                          fontSize: 26,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 26,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       " > Login",
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 15,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 40),
-                // Icône de profil
                 const Icon(
                   Icons.account_circle_rounded,
                   size: 200,
                   color: Colors.black,
                 ),
                 const SizedBox(height: 30),
-                // Texte de connexion
                 const Text(
                   "Login to Vault:",
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
-                // DropDown selector:
                 DropdownButtonVault(
                   values: widget.ctr.getListOfVault(),
                   onChanged: _handleVaultChanged,
                 ),
-                // Text field for error message
                 Text(
                   _passwordError ?? '',
                   style: const TextStyle(
@@ -143,23 +148,15 @@ class _LoginPageState extends State<LoginPage> {
                     fontSize: 12.0,
                   ),
                 ),
-
-                // Container for password field
                 Container(
                   width: 250,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                     color: Colors.grey[500],
                     borderRadius: BorderRadius.circular(10),
-                    border: Border(
-                      top: BorderSide(
-                          width: 3.0, color: _passwordContainerColor),
-                      bottom: BorderSide(
-                          width: 3.0, color: _passwordContainerColor),
-                      left: BorderSide(
-                          width: 3.0, color: _passwordContainerColor),
-                      right: BorderSide(
-                          width: 3.0, color: _passwordContainerColor),
+                    border: Border.all(
+                      width: 3.0,
+                      color: _passwordContainerColor,
                     ),
                   ),
                   child: TextField(
@@ -171,52 +168,51 @@ class _LoginPageState extends State<LoginPage> {
                     style: const TextStyle(color: Colors.black),
                     obscureText: true,
                     onSubmitted: (_) {
-                      _login(); // Call the _login function when the "OK" button is pressed
+                      _login();
                     },
                   ),
                 ),
                 const SizedBox(height: 10),
-                // Bouton de connexion
-                Container(
-                  width: 250,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        _login();
-                      },
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Access vault",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
+                _isLoading
+                    ? const CircularProgressIndicator()
+                    : Container(
+                        width: 250,
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _login();
+                            },
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 12.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Access vault",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                  ),
+                                ],
                               ),
                             ),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                // TEMP: as we only have one vault at the moment, we don't want to signup
+                const SizedBox(height: 10),
                 InkWell(
                   onTap: _callSignUp,
                   child: const Text(
@@ -236,11 +232,14 @@ class DropdownButtonVault extends StatefulWidget {
   final List<String> values;
   final ValueChanged<String> onChanged;
 
-  DropdownButtonVault({Key? key, required this.values, required this.onChanged})
-      : super(key: key);
+  DropdownButtonVault({
+    Key? key,
+    required this.values,
+    required this.onChanged,
+  }) : super(key: key);
 
   @override
-  State<DropdownButtonVault> createState() => _DropdownButtonVaultState();
+  _DropdownButtonVaultState createState() => _DropdownButtonVaultState();
 }
 
 class _DropdownButtonVaultState extends State<DropdownButtonVault> {
@@ -249,7 +248,7 @@ class _DropdownButtonVaultState extends State<DropdownButtonVault> {
   @override
   void initState() {
     super.initState();
-    _curVal = widget.values.first; // Initialize with the first value
+    _curVal = widget.values.first;
   }
 
   @override
@@ -273,7 +272,7 @@ class _DropdownButtonVaultState extends State<DropdownButtonVault> {
             setState(() {
               _curVal = value;
             });
-            widget.onChanged(value); // Notify parent widget about the change
+            widget.onChanged(value);
           }
         },
         items: widget.values.map<DropdownMenuItem<String>>((String value) {
