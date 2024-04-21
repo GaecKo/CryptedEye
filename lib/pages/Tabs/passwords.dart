@@ -53,22 +53,18 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
         animatedIconTheme: IconThemeData(size: 22.0),
         children: [
           SpeedDialChild(
-            child: Icon(Icons.note_add_outlined),
-            backgroundColor: Colors.blue,
-            label: 'Add Password',
-            labelStyle: TextStyle(fontSize: 16.0),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => AddPasswordItem(
-                    ctr: widget.ctr,
-                    rebuildParent: _rebuildParent,
-                  ),
-                ),
-              );
-            },
-          ),
+              child: Icon(Icons.password),
+              backgroundColor: Colors.blue,
+              label: 'Add Password',
+              labelStyle: TextStyle(fontSize: 16.0),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (_) => AddPasswordItem(
+                          ctr: widget.ctr,
+                          rebuildParent: _rebuildParent,
+                        ));
+              }),
         ],
       ),
       body: Column(
@@ -331,7 +327,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
             if (websiteController.text.isNotEmpty &&
                 usernameController.text.isNotEmpty &&
                 passwordController.text.isNotEmpty) {
-              // Controller fonction
+              // Controller function
               ctr.addPasswordData(websiteController.text,
                   usernameController.text, passwordController.text);
               widget.rebuildParent();
@@ -341,6 +337,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
           child: const Text('Save'),
         ),
       ],
+      // Specify the barrierColor to dim the background
     );
   }
 }
