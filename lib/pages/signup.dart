@@ -113,9 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
         onTap: _callLogIn,
         child: const Text(
           "Connect to existing Vault",
-          style: TextStyle(
-            fontStyle: FontStyle.italic,
-          ),
+          style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
         ));
 
     List<String> vaults = ctr.getListOfVault();

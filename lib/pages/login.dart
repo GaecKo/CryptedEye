@@ -217,6 +217,10 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: _callSignUp,
                   child: const Text(
                     "New Vault? Create One!",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
               ],
