@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 /*Tab(icon: Icon(Icons.panorama_outlined),),*/
                 Tab(
-                  icon: Icon(Icons.note_outlined),
+                  icon: Icon(Icons.notes),
                 ),
               ],
               indicatorSize: TabBarIndicatorSize.tab,

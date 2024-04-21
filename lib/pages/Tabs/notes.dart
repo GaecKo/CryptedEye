@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../controller.dart';
 
@@ -75,47 +76,53 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        animatedIconTheme: IconThemeData(size: 22.0),
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.note_add_outlined),
+            backgroundColor: Colors.blue,
+            label: 'Add Note',
+            labelStyle: TextStyle(fontSize: 16.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NoteScreen(
+                    ctr: widget.ctr,
+                    contents: contents,
+                    rebuildParent: rebuildNotesPage,
+                  ),
+                ),
+              );
+            },
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.create_new_folder, color: Colors.blue),
+            backgroundColor: Colors.white,
+            label: 'Create Folder',
+            labelStyle: TextStyle(fontSize: 16.0),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => FolderCreation(
+                  ctr: widget.ctr,
+                  contents: contents,
+                  rebuildParent: rebuildNotesPage,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           const SizedBox(
             height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => NoteScreen(
-                        ctr: ctr,
-                        contents: contents,
-                        rebuildParent: rebuildNotesPage,
-                      ),
-                    ),
-                  );
-                },
-                child: const Text("Add Note"),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => FolderCreation(
-                      ctr: ctr,
-                      contents: contents,
-                      rebuildParent: rebuildNotesPage,
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.create_new_folder,
-                  color: Colors.blue,
-                ),
-                label: const Text("Create Folder"),
-              ),
-            ],
           ),
           const SizedBox(
             height: 10,
@@ -125,7 +132,7 @@ class _NotesPageState extends State<NotesPage> {
             child: TextField(
               onChanged: _updateSearchQuery,
               decoration: const InputDecoration(
-                hintText: 'Search Password...',
+                hintText: 'Search Notes...',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
