@@ -48,8 +48,7 @@ class Controller {
     localPath = rwm.localPath;
   }
 
-  Future<void> loadApp(String AP, String VaultName, E.Key crypterKey,
-      {bool fromSignup = false}) async {
+  Future<void> loadApp(String AP, String VaultName, E.Key crypterKey) async {
     this.VaultName = VaultName;
     print("Vault is ${this.VaultName}");
 
@@ -84,7 +83,7 @@ class Controller {
     print("CLOSING APP");
   }
 
-  Future<void> initApp(String AP, String VaultName, bool secureContext) async {
+  Future<void> initApp(String AP, String VaultName) async {
     // Init and then load App
 
     // 2. create project structure
@@ -113,10 +112,6 @@ class Controller {
       "Directories": {"child": []},
       "Notes": {}
     });
-
-    // 6. load app
-    await loadApp(AP, VaultName, await getCrypterKey(AP, VaultName),
-        fromSignup: true);
   }
 
   bool isStartup() {

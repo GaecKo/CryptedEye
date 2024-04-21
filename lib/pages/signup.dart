@@ -1,6 +1,14 @@
+import 'package:encrypt/encrypt.dart' as E;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../controller.dart';
+
+Future<E.Key> callCrypterInit(List<dynamic> args) async {
+  String AP = args[1];
+  String VaultName = args[2];
+  return await args[0].getCrypterKey(AP, VaultName);
+}
 
 class SignUpPage extends StatefulWidget {
   final Controller ctr;
@@ -21,7 +29,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String? _confirmPasswordError;
   Color _passwordContainerColor = Colors.white;
   Color _confirmPasswordContainerColor = Colors.white;
-  final bool _loadWithSecureContext = true; // Default value
+
+  bool _isLoading = false;
 
   _SignUpPageState(this.ctr);
 
@@ -66,16 +75,20 @@ class _SignUpPageState extends State<SignUpPage> {
         _confirmPasswordError = null;
         _passwordContainerColor = Colors.white;
         _confirmPasswordContainerColor = Colors.white;
+        _isLoading = true;
       });
       print("Passwords match");
 
-      // secure Vault is set to false at the moment, to be fixed later
-      await ctr.initApp(password, VaultName, false);
-      setState(() {
-        Navigator.pushReplacementNamed(context, '/HomePage');
-        // Passwords match, proceed with signup logic
-        // You can call your signup function here
-      });
+      // 1. init the vault, create files, salt, ...
+      await ctr.initApp(password, VaultName);
+
+      // 2. using the created salt, ..., compute the crypter (high computation time)
+      E.Key key = await compute(callCrypterInit, [ctr, password, VaultName]);
+
+      // 3. finaly, apply retrieved key to app, and load it.
+      ctr.loadApp(password, VaultName, key);
+
+      Navigator.pushReplacementNamed(context, '/HomePage');
     }
   }
 
@@ -233,10 +246,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ],
                 ),*/
-                ElevatedButton(
-                  onPressed: _signUp,
-                  child: const Text('Create Vault'),
-                ),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _signUp,
+                        child: const Text('Create Vault'),
+                      ),
                 canLog,
               ],
             ),
