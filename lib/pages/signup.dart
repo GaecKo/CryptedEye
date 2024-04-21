@@ -27,6 +27,8 @@ class _SignUpPageState extends State<SignUpPage> {
   Controller ctr;
   String? _passwordError;
   String? _confirmPasswordError;
+  String? _vaultError;
+  Color _vaultColor = Colors.white;
   Color _passwordContainerColor = Colors.white;
   Color _confirmPasswordContainerColor = Colors.white;
 
@@ -50,6 +52,16 @@ class _SignUpPageState extends State<SignUpPage> {
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
+    if (VaultName.isEmpty || VaultName.length < 2) {
+      setState(() {
+        _vaultError = "Vault name must be at least 2 characters long";
+        _vaultColor = Colors.red;
+      });
+    } else if (ctr.getListOfVault().contains(VaultName)) {
+      _vaultError =
+          "Vault can't have the same name as other already created vaults";
+      _vaultColor = Colors.red;
+    }
     if (password.isEmpty || confirmPassword.isEmpty) {
       // Show error message for empty fields and change container color
       setState(() {
@@ -106,7 +118,8 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ));
 
-    if (ctr.getListOfVault().length > 0) {
+    List<String> vaults = ctr.getListOfVault();
+    if (vaults.length > 0) {
       canLog = login;
       title = " > New Vault";
     } else {
@@ -165,14 +178,15 @@ class _SignUpPageState extends State<SignUpPage> {
                     controller: _VaultNameController,
                     decoration: InputDecoration(
                       labelText: 'Vault Name',
+                      errorText: _vaultError,
                       labelStyle: const TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.white),
+                        borderSide: BorderSide(color: _vaultColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.white),
+                        borderSide: BorderSide(color: _vaultColor),
                       ),
                     ),
                     style: const TextStyle(color: Colors.white),
