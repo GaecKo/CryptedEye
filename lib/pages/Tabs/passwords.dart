@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../controller.dart';
 
@@ -44,6 +45,32 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        animatedIconTheme: IconThemeData(size: 22.0),
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.note_add_outlined),
+            backgroundColor: Colors.blue,
+            label: 'Add Password',
+            labelStyle: TextStyle(fontSize: 16.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => AddPasswordItem(
+                    ctr: widget.ctr,
+                    rebuildParent: _rebuildParent,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -57,20 +84,6 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AddPasswordItem(
-                    ctr: widget.ctr,
-                    rebuildParent: _rebuildParent,
-                  );
-                },
-              );
-            },
-            child: const Text('Add New Password'),
           ),
           Expanded(
             child: ListView.builder(
