@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 
 import 'API/crypter.dart';
 import 'API/img.dart';
@@ -319,6 +320,20 @@ class Controller {
     notes_data["Directories"][new_cr_name] = [cor_notes];
     writeNotesToJson();
   }
+
+  Future<void> exportData() async {
+    //String data_path = "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/gui.CryptedEye";
+    String data_path = "$localPath/$VaultName.CryptedEye";
+    String  download_path = '/storage/emulated/0/Download/data.CryptedEye.tar';
+    img.createTarFile(data_path, download_path);
+  }
+
+  void importData() {
+    final params = SaveFileDialogParams(sourceFilePath: "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/");
+    final filePath = FlutterFileDialog.saveFile(params: params);
+    print(params);
+  }
+
 }
 
 void main() {}
