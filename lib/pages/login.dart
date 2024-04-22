@@ -215,13 +215,15 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 10),
                 InkWell(
                   onTap: _callSignUp,
-                  child: const Text(
-                    "New Vault? Create One!",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const SizedBox()
+                      : const Text(
+                          "New Vault? Create One!",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                 ),
               ],
             ),

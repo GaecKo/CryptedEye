@@ -61,8 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
       _vaultError =
           "Vault can't have the same name as other already created vaults";
       _vaultColor = Colors.red;
-    }
-    if (password.isEmpty || confirmPassword.isEmpty) {
+    } else if (password.isEmpty || confirmPassword.isEmpty) {
       // Show error message for empty fields and change container color
       setState(() {
         _passwordError = 'Password fields are required';
@@ -111,10 +110,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
     Widget login = InkWell(
         onTap: _callLogIn,
-        child: const Text(
-          "Connect to existing Vault",
-          style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
-        ));
+        child: _isLoading
+            ? const SizedBox()
+            : const Text(
+                "Connect to existing Vault",
+                style:
+                    TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+              ));
 
     List<String> vaults = ctr.getListOfVault();
     if (vaults.length > 0) {
