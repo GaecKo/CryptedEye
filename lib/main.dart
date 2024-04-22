@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:CryptedEye/pages/welcome.dart';
 import 'package:flutter/material.dart';
 
 import 'controller.dart';
@@ -47,9 +48,10 @@ class CryptedEye extends StatelessWidget {
         '/login': (context) => LoginPage(ctr: ctr),
         '/HomePage': (context) => HomePage(ctr: ctr),
         '/SignUp': (context) => SignUpPage(ctr: ctr),
-        '/Settings': (context) => SettingsPage(ctr: ctr)
+        '/Settings': (context) => SettingsPage(ctr: ctr),
+        '/Welcome': (context) => WelcomePage()
       },
-      home: firstPage,
+      home: WelcomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

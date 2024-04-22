@@ -309,27 +309,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // REMOVED TEMPORALLY AS BACKEND ISN'T WORKING
-                        /*Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Load with Secure Context',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    const SizedBox(width: 10,),
-                    Switch(
-                      value: _loadWithSecureContext,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _loadWithSecureContext = value;
-                        });
-                      },
-                      activeColor: Colors.blue,
-                      inactiveTrackColor: Colors.grey,
-                    ),
-                  ],
-                ),*/
                         _isLoading
                             ? CircularProgressIndicator()
                             : ElevatedButton(
