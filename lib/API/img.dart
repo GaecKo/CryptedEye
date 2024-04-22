@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
+import 'package:path/path.dart' as path;
 
 class IMG {
   String? unTarFile(String sourceFile)  {
@@ -60,6 +61,32 @@ class IMG {
   }
 }
 
+void copyDirectoryContents(String sourceDirPath, String targetDirPath) {
+  Directory sourceDir = Directory(sourceDirPath);
+  Directory targetDir = Directory(targetDirPath);
+
+  if (!sourceDir.existsSync()) {
+    print('Le répertoire source n\'existe pas.');
+    return;
+  }
+
+  if (!targetDir.existsSync()) {
+    targetDir.createSync(recursive: true);
+  }
+
+  List<FileSystemEntity> contents = sourceDir.listSync(recursive: true);
+  for (FileSystemEntity entity in contents) {
+    String relativePath = path.relative(entity.path, from: sourceDirPath);
+    String destinationPath = path.join(targetDirPath, relativePath);
+
+    if (entity is Directory) {
+      Directory(destinationPath).createSync(recursive: true);
+    } else if (entity is File) {
+      File(entity.path).copySync(destinationPath);
+    }
+  }
+}
+
 void main(List<String> args) {
   IMG img = IMG();
 
@@ -67,6 +94,11 @@ void main(List<String> args) {
   Directory d = Directory(data_path);
   String destinationFilePath = 'data.CryptedEye.tar';
 
-  img.createTarFile(d, destinationFilePath);
+  // img.createTarFile(d, destinationFilePath);
   //print(img.unTarFile(destinationFilePath));
+
+  String sourceDirPath = 'test/test_tar';
+  String targetDirPath = 'test2';
+
+  copyDirectoryContents(sourceDirPath, targetDirPath);
 }

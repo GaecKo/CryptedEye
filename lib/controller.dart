@@ -328,6 +328,7 @@ class Controller {
     // "$localPath/$VaultName.CryptedEye"
     String data_path = "$localPath/$VaultName.CryptedEye";
     Directory d = Directory(data_path);
+
     String download_path = '/storage/emulated/0/Download/data.CryptedEye.tar';
     img.createTarFile(d, download_path);
   }
