@@ -134,11 +134,71 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             PageView(
               children: [
-                Container(
-                  color: Colors.grey,
-                  child: Center(
-                    child: Text('Swipe right to sign up'),
-                  ),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start, // Changer cette ligne
+                  children: [
+                    SizedBox(height: 50), // Espacement supplémentaire vers le haut
+                    Padding(
+                      padding: EdgeInsets.only(left: 30, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // Logo en haut à gauche
+                          Icon(
+                            Icons.lock,
+                            size: 100,
+                            color: Colors.white,
+                          ),
+                          // Espacement entre le logo et le texte
+                          SizedBox(width: 20),
+                          // Utiliser Flexible ou Expanded pour le texte
+                          Flexible(
+                            child: Align(
+                              alignment: Alignment.centerLeft, // Aligner le texte à gauche
+                              child: Text(
+                                "Chaque vault est comme un coffre-fort numérique privé, où vous pouvez stocker en toute sécurité vos données sensibles",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Georgia', // Remplace "NomDeTaPolice" par le nom de ta police
+                                  // Autres styles de texte que tu souhaites appliquer
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 60),
+                    Padding(
+                      padding: EdgeInsets.only(left: 30, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Notre système génère une clé unique, accompagnée d'un salt spécifique à votre vault. Cela signifie que même si deux utilisateurs ont le même mot de passe, les clés générées seront différentes.",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Georgia',
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Icon(
+                            Icons.lock,
+                            size: 100,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 SingleChildScrollView(
                   child: Center(
