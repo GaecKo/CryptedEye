@@ -66,7 +66,7 @@ class Controller {
     initialized = true;
   }
 
-  Future<E.Key> getCrypterKey(String Vault, String AP) async {
+  Future<E.Key> getCrypterKey(String AP, String Vault) async {
     // get salt path
     String saltPath = "$localPath/$Vault.CryptedEye/app/salt.key";
 
@@ -85,6 +85,7 @@ class Controller {
   }
 
   Future<void> initApp(String AP, String VaultName) async {
+    print("creating with vaultname $VaultName");
     // Init and then load App
 
     // 2. create project structure
@@ -324,16 +325,17 @@ class Controller {
   Future<void> exportData() async {
     //String data_path = "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/gui.CryptedEye";
     String data_path = "$localPath/$VaultName.CryptedEye";
-    String  download_path = '/storage/emulated/0/Download/data.CryptedEye.tar';
+    String download_path = '/storage/emulated/0/Download/data.CryptedEye.tar';
     img.createTarFile(data_path, download_path);
   }
 
   void importData() {
-    final params = SaveFileDialogParams(sourceFilePath: "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/");
+    final params = SaveFileDialogParams(
+        sourceFilePath:
+            "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/");
     final filePath = FlutterFileDialog.saveFile(params: params);
     print(params);
   }
-
 }
 
 void main() {}
