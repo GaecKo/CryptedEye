@@ -2,13 +2,15 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 
 class IMG {
-  void unTarFile(String sourceFile, String targetDir)  {
+  String? unTarFile(String sourceFile)  {
     // Vérifier si le fichier source existe
     File source = File(sourceFile);
     if (!source.existsSync()) {
       print("Le fichier source n'existe pas.");
-      return;
+      return null;
     }
+
+    String? untarredFilePath = sourceFile;
 
     // Lire les données de l'archive tar
     List<int> bytes = source.readAsBytesSync();
@@ -27,12 +29,13 @@ class IMG {
     }
 
     print('Extraction terminée.');
+    return untarredFilePath;
   }
 
-  void createTarFile(String sourceDir, String targetFile) {
+  void createTarFile(Directory sourceDir, String targetFile) {
     // Créer une liste de tous les fichiers et sous-répertoires dans le dossier source
     List<FileSystemEntity> fileList =
-        Directory(sourceDir).listSync(recursive: true);
+        sourceDir.listSync(recursive: true);
 
     // Créer un objet Archive
     Archive archive = Archive();
@@ -60,10 +63,10 @@ class IMG {
 void main(List<String> args) {
   IMG img = IMG();
 
-  String sourceFolderPath = 'test';
+  String data_path = "test";
+  Directory d = Directory(data_path);
   String destinationFilePath = 'data.CryptedEye.tar';
-  String data = "data";
 
-  img.createTarFile(sourceFolderPath, destinationFilePath);
-  //img.unTarFile(destinationFilePath, data);
+  img.createTarFile(d, destinationFilePath);
+  //print(img.unTarFile(destinationFilePath));
 }

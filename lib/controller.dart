@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:path/path.dart' as path;
 
 import 'API/crypter.dart';
 import 'API/img.dart';
@@ -324,17 +325,32 @@ class Controller {
 
   Future<void> exportData() async {
     //String data_path = "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/gui.CryptedEye";
+    // "$localPath/$VaultName.CryptedEye"
     String data_path = "$localPath/$VaultName.CryptedEye";
+    Directory d = Directory(data_path);
     String download_path = '/storage/emulated/0/Download/data.CryptedEye.tar';
-    img.createTarFile(data_path, download_path);
+    img.createTarFile(d, download_path);
   }
 
-  void importData() {
-    final params = SaveFileDialogParams(
-        sourceFilePath:
-            "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/");
-    final filePath = FlutterFileDialog.saveFile(params: params);
-    print(params);
+  Future<void> importData() async {
+    try {
+      // Attendre que l'utilisateur sélectionne un fichier
+      final tar_to_import = await FlutterFileDialog.pickFile();
+
+      if (tar_to_import != null) {
+        File selectedFile = File(tar_to_import);
+        String newFilePath = localPath; // nouveau chemin
+        
+        selectedFile.copySync(newFilePath);
+        
+        print('Fichier importé avec succès.');
+      } else {
+        // L'utilisateur a annulé la sélection
+        print('Aucun fichier sélectionné.');
+      }
+    } catch (e) {
+      print('Erreur lors de l\'importation du fichier : $e');
+    }
   }
 }
 
