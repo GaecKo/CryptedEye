@@ -48,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _signUp() async {
-    String VaultName = _VaultNameController.text;
+    String VaultName = _VaultNameController.text.trim();
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 

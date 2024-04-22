@@ -128,7 +128,7 @@ class _NotesPageState extends State<NotesPage> {
             height: 10,
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
             child: TextField(
               onChanged: _updateSearchQuery,
               decoration: const InputDecoration(
@@ -176,7 +176,10 @@ class _NotesPageState extends State<NotesPage> {
                           deleteWidget(index);
                           setState(() {});
                         },
-                        backgroundColor: Color(0xFFFE4A49),
+                        borderRadius: BorderRadius.circular(10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 10),
+                        backgroundColor: const Color(0xFFFE4A49),
                         foregroundColor: Colors.white,
                         icon: Icons.delete,
                         label: 'Delete',
@@ -259,7 +262,7 @@ class _NoteState extends State<Note> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       child: ListTile(
         title: Text(
           widget.ctr.crypter.decrypt(widget.cryptedTitle),
@@ -308,7 +311,7 @@ class _FolderState extends State<Folder> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -469,12 +472,6 @@ class _NoteScreenState extends State<NoteScreen> {
           }
 
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Note saved successfully!'),
-              duration: Duration(seconds: 2),
-            ),
-          );
         },
       ),
     );
@@ -622,33 +619,37 @@ class _OpenDirState extends State<OpenDir> {
       appBar: AppBar(
         title: Text(widget.ctr.crypter.decrypt(dirName)),
       ),
+      floatingActionButton: SpeedDial(
+          icon: Icons.add,
+          activeIcon: Icons.close,
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          animatedIconTheme: IconThemeData(size: 22.0),
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.note_add_outlined),
+              backgroundColor: Colors.blue,
+              label: 'Add Note',
+              labelStyle: TextStyle(fontSize: 16.0),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => NoteScreen(
+                      ctr: widget.ctr,
+                      contents: contents,
+                      rebuildParent: rebuildDirPage,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ]),
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Column(
         children: [
           const SizedBox(
             height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      // build note screen for new note: ctr, contents, rebuildDirPage, dirName
-                      builder: (_) => NoteScreen(
-                        ctr: ctr,
-                        contents: contents,
-                        rebuildParent: rebuildDirPage,
-                        folderName: dirName,
-                      ),
-                    ),
-                  );
-                },
-                child: const Text("Add Note"),
-              ),
-            ],
           ),
           Expanded(
             child: ListView.builder(
@@ -667,7 +668,10 @@ class _OpenDirState extends State<OpenDir> {
                           deleteWidget(index);
                           setState(() {});
                         },
-                        backgroundColor: Color(0xFFFE4A49),
+                        borderRadius: BorderRadius.circular(10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 10),
+                        backgroundColor: const Color(0xFFFE4A49),
                         foregroundColor: Colors.white,
                         icon: Icons.delete,
                         label: 'Delete',

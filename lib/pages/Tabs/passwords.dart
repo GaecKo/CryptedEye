@@ -71,7 +71,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
             child: TextField(
               onChanged: _updateSearchQuery,
               decoration: const InputDecoration(
@@ -118,6 +118,9 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                           widget.ctr.deletePassword(website);
                           _rebuildParent();
                         },
+                        borderRadius: BorderRadius.circular(10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 10),
                         backgroundColor: const Color(0xFFFE4A49),
                         foregroundColor: Colors.white,
                         icon: Icons.delete,
@@ -174,7 +177,7 @@ class _PasswordItemState extends State<PasswordItem> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       child: ListTile(
         title: Text(
           widget.website,
