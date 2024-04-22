@@ -32,7 +32,7 @@ class IMG {
     print('Extraction terminée.');
     return targetDirectory;
   }
-  void createTarFile(Directory sourceDir) {
+  void createTarFile(Directory sourceDir, String outputDirectory, String tar_name) {
     // Créer une liste de tous les fichiers et sous-répertoires dans le dossier source
     List<FileSystemEntity> fileList = sourceDir.listSync();
 
@@ -53,13 +53,14 @@ class IMG {
     }
 
     // Créer un fichier .tar à partir de l'archive
-    String tarFileName = '${sourceDir.path}.cryptedEye.tar';
+    String tarFileName = '$outputDirectory/$tar_name.CryptedEye.tar';
+    print(tarFileName);
     File tarFile = File(tarFileName);
     if (!tarFile.existsSync()) {
       tarFile.createSync(recursive: true);
     }
     tarFile.writeAsBytesSync(TarEncoder().encode(archive));
-    print('Tar créé: $tarFileName');
+    print('Tar créé: ${tarFile.path}');
   }
 
   void addDirectoryContentToArchive(Directory directory, Archive archive, String relativePath) {
@@ -87,8 +88,8 @@ void main(List<String> args) {
 
   String data_path = "test_untar/test";
   Directory d = Directory(data_path);
-  String tar_name = 'test';
+  String tar_name = 'data';
 
-  img.createTarFile(d);
-  //img.unTarFile('test.cryptedEye.tar', 'test_untar', tar_name);
+  //img.createTarFile(d, 'test_untar', 'data');
+  img.unTarFile('test_untar/data.cryptedEye.tar', 'test_untar', tar_name);
 }

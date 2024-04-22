@@ -326,11 +326,12 @@ class Controller {
   Future<void> exportData() async {
     //String data_path = "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/gui.CryptedEye";
     // "$localPath/$VaultName.CryptedEye"
+    
     String data_path = "$localPath/$VaultName.CryptedEye";
     Directory d = Directory(data_path);
 
     String download_path = '/storage/emulated/0/Download/data.CryptedEye.tar';
-    img.createTarFile(d, download_path);
+    img.createTarFile(d, download_path, VaultName);
   }
 
   Future<void> importData() async {
