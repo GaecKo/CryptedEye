@@ -86,14 +86,35 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const SizedBox(
+            height: 10,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
             child: TextField(
               onChanged: _updateSearchQuery,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Search Password...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(
+                  Icons.search,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
+                  borderSide: BorderSide(color: Colors.blue), // Couleur de la bordure
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
+                  borderSide: const BorderSide(
+                    color: Colors.blue, // Couleur de la bordure lorsqu'elle est activée
+                    width: 2.0, // Largeur de la bordure lorsqu'elle est activée
+                  ),
+                ),
+              ),
+              style: const TextStyle(
+                // Définir la couleur de la bordure lorsqu'elle n'est pas activée
+                decorationColor: Colors.blue,
+                // Définir l'épaisseur de la bordure lorsqu'elle n'est pas activée
+                decorationThickness: 2.0,
               ),
             ),
           ),

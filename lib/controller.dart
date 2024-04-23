@@ -330,7 +330,7 @@ class Controller {
     String data_path = "$localPath/$VaultName.CryptedEye";
     Directory d = Directory(data_path);
 
-    String download_path = '/storage/emulated/0/Download/data.CryptedEye.tar';
+    String download_path = '/storage/emulated/0/Download';
     img.createTarFile(d, download_path, VaultName);
   }
 
@@ -338,14 +338,21 @@ class Controller {
     try {
       // Attendre que l'utilisateur sélectionne un fichier
       final tar_to_import = await FlutterFileDialog.pickFile();
+      
 
       if (tar_to_import != null) {
-        File selectedFile = File(tar_to_import);
-        String newFilePath = localPath; // nouveau chemin
-        
-        selectedFile.copySync(newFilePath);
-        
-        print('Fichier importé avec succès.');
+
+        String dirName = tar_to_import;
+
+        // get the last part of the path
+        List<String> tmp = dirName.split("/");
+        dirName = tmp[tmp.length - 1];
+
+        // get first part
+        tmp = dirName.split('.');
+
+        print('Data to import from $tar_to_import');
+        print(img.unTarFile(tar_to_import, localPath, '${tmp[0]}.CryptedEye'));
       } else {
         // L'utilisateur a annulé la sélection
         print('Aucun fichier sélectionné.');

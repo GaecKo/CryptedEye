@@ -30,7 +30,7 @@ class IMG {
 
     source.deleteSync();
     print('Extraction terminée.');
-    return targetDirectory;
+    return '$targetDirectory/$tar_name';
   }
   void createTarFile(Directory sourceDir, String outputDirectory, String tar_name) {
     // Créer une liste de tous les fichiers et sous-répertoires dans le dossier source
@@ -90,6 +90,6 @@ void main(List<String> args) {
   Directory d = Directory(data_path);
   String tar_name = 'data';
 
-  //img.createTarFile(d, 'test_untar', 'data');
-  img.unTarFile('test_untar/data.cryptedEye.tar', 'test_untar', tar_name);
+  // img.createTarFile(d, 'test_untar', 'data');
+  // print(img.unTarFile('test_untar/data.cryptedEye.tar', 'test_untar/test', tar_name));
 }
