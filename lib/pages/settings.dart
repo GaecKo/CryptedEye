@@ -336,6 +336,7 @@ class _SettingsList extends State<SettingsList> {
               onPressed: () {
                 widget.ctr.importData();
                 Navigator.of(context).pop();
+                _showImportSuccessMessage(context);
               },
               child: const Text('Import'),
             ),
@@ -344,6 +345,26 @@ class _SettingsList extends State<SettingsList> {
                 Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showImportSuccessMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Import Successful'),
+          content: const Text('Your data has been imported successfully !'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
             ),
           ],
         );
