@@ -484,28 +484,50 @@ class _NoteScreenState extends State<NoteScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Title",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                hintText: "Enter title...",
+            SizedBox(
+              height: 50,
+              child: TextFormField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  hintText: "Title",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding: EdgeInsets.only(bottom: 10), // Supprime la ligne sous le titre
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black), // Couleur de la surbrillance en noir
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black), // Couleur de la ligne en noir
+                  ),
+                  disabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black), // Couleur de la ligne en noir
+                  ),
+                  errorBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black), // Couleur de la ligne en noir
+                  ),
+                ),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal, // Remet la police en normal
+                  color: Colors.black, // Couleur normale du texte en noir
+                ),
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Content",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
             Expanded(
-              child: TextField(
+              child: TextFormField(
                 controller: _contentController,
                 maxLines: null,
                 expands: true,
-                decoration: const InputDecoration(
-                    hintText: "Enter content...", border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  hintText: "Note",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none, // Supprime le contour rectangulaire autour de la note
+                ),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal, // Remet la police en normal
+                  color: Colors.black, // Couleur normale du texte en noir
+                ),
               ),
             ),
           ],
@@ -559,6 +581,7 @@ class _NoteScreenState extends State<NoteScreen> {
         },
       ),
     );
+
   }
 
   @override
