@@ -130,199 +130,146 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
       body: SafeArea(
-        child: Stack(
-          children: [
-            PageView(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start, // Changer cette ligne
+                const SizedBox(height: 50),
+                Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start, // Alignement à gauche
                   children: [
-                    SizedBox(height: 50), // Espacement supplémentaire vers le haut
-                    Padding(
-                      padding: EdgeInsets.only(left: 30, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          // Logo en haut à gauche
-                          Icon(
-                            Icons.lock,
-                            size: 100,
-                            color: Colors.white,
-                          ),
-                          // Espacement entre le logo et le texte
-                          SizedBox(width: 20),
-                          // Utiliser Flexible ou Expanded pour le texte
-                          Flexible(
-                            child: Align(
-                              alignment: Alignment.centerLeft, // Aligner le texte à gauche
-                              child: Text(
-                                "Chaque vault est comme un coffre-fort numérique privé, où vous pouvez stocker en toute sécurité vos données sensibles",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Georgia', // Remplace "NomDeTaPolice" par le nom de ta police
-                                  // Autres styles de texte que tu souhaites appliquer
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 60),
-                    Padding(
-                      padding: EdgeInsets.only(left: 30, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Notre système génère une clé unique, accompagnée d'un salt spécifique à votre vault. Cela signifie que même si deux utilisateurs ont le même mot de passe, les clés générées seront différentes.",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Georgia',
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 20),
-                          Icon(
-                            Icons.lock,
-                            size: 100,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
+                    const SizedBox(
+                        height:
+                        20), // Espace entre l'IconButton et le reste des éléments
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.lock,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          "CryptedEye",
+                          style: TextStyle(
+                              fontSize: 26,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          title,
+                          style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 50),
-                        Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start, // Alignement à gauche
-                          children: [
-                            const SizedBox(
-                                height:
-                                20), // Espace entre l'IconButton et le reste des éléments
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.lock,
-                                  size: 40,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(width: 10),
-                                const Text(
-                                  "CryptedEye",
-                                  style: TextStyle(
-                                      fontSize: 26,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  title,
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
 
-                        const SizedBox(height: 30),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            controller: _VaultNameController,
-                            decoration: InputDecoration(
-                              labelText: 'Vault Name',
-                              errorText: _vaultError,
-                              labelStyle: const TextStyle(color: Colors.white),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: _vaultColor),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: _vaultColor),
-                              ),
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: const TextStyle(color: Colors.white),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: _passwordContainerColor),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: _passwordContainerColor),
-                              ),
-                              errorText: _passwordError,
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            controller: _confirmPasswordController,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: 'Confirm Password',
-                              labelStyle: const TextStyle(color: Colors.white),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                BorderSide(color: _confirmPasswordContainerColor),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                BorderSide(color: _confirmPasswordContainerColor),
-                              ),
-                              errorText: _confirmPasswordError,
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        _isLoading
-                            ? CircularProgressIndicator()
-                            : ElevatedButton(
-                          onPressed: _signUp,
-                          child: const Text('Create Vault'),
-                        ),
-                        canLog,
-                      ],
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    controller: _VaultNameController,
+                    decoration: InputDecoration(
+                      labelText: 'Vault Name',
+                      errorText: _vaultError,
+                      labelStyle: const TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _vaultColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _vaultColor),
+                      ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: const TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _passwordContainerColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: _passwordContainerColor),
+                      ),
+                      errorText: _passwordError,
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm Password',
+                      labelStyle: const TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                        BorderSide(color: _confirmPasswordContainerColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                        BorderSide(color: _confirmPasswordContainerColor),
+                      ),
+                      errorText: _confirmPasswordError,
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // REMOVED TEMPORALLY AS BACKEND ISN'T WORKING
+                /*Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Load with Secure Context',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    const SizedBox(width: 10,),
+                    Switch(
+                      value: _loadWithSecureContext,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _loadWithSecureContext = value;
+                        });
+                      },
+                      activeColor: Colors.blue,
+                      inactiveTrackColor: Colors.grey,
+                    ),
+                  ],
+                ),*/
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                  onPressed: _signUp,
+                  child: const Text('Create Vault'),
+                ),
+                canLog,
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
