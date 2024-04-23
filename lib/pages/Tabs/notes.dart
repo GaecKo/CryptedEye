@@ -476,7 +476,7 @@ class _NoteScreenState extends State<NoteScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
-        title: const Text("Create New Note"),
+        title: SizedBox.shrink(), // Enlève le texte du titre
       ),
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Padding(
@@ -485,34 +485,34 @@ class _NoteScreenState extends State<NoteScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 50,
+              height: 50, // Hauteur réduite pour le titre
               child: TextFormField(
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: "Title",
                   hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding: EdgeInsets.only(bottom: 10), // Supprime la ligne sous le titre
+                  contentPadding: EdgeInsets.zero, // Supprime le padding autour du texte
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black), // Couleur de la surbrillance en noir
+                    borderSide: BorderSide.none, // Supprime la bordure
                   ),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black), // Couleur de la ligne en noir
+                    borderSide: BorderSide.none, // Supprime la bordure
                   ),
                   disabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black), // Couleur de la ligne en noir
+                    borderSide: BorderSide.none, // Supprime la bordure
                   ),
                   errorBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black), // Couleur de la ligne en noir
+                    borderSide: BorderSide.none, // Supprime la bordure
                   ),
                 ),
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 30, // Taille de police plus grande pour le titre
                   fontWeight: FontWeight.normal, // Remet la police en normal
                   color: Colors.black, // Couleur normale du texte en noir
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10), // Réduit l'espace entre le titre et la note
             Expanded(
               child: TextFormField(
                 controller: _contentController,
