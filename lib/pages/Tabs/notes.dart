@@ -6,8 +6,10 @@ import '../../controller.dart';
 
 class NotesPage extends StatefulWidget {
   final Controller ctr;
+  bool isStartup;
+  bool shown = false;
 
-  NotesPage({Key? key, required this.ctr}) : super(key: key);
+  NotesPage({Key? key, required this.ctr, required this.isStartup}) : super(key: key);
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -24,9 +26,48 @@ class _NotesPageState extends State<NotesPage> {
     });
   }
 
+  void popup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Adding Notes and Folders",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                "lib/images/notes.png",
+                width: 350,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Use the '+' button to create Folders and Notes. Swipe left to delete.",
+                textAlign: TextAlign.center,
+                style: TextStyle(),
+              )
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  widget.shown = true;
+                });
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text("Okay"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+
     ctr = widget.ctr;
     Map<String, dynamic> notesData = ctr.notes_data;
     Map<String, dynamic> notesContent = notesData["Notes"];
@@ -55,6 +96,7 @@ class _NotesPageState extends State<NotesPage> {
           ctr: ctr,
         ));
       }
+
     });
     List<dynamic> mainChildNotes = mainContent["child"];
     for (int i = 0; i < mainChildNotes.length; i++) {
@@ -76,46 +118,68 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        activeIcon: Icons.close,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        animatedIconTheme: IconThemeData(size: 22.0),
+      floatingActionButton: Stack(
         children: [
-          SpeedDialChild(
-            child: Icon(Icons.note_add_outlined),
-            backgroundColor: Colors.blue,
-            label: 'Add Note',
-            labelStyle: TextStyle(fontSize: 16.0),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => NoteScreen(
-                    ctr: widget.ctr,
-                    contents: contents,
-                    rebuildParent: rebuildNotesPage,
-                  ),
-                ),
-              );
-            },
+          Positioned(
+            left: 50.0,
+            bottom: 16.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                popup();
+              },
+              mini: true,
+              backgroundColor: Colors.grey,
+              shape: CircleBorder(),
+              tooltip: 'Show Popup',
+              child: Icon(Icons.question_mark),
+            ),
           ),
-          SpeedDialChild(
-            child: Icon(Icons.create_new_folder, color: Colors.blue),
-            backgroundColor: Colors.white,
-            label: 'Create Folder',
-            labelStyle: TextStyle(fontSize: 16.0),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (_) => FolderCreation(
-                  ctr: widget.ctr,
-                  contents: contents,
-                  rebuildParent: rebuildNotesPage,
+          Positioned(
+            right: 16.0,
+            bottom: 16.0,
+            child: SpeedDial(
+              icon: Icons.add,
+              activeIcon: Icons.close,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              animatedIconTheme: const IconThemeData(size: 22.0),
+              children: [
+                SpeedDialChild(
+                  child: const Icon(Icons.note_add_outlined),
+                  backgroundColor: Colors.blue,
+                  label: 'Add Note',
+                  labelStyle: const TextStyle(fontSize: 16.0),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => NoteScreen(
+                          ctr: widget.ctr,
+                          contents: contents,
+                          rebuildParent: rebuildNotesPage,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
+                SpeedDialChild(
+                  child: const Icon(Icons.create_new_folder, color: Colors.blue),
+                  backgroundColor: Colors.white,
+                  label: 'Create Folder',
+                  labelStyle: const TextStyle(fontSize: 16.0),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => FolderCreation(
+                        ctr: widget.ctr,
+                        contents: contents,
+                        rebuildParent: rebuildNotesPage,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -624,13 +688,13 @@ class _OpenDirState extends State<OpenDir> {
           activeIcon: Icons.close,
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
-          animatedIconTheme: IconThemeData(size: 22.0),
+          animatedIconTheme: const IconThemeData(size: 22.0),
           children: [
             SpeedDialChild(
-              child: Icon(Icons.note_add_outlined),
+              child: const Icon(Icons.note_add_outlined),
               backgroundColor: Colors.blue,
               label: 'Add Note',
-              labelStyle: TextStyle(fontSize: 16.0),
+              labelStyle: const TextStyle(fontSize: 16.0),
               onTap: () {
                 Navigator.push(
                   context,

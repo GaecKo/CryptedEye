@@ -6,6 +6,7 @@ import 'Tabs/passwords.dart';
 
 class HomePage extends StatefulWidget {
   Controller ctr;
+  late bool isStartup;
 
   HomePage({super.key, required this.ctr});
 
@@ -20,9 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: retrieve real security var that could be needed.
-    // retrieve password from LoginPage:
-    // Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    widget.isStartup = args["isStartup"];
 
     return DefaultTabController(
       length: 2,
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
             title: Row(
               children: [
                 const Icon(
-                  Icons.shield,
+                  Icons.lock,
                   size: 26,
                   color: Colors.white,
                 ),
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             bottom: TabBar(
               tabs: const [
                 Tab(
-                  icon: Icon(Icons.lock),
+                  icon: Icon(Icons.password),
                 ),
                 /*Tab(icon: Icon(Icons.panorama_outlined),),*/
                 Tab(
@@ -90,9 +90,9 @@ class _HomePageState extends State<HomePage> {
           body: SafeArea(
             child: TabBarView(
               children: <Widget>[
-                PasswordManagerPage(ctr: ctr),
+                PasswordManagerPage(ctr: ctr, isStartup: widget.isStartup,),
                 /*AlbumsPage(),*/
-                NotesPage(ctr: ctr),
+                NotesPage(ctr: ctr, isStartup: widget.isStartup,),
               ],
             ),
           )),

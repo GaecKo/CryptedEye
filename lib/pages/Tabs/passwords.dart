@@ -6,8 +6,10 @@ import '../../controller.dart';
 
 class PasswordManagerPage extends StatefulWidget {
   final Controller ctr;
+  bool isStartup;
+  bool shown = false;
 
-  const PasswordManagerPage({Key? key, required this.ctr}) : super(key: key);
+  PasswordManagerPage({super.key, required this.ctr, required this.isStartup});
 
   @override
   _PasswordManagerPageState createState() => _PasswordManagerPageState();
@@ -41,32 +43,46 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
     setState(() {});
   }
 
+  Widget popup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Adding Passwords",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                "lib/images/passwords.png",
+                width: 350,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Use the '+' button to create Passwords. Swipe left to delete.",
+                textAlign: TextAlign.center,
+                style: TextStyle(),
+              )
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text("Okay"),
+            ),
+          ],
+        );
+      },
+    );
+    return SizedBox();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        activeIcon: Icons.close,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        animatedIconTheme: IconThemeData(size: 22.0),
-        children: [
-          SpeedDialChild(
-              child: Icon(Icons.password),
-              backgroundColor: Colors.blue,
-              label: 'Add Password',
-              labelStyle: TextStyle(fontSize: 16.0),
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (_) => AddPasswordItem(
-                          ctr: widget.ctr,
-                          rebuildParent: _rebuildParent,
-                        ));
-              }),
-        ],
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -87,7 +103,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
               itemBuilder: (BuildContext context, int index) {
                 String website = widget.ctr.password_data.keys.elementAt(index);
                 List<dynamic> userData =
-                    widget.ctr.password_data.values.elementAt(index);
+                widget.ctr.password_data.values.elementAt(index);
                 String username = userData[0];
                 String password = userData[1];
 
@@ -140,6 +156,53 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                   ),
                 );
               },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            left: 50.0,
+            bottom: 16.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                popup();
+              },
+              mini: true,
+              backgroundColor: Colors.grey,
+              shape: CircleBorder(),
+              tooltip: 'Show Popup',
+              child: Icon(Icons.question_mark),
+            ),
+          ),
+          Positioned(
+            right: 16.0,
+            bottom: 16.0,
+            child: SpeedDial(
+              icon: Icons.add,
+              activeIcon: Icons.close,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              animatedIconTheme: const IconThemeData(size: 22.0),
+              children: [
+                SpeedDialChild(
+                  child: const Icon(Icons.password),
+                  backgroundColor: Colors.blue,
+                  label: 'Add Password',
+                  labelStyle: const TextStyle(fontSize: 16.0),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) =>
+                          AddPasswordItem(
+                            ctr: widget.ctr,
+                            rebuildParent: _rebuildParent,
+                          ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],

@@ -58,9 +58,11 @@ class _SignUpPageState extends State<SignUpPage> {
         _vaultColor = Colors.red;
       });
     } else if (ctr.getListOfVault().contains(VaultName)) {
-      _vaultError =
-      "Vault can't have the same name as other already created vaults";
-      _vaultColor = Colors.red;
+      setState(() {
+        _vaultError =
+        "Vault can't have the same name as other already created vaults";
+        _vaultColor = Colors.red;
+      });
     } else if (password.isEmpty || confirmPassword.isEmpty) {
       // Show error message for empty fields and change container color
       setState(() {
@@ -99,7 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
       // 3. finaly, apply retrieved key to app, and load it.
       ctr.loadApp(password, VaultName, key);
 
-      Navigator.pushReplacementNamed(context, '/HomePage');
+      Navigator.pushReplacementNamed(context, '/HomePage', arguments: {"isStartup": true});
     }
   }
 
@@ -135,7 +137,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 30),
                 Column(
                   crossAxisAlignment:
                   CrossAxisAlignment.start, // Alignement à gauche
@@ -170,72 +172,83 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: _VaultNameController,
-                    decoration: InputDecoration(
-                      labelText: 'Vault Name',
-                      errorText: _vaultError,
-                      labelStyle: const TextStyle(color: Colors.white),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: _vaultColor),
+                const SizedBox(height: 20),
+                Image.asset("lib/images/signup.png", width: 250,),
+                const SizedBox(height: 20),
+                Container(
+                  width: 300,
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: _VaultNameController,
+                      decoration: InputDecoration(
+                        labelText: 'Vault Name',
+                        errorText: _vaultError,
+                        labelStyle: const TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: _vaultColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: _vaultColor),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: _vaultColor),
-                      ),
+                      style: const TextStyle(color: Colors.white),
                     ),
-                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: const TextStyle(color: Colors.white),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: _passwordContainerColor),
+                Container(
+                  width: 300,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: const TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: _passwordContainerColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: _passwordContainerColor),
+                        ),
+                        errorText: _passwordError,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: _passwordContainerColor),
-                      ),
-                      errorText: _passwordError,
+                      style: const TextStyle(color: Colors.white),
                     ),
-                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password',
-                      labelStyle: const TextStyle(color: Colors.white),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                        BorderSide(color: _confirmPasswordContainerColor),
+                Container(
+                  width: 300,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        labelStyle: const TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide:
+                          BorderSide(color: _confirmPasswordContainerColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide:
+                          BorderSide(color: _confirmPasswordContainerColor),
+                        ),
+                        errorText: _confirmPasswordError,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                        BorderSide(color: _confirmPasswordContainerColor),
-                      ),
-                      errorText: _confirmPasswordError,
+                      style: const TextStyle(color: Colors.white),
                     ),
-                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 20),
