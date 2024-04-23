@@ -37,7 +37,8 @@ class CryptedEye extends StatelessWidget {
     Widget firstPage;
     if (isStartup) {
       // put singup as first page and create settings.json file
-      firstPage = SignUpPage(ctr: ctr);
+      firstPage = WelcomePage();
+
     } else {
       firstPage = LoginPage(ctr: ctr);
     }
@@ -51,7 +52,7 @@ class CryptedEye extends StatelessWidget {
         '/Settings': (context) => SettingsPage(ctr: ctr),
         '/Welcome': (context) => WelcomePage()
       },
-      home: WelcomePage(),
+      home: firstPage,
       debugShowCheckedModeBanner: false,
     );
   }

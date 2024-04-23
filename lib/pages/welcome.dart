@@ -18,7 +18,7 @@ class _WelcomePageState extends State<WelcomePage> {
       );
     } else {
       // Navigate to '/SignUp' route
-      Navigator.pushNamed(context, '/SignUp');
+      Navigator.pushReplacementNamed(context, '/SignUp');
     }
   }
 
