@@ -29,9 +29,9 @@ class _NotesPageState extends State<NotesPage> {
     super.initState();
     ctr = widget.ctr;
     Map<String, dynamic> notesData = ctr.notes_data;
+    print("Notes: $notesData");
     Map<String, dynamic> notesContent = notesData["Notes"];
     Map<String, dynamic> mainContent = notesData["Directories"];
-
     mainContent.forEach((key, value) {
       if (key != "child") {
         String dirTitle = key;
@@ -125,16 +125,34 @@ class _NotesPageState extends State<NotesPage> {
             height: 10,
           ),
           const SizedBox(
-            height: 10,
+            height: 0,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
             child: TextField(
               onChanged: _updateSearchQuery,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Search Notes...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(
+                    Icons.search,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
+                  borderSide: BorderSide(color: Colors.blue), // Couleur de la bordure
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
+                  borderSide: const BorderSide(
+                    color: Colors.blue, // Couleur de la bordure lorsqu'elle est activée
+                    width: 2.0, // Largeur de la bordure lorsqu'elle est activée
+                  ),
+                ),
+              ),
+              style: const TextStyle(
+                // Définir la couleur de la bordure lorsqu'elle n'est pas activée
+                decorationColor: Colors.blue,
+                // Définir l'épaisseur de la bordure lorsqu'elle n'est pas activée
+                decorationThickness: 2.0,
               ),
             ),
           ),
@@ -393,8 +411,10 @@ class _NoteScreenState extends State<NoteScreen> {
     }
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
         title: const Text("Create New Note"),
       ),
+      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
