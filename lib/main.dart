@@ -57,6 +57,8 @@ class CryptedEye extends StatelessWidget {
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.black,
+          selectionHandleColor: Colors.black, // Couleur de la poignée de sélection
+          selectionColor: Colors.black.withOpacity(0.3), // Couleur de la sélection
         ),
       ),
     );
