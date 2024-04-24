@@ -333,10 +333,12 @@ class Controller {
     return img.createTarFile(d, download_path, VaultName);
   }
 
-  Future<void> importData() async {
+  Future<bool> importData() async {
     try {
       // Attendre que l'utilisateur sélectionne un fichier
-      final tar_to_import = await FlutterFileDialog.pickFile();
+      final tar_to_import = await FlutterFileDialog.pickFile(params: const OpenFileDialogParams(
+        fileExtensionsFilter: [".tar"],
+      ));
 
       if (tar_to_import != null) {
         String dirName = tar_to_import;
@@ -350,12 +352,15 @@ class Controller {
 
         print('Data to import from $tar_to_import');
         print(img.unTarFile(tar_to_import, localPath, '${tmp[0]}.CryptedEye'));
+        return true;
       } else {
         // L'utilisateur a annulé la sélection
         print('Aucun fichier sélectionné.');
+        return false;
       }
     } catch (e) {
       print('Erreur lors de l\'importation du fichier : $e');
+      return false;
     }
   }
 }

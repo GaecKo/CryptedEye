@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../controller.dart';
 
@@ -288,11 +288,13 @@ class _SettingsList extends State<SettingsList> {
             TextButton(
               onPressed: () async {
                 String tarPath = await widget.ctr.exportData();
-                // todo: make work SharePlus
-                // await Share.shareXFiles([XFile(tarPath)],
-                // text: 'Your vault image');
                 Navigator.of(context).pop();
-                _showExportSuccessMessage(context);
+
+                await Share.shareXFiles([XFile(tarPath)],
+                text: 'This is the image of the Vault ${widget.ctr.VaultName}.').then((_) {
+                  _showExportSuccessMessage(context);
+                });
+
               },
               child: const Text('Export'),
             ),
@@ -338,10 +340,15 @@ class _SettingsList extends State<SettingsList> {
           content: const Text('Are you sure you want to import data ?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                widget.ctr.importData();
-                Navigator.of(context).pop();
-                _showImportSuccessMessage(context);
+              onPressed: () async {
+                if (await widget.ctr.importData()) {
+                  Navigator.of(context).pop();
+                  _showImportSuccessMessage(context);
+                } else {
+                  Navigator.of(context).pop();
+                  _showImportFailureMessage(context);
+                }
+
               },
               child: const Text('Import'),
             ),
@@ -364,6 +371,26 @@ class _SettingsList extends State<SettingsList> {
         return AlertDialog(
           title: const Text('Import Successful'),
           content: const Text('Your data has been imported successfully !'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showImportFailureMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Import Failed'),
+          content: const Text("Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
