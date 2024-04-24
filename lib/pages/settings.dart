@@ -85,7 +85,6 @@ class _SettingsList extends State<SettingsList> {
           },
         ),
 
-        const Divider(),
         ListTile(
           title: const Text('Import Data (Test)'),
           leading: const Icon(Icons.import_export),
@@ -287,17 +286,22 @@ class _SettingsList extends State<SettingsList> {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
-                String tarPath = await widget.ctr.exportData();
-                Navigator.of(context).pop();
+                // Capture the context before the await
+                BuildContext? currentContext = context;
 
-                await Share.shareXFiles([XFile(tarPath)],
-                text: 'This is the image of the Vault ${widget.ctr.VaultName}.').then((_) {
-                  _showExportSuccessMessage(context);
-                });
+                String tarPath = await widget.ctr.exportData();
+                Navigator.pop(currentContext); // Close any existing dialog or screen
+                // Check if the original context is still valid
+                _showExportSuccessMessage(currentContext);
+                await Share.shareXFiles(
+                  [XFile(tarPath)],
+                  text: 'This is the image of the Vault ${widget.ctr.VaultName}.',
+                );
 
               },
               child: const Text('Export'),
             ),
+
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();

@@ -352,6 +352,16 @@ class Controller {
 
         print('Data to import from $tar_to_import');
         print(img.unTarFile(tar_to_import, localPath, '${tmp[0]}.CryptedEye'));
+
+        if (verifyVaultForm('$localPath/${tmp[0]}.CryptedEye')) {
+          return true;
+        } else {
+          print("File is not valid, deleting it");
+          Directory dir = Directory('$localPath/${tmp[0]}.CryptedEye');
+          dir.deleteSync(recursive: true);
+          return false;
+        }
+
         return true;
       } else {
         // L'utilisateur a annulé la sélection
@@ -363,6 +373,12 @@ class Controller {
       return false;
     }
   }
+
+  bool verifyVaultForm(String path) {
+    // TODO: verify vault form (code seems easy but testing if it actually works seems boring)
+    return true;
+  }
+
 }
 
 void main() {}
