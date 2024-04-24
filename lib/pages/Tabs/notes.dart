@@ -758,7 +758,7 @@ class _OpenDirState extends State<OpenDir> {
               },
             ),
           ]),
-      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           const SizedBox(
