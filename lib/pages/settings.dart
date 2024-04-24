@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:restart_app/restart_app.dart';
 
 import '../controller.dart';
@@ -276,7 +277,7 @@ class _SettingsList extends State<SettingsList> {
     );
   }
 
-  void _showExportConfirmationDialog(BuildContext context) {
+  void _showExportConfirmationDialog(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -285,8 +286,11 @@ class _SettingsList extends State<SettingsList> {
           content: const Text('Are you sure you want to export your data ?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                widget.ctr.exportData();
+              onPressed: () async {
+                String tarPath = await widget.ctr.exportData();
+                // todo: make work SharePlus
+                // await Share.shareXFiles([XFile(tarPath)],
+                // text: 'Your vault image');
                 Navigator.of(context).pop();
                 _showExportSuccessMessage(context);
               },
@@ -310,7 +314,8 @@ class _SettingsList extends State<SettingsList> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Export Successful'),
-          content: const Text('Your data has been exported successfully !'),
+          content: const Text(
+              "Your data has been exported successfully! It's available in your Downloads folder."),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -371,5 +376,4 @@ class _SettingsList extends State<SettingsList> {
       },
     );
   }
-
 }

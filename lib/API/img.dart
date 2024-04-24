@@ -1,9 +1,10 @@
 import 'dart:io';
+
 import 'package:archive/archive_io.dart';
-import 'package:path/path.dart' as path;
 
 class IMG {
-  String? unTarFile(String sourceFile, String targetDirectory, String tar_name) {
+  String? unTarFile(
+      String sourceFile, String targetDirectory, String tar_name) {
     // Vérifier si le fichier source existe
     File source = File(sourceFile);
     if (!source.existsSync()) {
@@ -32,7 +33,9 @@ class IMG {
     print('Extraction terminée.');
     return '$targetDirectory/$tar_name';
   }
-  void createTarFile(Directory sourceDir, String outputDirectory, String tar_name) {
+
+  String createTarFile(
+      Directory sourceDir, String outputDirectory, String tar_name) {
     // Créer une liste de tous les fichiers et sous-répertoires dans le dossier source
     List<FileSystemEntity> fileList = sourceDir.listSync();
 
@@ -43,11 +46,13 @@ class IMG {
     for (var entity in fileList) {
       if (entity is File) {
         List<int> bytes = (entity as File).readAsBytesSync();
-        String filePath = entity.path.substring(sourceDir.path.length + 1); // Chemin relatif
+        String filePath =
+            entity.path.substring(sourceDir.path.length + 1); // Chemin relatif
         ArchiveFile af = ArchiveFile(filePath, bytes.length, bytes);
         archive.addFile(af);
       } else if (entity is Directory) {
-        String dirName = entity.path.substring(sourceDir.path.length + 1); // Nom du répertoire
+        String dirName = entity.path
+            .substring(sourceDir.path.length + 1); // Nom du répertoire
         addDirectoryContentToArchive(entity, archive, dirName);
       }
     }
@@ -61,9 +66,11 @@ class IMG {
     }
     tarFile.writeAsBytesSync(TarEncoder().encode(archive));
     print('Tar créé: ${tarFile.path}');
+    return tarFile.path;
   }
 
-  void addDirectoryContentToArchive(Directory directory, Archive archive, String relativePath) {
+  void addDirectoryContentToArchive(
+      Directory directory, Archive archive, String relativePath) {
     // Récupérer la liste de tous les fichiers et sous-répertoires dans le répertoire
     List<FileSystemEntity> content = directory.listSync();
 
@@ -71,12 +78,14 @@ class IMG {
     for (var entity in content) {
       if (entity is File) {
         List<int> bytes = (entity as File).readAsBytesSync();
-        String filePath = entity.path.substring(directory.path.length + 1); // Chemin relatif
+        String filePath =
+            entity.path.substring(directory.path.length + 1); // Chemin relatif
         String archivePath = '$relativePath/$filePath';
         ArchiveFile af = ArchiveFile(archivePath, bytes.length, bytes);
         archive.addFile(af);
       } else if (entity is Directory) {
-        String dirName = entity.path.substring(directory.path.length + 1); // Nom du sous-répertoire
+        String dirName = entity.path
+            .substring(directory.path.length + 1); // Nom du sous-répertoire
         addDirectoryContentToArchive(entity, archive, '$relativePath/$dirName');
       }
     }

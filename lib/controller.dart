@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:path/path.dart' as path;
 
 import 'API/crypter.dart';
 import 'API/img.dart';
@@ -323,25 +322,23 @@ class Controller {
     writeNotesToJson();
   }
 
-  Future<void> exportData() async {
+  Future<String> exportData() async {
     //String data_path = "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/gui.CryptedEye";
     // "$localPath/$VaultName.CryptedEye"
-    
+
     String data_path = "$localPath/$VaultName.CryptedEye";
     Directory d = Directory(data_path);
 
     String download_path = '/storage/emulated/0/Download';
-    img.createTarFile(d, download_path, VaultName);
+    return img.createTarFile(d, download_path, VaultName);
   }
 
   Future<void> importData() async {
     try {
       // Attendre que l'utilisateur sélectionne un fichier
       final tar_to_import = await FlutterFileDialog.pickFile();
-      
 
       if (tar_to_import != null) {
-
         String dirName = tar_to_import;
 
         // get the last part of the path
