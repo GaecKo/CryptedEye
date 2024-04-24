@@ -356,19 +356,24 @@ class _NoteState extends State<Note> {
         ),
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                // build NoteScreen for note update: ctr, contents, rebuildParent, rebuildNote, note widget
-                builder: (_) => NoteScreen(
-                  ctr: widget.ctr,
-                  contents: widget.contents,
-                  rebuildParent: widget.rebuildParent,
-                  rebuildNote: rebuild,
-                  note: widget,
-                  folderName: widget.folderName,
-                ),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (_) => NoteScreen(
+                ctr: widget.ctr,
+                contents: widget.contents,
+                rebuildParent: widget.rebuildParent,
+                rebuildNote: rebuild,
+                note: widget,
+                folderName: widget.folderName,
+              ),
+            ),
+          );
         },
+        leading: const Icon(
+          Icons.note,
+          size: 36.0,
+          color: Colors.yellow, // Vous pouvez ajuster la couleur de l'icône selon vos besoins
+        ),
       ),
     );
   }
