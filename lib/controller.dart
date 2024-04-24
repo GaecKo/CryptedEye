@@ -337,7 +337,7 @@ class Controller {
     try {
       // Attendre que l'utilisateur sélectionne un fichier
       final tar_to_import = await FlutterFileDialog.pickFile(params: const OpenFileDialogParams(
-        fileExtensionsFilter: [".tar"],
+        fileExtensionsFilter: ["tar"],
       ));
 
       if (tar_to_import != null) {
@@ -362,7 +362,6 @@ class Controller {
           return false;
         }
 
-        return true;
       } else {
         // L'utilisateur a annulé la sélection
         print('Aucun fichier sélectionné.');

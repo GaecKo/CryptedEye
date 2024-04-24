@@ -286,13 +286,12 @@ class _SettingsList extends State<SettingsList> {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
-                // Capture the context before the await
-                BuildContext? currentContext = context;
 
                 String tarPath = await widget.ctr.exportData();
-                Navigator.pop(currentContext); // Close any existing dialog or screen
-                // Check if the original context is still valid
-                _showExportSuccessMessage(currentContext);
+                Navigator.pop(context);
+
+                _showExportSuccessMessage(context);
+
                 await Share.shareXFiles(
                   [XFile(tarPath)],
                   text: 'This is the image of the Vault ${widget.ctr.VaultName}.',
@@ -394,7 +393,7 @@ class _SettingsList extends State<SettingsList> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Import Failed'),
-          content: const Text("Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'"),
+          content: const Text("Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
           actions: <Widget>[
             TextButton(
               onPressed: () {
