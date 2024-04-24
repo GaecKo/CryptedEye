@@ -475,10 +475,10 @@ class _NoteScreenState extends State<NoteScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+        backgroundColor: Colors.white,
         title: SizedBox.shrink(), // Enlève le texte du titre
       ),
-      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -488,7 +488,7 @@ class _NoteScreenState extends State<NoteScreen> {
               height: 50, // Hauteur réduite pour le titre
               child: TextFormField(
                 controller: _titleController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Title",
                   hintStyle: TextStyle(color: Colors.grey),
                   contentPadding: EdgeInsets.zero, // Supprime le padding autour du texte
@@ -505,7 +505,7 @@ class _NoteScreenState extends State<NoteScreen> {
                     borderSide: BorderSide.none, // Supprime la bordure
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 30, // Taille de police plus grande pour le titre
                   fontWeight: FontWeight.normal, // Remet la police en normal
                   color: Colors.black, // Couleur normale du texte en noir
@@ -518,12 +518,12 @@ class _NoteScreenState extends State<NoteScreen> {
                 controller: _contentController,
                 maxLines: null,
                 expands: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Note",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: InputBorder.none, // Supprime le contour rectangulaire autour de la note
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.normal, // Remet la police en normal
                   color: Colors.black, // Couleur normale du texte en noir
