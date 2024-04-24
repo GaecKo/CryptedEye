@@ -9,7 +9,8 @@ class NotesPage extends StatefulWidget {
   bool isStartup;
   bool shown = false;
 
-  NotesPage({Key? key, required this.ctr, required this.isStartup}) : super(key: key);
+  NotesPage({Key? key, required this.ctr, required this.isStartup})
+      : super(key: key);
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -31,8 +32,10 @@ class _NotesPageState extends State<NotesPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Adding Notes and Folders",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+          title: const Text(
+            "Adding Notes and Folders",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -96,7 +99,6 @@ class _NotesPageState extends State<NotesPage> {
           ctr: ctr,
         ));
       }
-
     });
     List<dynamic> mainChildNotes = mainContent["child"];
     for (int i = 0; i < mainChildNotes.length; i++) {
@@ -163,7 +165,8 @@ class _NotesPageState extends State<NotesPage> {
                   },
                 ),
                 SpeedDialChild(
-                  child: const Icon(Icons.create_new_folder, color: Colors.blue),
+                  child:
+                      const Icon(Icons.create_new_folder, color: Colors.blue),
                   backgroundColor: Colors.white,
                   label: 'Create Folder',
                   labelStyle: const TextStyle(fontSize: 16.0),
@@ -198,16 +201,18 @@ class _NotesPageState extends State<NotesPage> {
               decoration: InputDecoration(
                 hintText: 'Search Notes...',
                 prefixIcon: const Icon(
-                    Icons.search,
+                  Icons.search,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: BorderSide(color: Colors.blue), // Couleur de la bordure
+                  borderSide:
+                      BorderSide(color: Colors.blue), // Couleur de la bordure
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
                   borderSide: const BorderSide(
-                    color: Colors.blue, // Couleur de la bordure lorsqu'elle est activée
+                    color: Colors
+                        .blue, // Couleur de la bordure lorsqu'elle est activée
                     width: 2.0, // Largeur de la bordure lorsqu'elle est activée
                   ),
                 ),
@@ -358,6 +363,7 @@ class _NoteState extends State<Note> {
           Navigator.push(
             context,
             MaterialPageRoute(
+              // build NoteScreen for note update: ctr, contents, rebuildParent, rebuildNote, note widget
               builder: (_) => NoteScreen(
                 ctr: widget.ctr,
                 contents: widget.contents,
@@ -372,7 +378,7 @@ class _NoteState extends State<Note> {
         leading: const Icon(
           Icons.note,
           size: 36.0,
-          color: Colors.yellow, // Vous pouvez ajuster la couleur de l'icône selon vos besoins
+          color: Colors.blue,
         ),
       ),
     );
@@ -496,7 +502,8 @@ class _NoteScreenState extends State<NoteScreen> {
                 decoration: const InputDecoration(
                   hintText: "Title",
                   hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding: EdgeInsets.zero, // Supprime le padding autour du texte
+                  contentPadding:
+                      EdgeInsets.zero, // Supprime le padding autour du texte
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide.none, // Supprime la bordure
                   ),
@@ -517,7 +524,8 @@ class _NoteScreenState extends State<NoteScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 10), // Réduit l'espace entre le titre et la note
+            const SizedBox(
+                height: 10), // Réduit l'espace entre le titre et la note
             Expanded(
               child: TextFormField(
                 controller: _contentController,
@@ -526,7 +534,8 @@ class _NoteScreenState extends State<NoteScreen> {
                 decoration: const InputDecoration(
                   hintText: "Note",
                   hintStyle: TextStyle(color: Colors.grey),
-                  border: InputBorder.none, // Supprime le contour rectangulaire autour de la note
+                  border: InputBorder
+                      .none, // Supprime le contour rectangulaire autour de la note
                 ),
                 style: const TextStyle(
                   fontSize: 20,
@@ -587,7 +596,6 @@ class _NoteScreenState extends State<NoteScreen> {
         },
       ),
     );
-
   }
 
   @override
@@ -752,6 +760,7 @@ class _OpenDirState extends State<OpenDir> {
                       ctr: widget.ctr,
                       contents: contents,
                       rebuildParent: rebuildDirPage,
+                      folderName: widget.dirName,
                     ),
                   ),
                 );
