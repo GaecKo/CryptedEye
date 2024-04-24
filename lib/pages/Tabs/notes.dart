@@ -534,6 +534,7 @@ class _NoteScreenState extends State<NoteScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
         child: const Icon(Icons.save),
         onPressed: () {
           String title = _titleController.text;
