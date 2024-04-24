@@ -54,6 +54,11 @@ class CryptedEye extends StatelessWidget {
       },
       home: firstPage,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.black,
+        ),
+      ),
     );
   }
 }
