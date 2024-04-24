@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 10),
                 _isLoading
                     ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       )
                     : Container(
                         width: 250,
