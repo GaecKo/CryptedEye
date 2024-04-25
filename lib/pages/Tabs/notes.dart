@@ -551,48 +551,50 @@ class _NoteScreenState extends State<NoteScreen> {
         backgroundColor: Colors.blue,
         child: const Icon(Icons.save),
         onPressed: () {
-          String title = _titleController.text;
-          String content = _contentController.text;
-          String cr_title = widget.ctr.crypter.encrypt(title);
-          String cr_content = widget.ctr.crypter.encrypt(content);
+          if (_titleController.text.isNotEmpty){
+            String title = _titleController.text;
+            String content = _contentController.text;
+            String cr_title = widget.ctr.crypter.encrypt(title);
+            String cr_content = widget.ctr.crypter.encrypt(content);
 
-          widget.rebuildParent();
-          if (widget.note != null) {
-            // NOTE UPDATE
-            // update note in backend
-            if (widget.folderName == null) {
-              // if it has a defined folder name, then update
-              widget.ctr.updateNewNote(
-                  widget.note!.cryptedTitle, cr_title, cr_content);
-            } else {
-              widget.ctr.updateNewNote(
-                  widget.note!.cryptedTitle, cr_title, cr_content,
-                  cr_dir_name: widget.folderName!);
-            }
-
-            widget.note?.cryptedTitle = cr_title;
-            widget.note?.cryptedContent = cr_content;
-            widget.rebuildNote!();
-          } else {
             widget.rebuildParent();
-            if (widget.folderName != null) {
-              widget.ctr.saveNewNote(cr_title, cr_content,
-                  cr_dir_name: widget.folderName as String);
+            if (widget.note != null) {
+              // NOTE UPDATE
+              // update note in backend
+              if (widget.folderName == null) {
+                // if it has a defined folder name, then update
+                widget.ctr.updateNewNote(
+                    widget.note!.cryptedTitle, cr_title, cr_content);
+              } else {
+                widget.ctr.updateNewNote(
+                    widget.note!.cryptedTitle, cr_title, cr_content,
+                    cr_dir_name: widget.folderName!);
+              }
+
+              widget.note?.cryptedTitle = cr_title;
+              widget.note?.cryptedContent = cr_content;
+              widget.rebuildNote!();
             } else {
-              widget.ctr.saveNewNote(cr_title, cr_content);
+              widget.rebuildParent();
+              if (widget.folderName != null) {
+                widget.ctr.saveNewNote(cr_title, cr_content,
+                    cr_dir_name: widget.folderName as String);
+              } else {
+                widget.ctr.saveNewNote(cr_title, cr_content);
+              }
+
+              widget.contents.add(Note(
+                cryptedTitle: cr_title,
+                cryptedContent: cr_content,
+                ctr: widget.ctr,
+                contents: widget.contents,
+                rebuildParent: widget.rebuildParent,
+                folderName: widget.folderName,
+              ));
             }
 
-            widget.contents.add(Note(
-              cryptedTitle: cr_title,
-              cryptedContent: cr_content,
-              ctr: widget.ctr,
-              contents: widget.contents,
-              rebuildParent: widget.rebuildParent,
-              folderName: widget.folderName,
-            ));
+            Navigator.of(context).pop();
           }
-
-          Navigator.of(context).pop();
         },
       ),
     );
