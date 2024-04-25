@@ -24,7 +24,8 @@ void main() async {
         NotificationChannel(
             channelKey: "cryptedeye",
             channelName: "CryptedEye",
-            channelDescription: "Channel Notification for auto log-out")
+            channelDescription: "Channel Notification for auto log-out",
+            enableVibration: false),
       ],
       debug: true);
 
@@ -130,16 +131,24 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
           if (notif == true) {
             AwesomeNotifications().createNotification(
                 content: NotificationContent(
-              id: 10,
-              channelKey: "cryptedeye",
-              title: "CryptedEye will log-out in 30 seconds",
-              body:
-                  "For your data security, CryptedEye will log-out in 20 seconds. Click to come back to app",
-              locked: true,
-            ));
+                    id: 10,
+                    channelKey: "cryptedeye",
+                    title: "CryptedEye will log-out in 20 seconds",
+                    body:
+                        "For your data security, CryptedEye will log-out in 20 seconds. Click to come back to app",
+                    locked: true,
+                    criticalAlert: true));
             killTimer = Timer(Duration(seconds: 20), () {
               notif = false;
-              AwesomeNotifications().cancel(20);
+              AwesomeNotifications().cancel(10);
+              AwesomeNotifications().createNotification(
+                  content: NotificationContent(
+                      id: 10,
+                      channelKey: "cryptedeye",
+                      title: "CryptedEye has logged you out",
+                      body: "App will ask you to log back in.",
+                      locked: false,
+                      timeoutAfter: Duration(seconds: 60)));
               Restart.restartApp();
             });
           }
