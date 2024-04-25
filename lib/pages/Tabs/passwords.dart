@@ -256,6 +256,19 @@ class PasswordItem extends StatefulWidget {
 
 class _PasswordItemState extends State<PasswordItem> {
   bool _isPasswordVisible = false;
+  bool _hasUsername = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if username is empty
+    if (widget.username.isEmpty) {
+      setState(() {
+        _hasUsername = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -272,7 +285,7 @@ class _PasswordItemState extends State<PasswordItem> {
           children: [
             const SizedBox(height: 8),
             Text(
-              'Username: ${widget.username}',
+              '${_hasUsername ?'Username: ${ widget.username}': ''}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -354,9 +367,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     controller: usernameController,
                     decoration: InputDecoration(
                       labelText: 'Username',
-                      errorText: showError && usernameController.text.isEmpty
-                          ? 'Please enter username'
-                          : null,
+                      
                     ),
                   ),
                 ),
@@ -412,7 +423,6 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
               showError = true;
             });
             if (websiteController.text.isNotEmpty &&
-                usernameController.text.isNotEmpty &&
                 passwordController.text.isNotEmpty) {
               // Controller function
               ctr.addPasswordData(websiteController.text,
