@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:restart_app/restart_app.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'controller.dart';
 import 'pages/home.dart';
@@ -17,6 +18,12 @@ void main() async {
   Controller ctr = await Controller.create();
   bool isStartup = ctr.isStartup();
 
+  AwesomeNotifications().initialize(null, [NotificationChannel(
+    channelKey: "cryptedeye",
+    channelName: "CryptedEye",
+    channelDescription: "Channel Notification for auto log-out"
+  )], debug: true);
+
   // create app observer and add it to App, so when it get closed we can
   // close the app cleanly
   MyAppLifecycleObserver observer = MyAppLifecycleObserver(ctr: ctr);
@@ -28,30 +35,45 @@ void main() async {
   ));
 }
 
-class CryptedEye extends StatelessWidget {
+class CryptedEye extends StatefulWidget {
   final Controller ctr;
   final bool isStartup;
 
   const CryptedEye({super.key, required this.ctr, required this.isStartup});
 
   @override
+  State<CryptedEye> createState() => _CryptedEyeState();
+}
+
+class _CryptedEyeState extends State<CryptedEye> {
+
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((allowed) {
+      if (!allowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget firstPage;
-    if (isStartup) {
+    if (widget.isStartup) {
       // put singup as first page and create settings.json file
       firstPage = WelcomePage();
 
     } else {
-      firstPage = LoginPage(ctr: ctr);
+      firstPage = LoginPage(ctr: widget.ctr);
     }
 
     return MaterialApp(
       title: 'CryptedEye',
       routes: {
-        '/login': (context) => LoginPage(ctr: ctr),
-        '/HomePage': (context) => HomePage(ctr: ctr),
-        '/SignUp': (context) => SignUpPage(ctr: ctr),
-        '/Settings': (context) => SettingsPage(ctr: ctr),
+        '/login': (context) => LoginPage(ctr: widget.ctr),
+        '/HomePage': (context) => HomePage(ctr: widget.ctr),
+        '/SignUp': (context) => SignUpPage(ctr: widget.ctr),
+        '/Settings': (context) => SettingsPage(ctr: widget.ctr),
         '/Welcome': (context) => WelcomePage()
       },
       home: firstPage,
@@ -76,20 +98,41 @@ class CryptedEye extends StatelessWidget {
 
 class MyAppLifecycleObserver with WidgetsBindingObserver {
   Controller ctr;
+  bool notif = false;
 
   MyAppLifecycleObserver({required this.ctr});
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("changing to ${state.toString()}");
-    if (state == AppLifecycleState.paused) {
-      ctr.closeApp();
-      // Perform cleanup when the app is paused (e.g., closed).
-      // Call your cleanup functions here.
-      Restart.restartApp();
-    } else if (state == AppLifecycleState.inactive ||
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+
+    if (notif == true && ctr.initialized && state == AppLifecycleState.resumed) {
+      AwesomeNotifications().cancel(10);
+    }
+
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
       ctr.closeApp();
+      // Restart.restartApp();
+      if (ctr.initialized && notif == false) {
+        print("Creating notification");
+        notif == true;
+        await Future.delayed(Duration(seconds: 5)).then((_) {
+          AwesomeNotifications().createNotification(
+              content: NotificationContent(
+                  id: 10,
+                  channelKey: "cryptedeye",
+                  title: "CryptedEye will log-out in 30 seconds",
+                  body: "For your data security, CryptedEye will log-out in 30 seconds. Click to come back to app",
+                  locked: false,
+                chronometer: Duration(seconds: 30)
+              )
+          );
+        });
+
+      }
+
+
+
     }
   }
 }
