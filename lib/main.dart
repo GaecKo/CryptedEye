@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:restart_app/restart_app.dart';
 
 import 'controller.dart';
 import 'pages/home.dart';
@@ -110,8 +111,8 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (ctr.initialized && state == AppLifecycleState.resumed) {
+      // kill all timers, so notif and kill of app doesn't happen when coming back to app
       AwesomeNotifications().cancel(10);
-      print("canceling timer");
       killTimer?.cancel();
       notifTimer?.cancel();
       notif = false;
@@ -122,30 +123,27 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
         state == AppLifecycleState.hidden) {
       ctr.closeApp();
       if (ctr.initialized && notif == false) {
-        print("Creating notification");
+        // begin notif to true
         notif = true;
         notifTimer = Timer(Duration(seconds: 5), () {
-          print("Notif: $notif");
+          // check that notif hasn't been canceled at end of timing (can happen)!
           if (notif == true) {
-            notif = false;
             AwesomeNotifications().createNotification(
                 content: NotificationContent(
               id: 10,
               channelKey: "cryptedeye",
               title: "CryptedEye will log-out in 30 seconds",
               body:
-                  "For your data security, CryptedEye will log-out in 30 seconds. Click to come back to app",
+                  "For your data security, CryptedEye will log-out in 20 seconds. Click to come back to app",
               locked: true,
             ));
-            notif = true;
-            killTimer = Timer(Duration(seconds: 10), () {
+            killTimer = Timer(Duration(seconds: 20), () {
               notif = false;
-              AwesomeNotifications().cancel(10);
-              print("logout");
-              // Restart.restartApp();
+              AwesomeNotifications().cancel(20);
+              Restart.restartApp();
             });
           }
-          notif = true;
+          notif = false;
         });
       }
     }
