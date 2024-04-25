@@ -1,13 +1,15 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:CryptedEye/pages/welcome.dart';
 import 'package:flutter/material.dart';
+
+import 'package:restart_app/restart_app.dart';
 
 import 'controller.dart';
 import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/settings.dart';
 import 'pages/signup.dart';
+import 'pages/welcome.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +63,13 @@ class CryptedEye extends StatelessWidget {
           selectionColor: Colors.black.withOpacity(0.3), // Couleur de la sélection
         ),
       ),
+      builder: (BuildContext context, Widget? widget) {
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+          return CustomError(errorDetails: errorDetails);
+        };
+
+        return widget as Widget;
+      },
     );
   }
 }
@@ -70,7 +79,6 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
 
   MyAppLifecycleObserver({required this.ctr});
 
-  // TODO: Bug: function is not called anymore
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print("changing to ${state.toString()}");
@@ -78,10 +86,38 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
       ctr.closeApp();
       // Perform cleanup when the app is paused (e.g., closed).
       // Call your cleanup functions here.
-      // Restart.restartApp();
+      Restart.restartApp();
     } else if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
       ctr.closeApp();
     }
+  }
+}
+
+class CustomError extends StatelessWidget {
+  final FlutterErrorDetails errorDetails;
+
+  const CustomError({super.key,
+    required this.errorDetails,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.red,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          "We are sorry, CryptedEye ran through an unhandled error. Please try restarting the app."
+              "\nIf this came from importing a vault image, then the vault must be corrupted, try exporting it properly again."
+              "\nIf the error persists, you can also contact the dev team at ",
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
   }
 }
