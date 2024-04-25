@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import 'package:restart_app/restart_app.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 
 import 'controller.dart';
 import 'pages/home.dart';
@@ -11,18 +11,21 @@ import 'pages/settings.dart';
 import 'pages/signup.dart';
 import 'pages/welcome.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Controller ctr = await Controller.create();
   bool isStartup = ctr.isStartup();
 
-  AwesomeNotifications().initialize(null, [NotificationChannel(
-    channelKey: "cryptedeye",
-    channelName: "CryptedEye",
-    channelDescription: "Channel Notification for auto log-out"
-  )], debug: true);
+  AwesomeNotifications().initialize(
+      null,
+      [
+        NotificationChannel(
+            channelKey: "cryptedeye",
+            channelName: "CryptedEye",
+            channelDescription: "Channel Notification for auto log-out")
+      ],
+      debug: true);
 
   // create app observer and add it to App, so when it get closed we can
   // close the app cleanly
@@ -46,7 +49,6 @@ class CryptedEye extends StatefulWidget {
 }
 
 class _CryptedEyeState extends State<CryptedEye> {
-
   @override
   void initState() {
     AwesomeNotifications().isNotificationAllowed().then((allowed) {
@@ -62,7 +64,6 @@ class _CryptedEyeState extends State<CryptedEye> {
     if (widget.isStartup) {
       // put singup as first page and create settings.json file
       firstPage = WelcomePage();
-
     } else {
       firstPage = LoginPage(ctr: widget.ctr);
     }
@@ -81,8 +82,10 @@ class _CryptedEyeState extends State<CryptedEye> {
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.black,
-          selectionHandleColor: Colors.black, // Couleur de la poignée de sélection
-          selectionColor: Colors.black.withOpacity(0.3), // Couleur de la sélection
+          selectionHandleColor:
+              Colors.black, // Couleur de la poignée de sélection
+          selectionColor:
+              Colors.black.withOpacity(0.3), // Couleur de la sélection
         ),
       ),
       builder: (BuildContext context, Widget? widget) {
@@ -99,40 +102,52 @@ class _CryptedEyeState extends State<CryptedEye> {
 class MyAppLifecycleObserver with WidgetsBindingObserver {
   Controller ctr;
   bool notif = false;
+  Timer? notifTimer;
+  Timer? killTimer;
 
   MyAppLifecycleObserver({required this.ctr});
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-
-    if (notif == true && ctr.initialized && state == AppLifecycleState.resumed) {
+    if (ctr.initialized && state == AppLifecycleState.resumed) {
       AwesomeNotifications().cancel(10);
+      print("canceling timer");
+      killTimer?.cancel();
+      notifTimer?.cancel();
+      notif = false;
     }
 
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive ||
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
       ctr.closeApp();
-      // Restart.restartApp();
       if (ctr.initialized && notif == false) {
         print("Creating notification");
-        notif == true;
-        await Future.delayed(Duration(seconds: 5)).then((_) {
-          AwesomeNotifications().createNotification(
-              content: NotificationContent(
-                  id: 10,
-                  channelKey: "cryptedeye",
-                  title: "CryptedEye will log-out in 30 seconds",
-                  body: "For your data security, CryptedEye will log-out in 30 seconds. Click to come back to app",
-                  locked: false,
-                chronometer: Duration(seconds: 30)
-              )
-          );
+        notif = true;
+        notifTimer = Timer(Duration(seconds: 5), () {
+          print("Notif: $notif");
+          if (notif == true) {
+            notif = false;
+            AwesomeNotifications().createNotification(
+                content: NotificationContent(
+              id: 10,
+              channelKey: "cryptedeye",
+              title: "CryptedEye will log-out in 30 seconds",
+              body:
+                  "For your data security, CryptedEye will log-out in 30 seconds. Click to come back to app",
+              locked: true,
+            ));
+            notif = true;
+            killTimer = Timer(Duration(seconds: 10), () {
+              notif = false;
+              AwesomeNotifications().cancel(10);
+              print("logout");
+              // Restart.restartApp();
+            });
+          }
+          notif = true;
         });
-
       }
-
-
-
     }
   }
 }
@@ -140,7 +155,8 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
 class CustomError extends StatelessWidget {
   final FlutterErrorDetails errorDetails;
 
-  const CustomError({super.key,
+  const CustomError({
+    super.key,
     required this.errorDetails,
   });
 
@@ -153,8 +169,8 @@ class CustomError extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Text(
           "We are sorry, CryptedEye ran through an unhandled error. Please try restarting the app."
-              "\nIf this came from importing a vault image, then the vault must be corrupted, try exporting it properly again."
-              "\nIf the error persists, you can also contact the dev team at ",
+          "\nIf this came from importing a vault image, then the vault must be corrupted, try exporting it properly again."
+          "\nIf the error persists, you can also contact the dev team at ",
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
