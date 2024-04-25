@@ -474,6 +474,8 @@ class _NoteScreenState extends State<NoteScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
+  bool showError = false;
+
   @override
   Widget build(BuildContext context) {
     if (widget.note != null) {
@@ -516,6 +518,10 @@ class _NoteScreenState extends State<NoteScreen> {
                   errorBorder: UnderlineInputBorder(
                     borderSide: BorderSide.none, // Supprime la bordure
                   ),
+                  //TODO : fix this error below, problem with const as for showError than _titleController
+                  //errorText: showError && _titleController.text.isEmpty
+                    //      ? 'Please enter a title'
+                      //    : null,
                 ),
                 style: const TextStyle(
                   fontSize: 30, // Taille de police plus grande pour le titre
@@ -551,6 +557,9 @@ class _NoteScreenState extends State<NoteScreen> {
         backgroundColor: Colors.blue,
         child: const Icon(Icons.save),
         onPressed: () {
+          setState(() {
+              showError = true;
+          });
           if (_titleController.text.isNotEmpty){
             String title = _titleController.text;
             String content = _contentController.text;
