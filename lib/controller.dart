@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:archive/archive.dart';
 
 import 'API/crypter.dart';
 import 'API/img.dart';
@@ -328,8 +329,15 @@ class Controller {
 
     String data_path = "$localPath/$VaultName.CryptedEye";
     Directory d = Directory(data_path);
-
     String download_path = '/storage/emulated/0/Download';
+    String tarFilePath = '$download_path/$VaultName.CryptedEye.tar';
+
+    File existingTarFile = File(tarFilePath);
+    if (existingTarFile.existsSync()) {
+      print('Le fichier TAR existe déjà dans le dossier de destination. Suppression en cours...');
+      existingTarFile.deleteSync();
+      print('Le fichier TAR existant a été supprimé.');
+    }
     return img.createTarFile(d, download_path, VaultName);
   }
 
@@ -374,7 +382,36 @@ class Controller {
   }
 
   bool verifyVaultForm(String path) {
-    // TODO: verify vault form (code seems easy but testing if it actually works seems boring)
+    
+    // Vérifier l'extension du fichier
+    File tarFile = File(path);
+    if (!tarFile.path.toLowerCase().endsWith('.CryptedEye.tar')) {
+      print('Le fichier n\'a pas l\'extension .CryptedEye.tar');
+      return false;
+    }
+
+    // Lire les données de l'archive tar
+    List<int> bytes = tarFile.readAsBytesSync();
+    Archive archive = TarDecoder().decodeBytes(bytes);
+
+    // Vérifier la structure de l'archive
+    List<String> expectedFolders = ['app', 'notes', 'passwords'];
+    for (var folder in expectedFolders) {
+      bool folderFound = false;
+      for (var file in archive) {
+        if (file.isFile) continue;
+        if (file.name == '$folder/') {
+          folderFound = true;
+          break;
+        }
+      }
+      if (!folderFound) {
+        print('Le dossier $folder est manquant dans l\'archive.');
+        return false;
+      }
+    }
+
+    // Toutes les vérifications ont réussi
     return true;
   }
 
