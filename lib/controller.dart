@@ -6,6 +6,7 @@ import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:archive/archive.dart';
+import 'package:path/path.dart' as p;
 
 import 'API/crypter.dart';
 import 'API/img.dart';
@@ -385,28 +386,26 @@ class Controller {
     
     // Vérifier l'extension du fichier
     File tarFile = File(path);
-    if (!tarFile.path.toLowerCase().endsWith('.CryptedEye.tar')) {
-      print('Le fichier n\'a pas l\'extension .CryptedEye.tar');
+    if (p.extension(path) != '.CryptedEye') {
+      print('Le fichier n\'a pas l\'extension .CryptedEye');
       return false;
     }
 
-    // Lire les données de l'archive tar
-    List<int> bytes = tarFile.readAsBytesSync();
-    Archive archive = TarDecoder().decodeBytes(bytes);
-
-    // Vérifier la structure de l'archive
     List<String> expectedFolders = ['app', 'notes', 'passwords'];
+    List<String> expectedFiles = ['app/AP.hash', 'app/salt.key', 'notes/notes.json', 'passwords/passwords.json'];
+
     for (var folder in expectedFolders) {
-      bool folderFound = false;
-      for (var file in archive) {
-        if (file.isFile) continue;
-        if (file.name == '$folder/') {
-          folderFound = true;
-          break;
-        }
+      Directory directory = Directory('$path/$folder');
+      if (!directory.existsSync()) {
+        print('Le dossier $folder est manquant.');
+        return false;
       }
-      if (!folderFound) {
-        print('Le dossier $folder est manquant dans l\'archive.');
+    }
+
+    for (var file in expectedFiles) {
+      File f = File('$path/$file');
+      if (!f.existsSync()) {
+        print('Le fichier $file est manquant.');
         return false;
       }
     }
