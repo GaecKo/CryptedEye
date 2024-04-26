@@ -1,6 +1,7 @@
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../controller.dart';
 
@@ -287,6 +288,105 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ),
       ),
+      floatingActionButton: Stack(
+          children: [
+            Positioned(
+              right: 16.0,
+              bottom: 16.0,
+              child: SpeedDial(
+                icon: Icons.add,
+                activeIcon: Icons.close,
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                animatedIconTheme: const IconThemeData(size: 22.0),
+                children: [
+                  SpeedDialChild(
+                    child: const Icon(Icons.password),
+                    backgroundColor: Colors.blue,
+                    label: 'Import new Vault',
+                    labelStyle: const TextStyle(fontSize: 16.0),
+                    onTap: () {
+                      _showImportConfirmationDialog(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+    );
+  }
+
+   void _showImportConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Import new Vault'),
+          content: const Text('Are you sure you want to import new Vault ?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                if (await widget.ctr.importData()) {
+                  Navigator.of(context).pop();
+                  _showImportSuccessMessage(context);
+                } else {
+                  Navigator.of(context).pop();
+                  _showImportFailureMessage(context);
+                }
+
+              },
+              child: const Text('Import'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showImportSuccessMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Import Successful'),
+          content: const Text('Your data has been imported successfully !'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showImportFailureMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Import Failed'),
+          content: const Text("Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
