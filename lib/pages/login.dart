@@ -242,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
               animatedIconTheme: const IconThemeData(size: 22.0),
               children: [
                 SpeedDialChild(
-                  child: const Icon(Icons.password),
+                  child: const Icon(Icons.import_export),
                   backgroundColor: Colors.blue,
                   label: 'Import new Vault',
                   labelStyle: const TextStyle(fontSize: 16.0),

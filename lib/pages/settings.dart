@@ -85,13 +85,13 @@ class _SettingsList extends State<SettingsList> {
           },
         ),
 
-        ListTile(
-          title: const Text('Import Data (Test)'),
-          leading: const Icon(Icons.import_export),
-          onTap: () {
-            _showImportConfirmationDialog(context);
-          },
-        ),
+        // ListTile(
+        //   title: const Text('Import Data (Test)'),
+        //   leading: const Icon(Icons.import_export),
+        //   onTap: () {
+        //     _showImportConfirmationDialog(context);
+        //   },
+        // ),
 
         const Divider(),
         ListTile(
