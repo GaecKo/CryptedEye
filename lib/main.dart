@@ -119,6 +119,11 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
       notif = false;
     }
 
+    if (state == AppLifecycleState.detached) {
+      AwesomeNotifications().cancel(10);
+      print("App was killed");
+    }
+
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
@@ -137,7 +142,10 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
                     body:
                         "For your data security, CryptedEye will log-out in 20 seconds. Click to come back to app",
                     locked: true,
-                    criticalAlert: true));
+                    criticalAlert: true,
+                    timeoutAfter:
+                        Duration(seconds: 25) // if app closed, make sure
+                    ));
             killTimer = Timer(Duration(seconds: 20), () {
               notif = false;
               AwesomeNotifications().cancel(10);
