@@ -131,9 +131,9 @@ class _NotesPageState extends State<NotesPage> {
               },
               mini: true,
               backgroundColor: Colors.grey,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
               tooltip: 'Show Popup',
-              child: Icon(Icons.question_mark),
+              child: const Icon(Icons.question_mark),
             ),
           ),
           Positioned(
@@ -205,8 +205,8 @@ class _NotesPageState extends State<NotesPage> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide:
-                      BorderSide(color: Colors.blue), // Couleur de la bordure
+                  borderSide: const BorderSide(
+                      color: Colors.blue), // Couleur de la bordure
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
@@ -489,7 +489,7 @@ class _NoteScreenState extends State<NoteScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: SizedBox.shrink(), // Enlève le texte du titre
+        title: const SizedBox.shrink(), // Enlève le texte du titre
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -501,27 +501,27 @@ class _NoteScreenState extends State<NoteScreen> {
               height: 50,
               child: TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: "Title",
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   contentPadding: EdgeInsets.zero,
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
-                  enabledBorder: UnderlineInputBorder(
+                  enabledBorder: const UnderlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
-                  disabledBorder: UnderlineInputBorder(
+                  disabledBorder: const UnderlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
-                  errorBorder: UnderlineInputBorder(
+                  errorBorder: const UnderlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
-                  //TODO : fix this error below, problem with const as for showError than _titleController
-                  //errorText: showError && _titleController.text.isEmpty
-                  //      ? 'Please enter a title'
-                  //    : null,
+                  errorText: showError ? 'Please enter a title' : null,
                 ),
+                onChanged: (value) {
+                  showError = _titleController.text.isEmpty;
+                },
                 style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.normal,
@@ -566,7 +566,6 @@ class _NoteScreenState extends State<NoteScreen> {
             Navigator.of(context).pop();
             widget.rebuildParent();
             if (widget.note != null) {
-              print("hello, i am updating note");
               // NOTE UPDATE
               // update note in backend
               if (widget.folderName == null) {

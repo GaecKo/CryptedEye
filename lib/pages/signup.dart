@@ -283,7 +283,7 @@ class _SignUpPageState extends State<SignUpPage> {
           SpeedDialChild(
             child: const Icon(Icons.import_export),
             backgroundColor: Colors.blue,
-            label: 'Import new Vault',
+            label: 'Import Vault',
             labelStyle: const TextStyle(fontSize: 16.0),
             onTap: () {
               _showImportConfirmationDialog(context);
