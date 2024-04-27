@@ -14,21 +14,29 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  void rebuildSettingsPage() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: SettingsList(ctr: widget.ctr),
+      body: SettingsList(
+        ctr: widget.ctr,
+        rebuiltSettingsPage: rebuildSettingsPage,
+      ),
     );
   }
 }
 
 class SettingsList extends StatefulWidget {
   Controller ctr;
+  VoidCallback rebuiltSettingsPage;
 
-  SettingsList({required this.ctr});
+  SettingsList({required this.ctr, required this.rebuiltSettingsPage});
 
   @override
   _SettingsList createState() => _SettingsList();
@@ -62,6 +70,15 @@ class _SettingsList extends State<SettingsList> {
           leading: const Icon(Icons.edit),
           onTap: () {
             _showRenameAccountDialog(context);
+            widget.rebuiltSettingsPage();
+          },
+        ),
+        const Divider(),
+        ListTile(
+          title: const Text('Export Data'),
+          leading: const Icon(Icons.share),
+          onTap: () {
+            _showExportConfirmationDialog(context);
           },
         ),
         const Divider(),
@@ -72,27 +89,6 @@ class _SettingsList extends State<SettingsList> {
             _showLogoutConfirmationDialog(context);
           },
         ),
-
-        // TODO: add here the export part, that creates img tar file and put it in downloads
-        // TODO: should also ask to share the file
-
-        const Divider(),
-        ListTile(
-          title: const Text('Export Data'),
-          leading: const Icon(Icons.share),
-          onTap: () {
-            _showExportConfirmationDialog(context);
-          },
-        ),
-
-        // ListTile(
-        //   title: const Text('Import Data (Test)'),
-        //   leading: const Icon(Icons.import_export),
-        //   onTap: () {
-        //     _showImportConfirmationDialog(context);
-        //   },
-        // ),
-
         const Divider(),
         ListTile(
           title: const Text(
@@ -142,6 +138,7 @@ class _SettingsList extends State<SettingsList> {
   void _showRenameAccountDialog(BuildContext context) {
     TextEditingController newNameController = TextEditingController();
     bool showError = false;
+    bool showErrorName = false;
 
     showDialog(
       context: context,
@@ -158,12 +155,14 @@ class _SettingsList extends State<SettingsList> {
                       hintText: 'Enter new name',
                       errorText: showError
                           ? 'Name must be longer than 1 character'
-                          : null,
+                          : (showErrorName ? "Vault name already used" : null),
                     ),
                     controller: newNameController,
                     onChanged: (value) {
                       setState(() {
                         showError = value.trim().length < 2;
+                        showErrorName =
+                            widget.ctr.getListOfVault().contains(value.trim());
                       });
                     },
                   ),
@@ -172,14 +171,23 @@ class _SettingsList extends State<SettingsList> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    if (newNameController.text.trim().length >= 2) {
+                    if (newNameController.text.trim().length >= 2 &&
+                        !widget.ctr
+                            .getListOfVault()
+                            .contains(newNameController.text.trim())) {
                       widget.ctr.renameVault(newNameController.text);
+                      widget.rebuiltSettingsPage();
                       Navigator.of(context).pop();
                     } else {
                       setState(() {
-                        showError = true;
+                        if (newNameController.text.trim().length < 2) {
+                          showError = true;
+                        } else {
+                          showErrorName = true;
+                        }
                       });
                     }
+                    widget.rebuiltSettingsPage();
                   },
                   child: const Text('Save'),
                 ),
@@ -286,7 +294,6 @@ class _SettingsList extends State<SettingsList> {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
-
                 String tarPath = await widget.ctr.exportData();
                 Navigator.pop(context);
 
@@ -294,13 +301,12 @@ class _SettingsList extends State<SettingsList> {
 
                 await Share.shareXFiles(
                   [XFile(tarPath)],
-                  text: 'This is the image of the Vault ${widget.ctr.VaultName}.',
+                  text:
+                      'This is the image of the Vault ${widget.ctr.VaultName}.',
                 );
-
               },
               child: const Text('Export'),
             ),
-
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -351,7 +357,6 @@ class _SettingsList extends State<SettingsList> {
                   Navigator.of(context).pop();
                   _showImportFailureMessage(context);
                 }
-
               },
               child: const Text('Import'),
             ),
@@ -393,7 +398,8 @@ class _SettingsList extends State<SettingsList> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Import Failed'),
-          content: const Text("Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
+          content: const Text(
+              "Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
           actions: <Widget>[
             TextButton(
               onPressed: () {
