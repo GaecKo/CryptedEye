@@ -498,40 +498,38 @@ class _NoteScreenState extends State<NoteScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 50, // Hauteur réduite pour le titre
+              height: 50,
               child: TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(
                   hintText: "Title",
                   hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.zero, // Supprime le padding autour du texte
+                  contentPadding: EdgeInsets.zero,
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide.none, // Supprime la bordure
+                    borderSide: BorderSide.none,
                   ),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide.none, // Supprime la bordure
+                    borderSide: BorderSide.none,
                   ),
                   disabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide.none, // Supprime la bordure
+                    borderSide: BorderSide.none,
                   ),
                   errorBorder: UnderlineInputBorder(
-                    borderSide: BorderSide.none, // Supprime la bordure
+                    borderSide: BorderSide.none,
                   ),
                   //TODO : fix this error below, problem with const as for showError than _titleController
                   //errorText: showError && _titleController.text.isEmpty
-                    //      ? 'Please enter a title'
-                      //    : null,
+                  //      ? 'Please enter a title'
+                  //    : null,
                 ),
                 style: const TextStyle(
-                  fontSize: 30, // Taille de police plus grande pour le titre
-                  fontWeight: FontWeight.normal, // Remet la police en normal
-                  color: Colors.black, // Couleur normale du texte en noir
+                  fontSize: 30,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
                 ),
               ),
             ),
-            const SizedBox(
-                height: 10), // Réduit l'espace entre le titre et la note
+            const SizedBox(height: 10),
             Expanded(
               child: TextFormField(
                 controller: _contentController,
@@ -558,16 +556,17 @@ class _NoteScreenState extends State<NoteScreen> {
         child: const Icon(Icons.save),
         onPressed: () {
           setState(() {
-              showError = true;
+            showError = true;
           });
-          if (_titleController.text.isNotEmpty){
+          if (_titleController.text.isNotEmpty) {
             String title = _titleController.text;
             String content = _contentController.text;
             String cr_title = widget.ctr.crypter.encrypt(title);
             String cr_content = widget.ctr.crypter.encrypt(content);
-
+            Navigator.of(context).pop();
             widget.rebuildParent();
             if (widget.note != null) {
+              print("hello, i am updating note");
               // NOTE UPDATE
               // update note in backend
               if (widget.folderName == null) {
@@ -601,8 +600,6 @@ class _NoteScreenState extends State<NoteScreen> {
                 folderName: widget.folderName,
               ));
             }
-
-            Navigator.of(context).pop();
           }
         },
       ),
