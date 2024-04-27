@@ -70,7 +70,8 @@ class _LoginPageState extends State<LoginPage> {
 
       ctr.loadApp(password, _selectedVault, key);
 
-      Navigator.pushReplacementNamed(context, '/HomePage', arguments: {"isStartup": false});
+      Navigator.pushReplacementNamed(context, '/HomePage',
+          arguments: {"isStartup": false});
     } else {
       // Incorrect password handling
       print('Invalid password');
@@ -125,7 +126,10 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 const SizedBox(height: 30),
-                Image.asset("lib/images/login.png", width: 300,),
+                Image.asset(
+                  "lib/images/login.png",
+                  width: 300,
+                ),
                 const SizedBox(height: 20),
                 const Text(
                   "Login to Vault:",
@@ -229,29 +233,22 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-      floatingActionButton: Stack(
+      floatingActionButton: SpeedDial(
+        icon: Icons.move_to_inbox,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.grey,
+        foregroundColor: Colors.white,
+        animatedIconTheme: const IconThemeData(size: 22.0),
         children: [
-          Positioned(
-            right: 16.0,
-            bottom: 16.0,
-            child: SpeedDial(
-              icon: Icons.add,
-              activeIcon: Icons.close,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              animatedIconTheme: const IconThemeData(size: 22.0),
-              children: [
-                SpeedDialChild(
-                  child: const Icon(Icons.import_export),
-                  backgroundColor: Colors.blue,
-                  label: 'Import new Vault',
-                  labelStyle: const TextStyle(fontSize: 16.0),
-                  onTap: () {
-                    _showImportConfirmationDialog(context);
-                  },
-                ),
-              ],
-            ),
+          SpeedDialChild(
+            child: const Icon(Icons.import_export),
+            backgroundColor: Colors.blue,
+            label: 'Import new Vault',
+            labelStyle: const TextStyle(fontSize: 16.0),
+            onTap: () {
+              _showImportConfirmationDialog(context);
+              setState(() {});
+            },
           ),
         ],
       ),
@@ -275,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.of(context).pop();
                   _showImportFailureMessage(context);
                 }
-
+                setState(() {});
               },
               child: const Text('Import'),
             ),
@@ -317,7 +314,8 @@ class _LoginPageState extends State<LoginPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Import Failed'),
-          content: const Text("Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
+          content: const Text(
+              "Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
           actions: <Widget>[
             TextButton(
               onPressed: () {

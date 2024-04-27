@@ -19,15 +19,15 @@ void main() async {
   bool isStartup = ctr.isStartup();
 
   AwesomeNotifications().initialize(
-      null,
-      [
-        NotificationChannel(
-            channelKey: "cryptedeye",
-            channelName: "CryptedEye",
-            channelDescription: "Channel Notification for auto log-out",
-            enableVibration: false),
-      ],
-      debug: true);
+    null,
+    [
+      NotificationChannel(
+          channelKey: "cryptedeye",
+          channelName: "CryptedEye",
+          channelDescription: "Channel Notification for auto log-out",
+          enableVibration: false),
+    ],
+  );
 
   // create app observer and add it to App, so when it get closed we can
   // close the app cleanly
@@ -73,7 +73,7 @@ class _CryptedEyeState extends State<CryptedEye> {
     return MaterialApp(
       title: 'CryptedEye',
       routes: {
-        '/login': (context) => LoginPage(ctr: widget.ctr),
+        '/Login': (context) => LoginPage(ctr: widget.ctr),
         '/HomePage': (context) => HomePage(ctr: widget.ctr),
         '/SignUp': (context) => SignUpPage(ctr: widget.ctr),
         '/Settings': (context) => SettingsPage(ctr: widget.ctr),

@@ -24,7 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _VaultNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-  TextEditingController();
+      TextEditingController();
   Controller ctr;
   String? _passwordError;
   String? _confirmPasswordError;
@@ -45,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _callLogIn() {
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushReplacementNamed(context, '/Login');
   }
 
   void _signUp() async {
@@ -61,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } else if (ctr.getListOfVault().contains(VaultName)) {
       setState(() {
         _vaultError =
-        "Vault can't have the same name as other already created vaults";
+            "Vault can't have the same name as other already created vaults";
         _vaultColor = Colors.red;
       });
     } else if (password.isEmpty || confirmPassword.isEmpty) {
@@ -102,7 +102,8 @@ class _SignUpPageState extends State<SignUpPage> {
       // 3. finaly, apply retrieved key to app, and load it.
       ctr.loadApp(password, VaultName, key);
 
-      Navigator.pushReplacementNamed(context, '/HomePage', arguments: {"isStartup": true});
+      Navigator.pushReplacementNamed(context, '/HomePage',
+          arguments: {"isStartup": true});
     }
   }
 
@@ -116,13 +117,13 @@ class _SignUpPageState extends State<SignUpPage> {
         child: _isLoading
             ? const SizedBox()
             : const Text(
-          "Connect to existing Vault",
-          style:
-          TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
-        ));
+                "Connect to existing Vault",
+                style:
+                    TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+              ));
 
-    List<String> vaults = ctr.getListOfVault();
-    if (vaults.length > 0) {
+    int nb_vaults = ctr.getListOfVault().length;
+    if (nb_vaults > 0) {
       canLog = login;
       title = " > New Vault";
     } else {
@@ -141,11 +142,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 30),
                 Column(
                   crossAxisAlignment:
-                  CrossAxisAlignment.start, // Alignement à gauche
+                      CrossAxisAlignment.start, // Alignement à gauche
                   children: [
                     const SizedBox(
                         height:
-                        20), // Espace entre l'IconButton et le reste des éléments
+                            20), // Espace entre l'IconButton et le reste des éléments
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -174,7 +175,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Image.asset("lib/images/signup.png", width: 250,),
+                Image.asset(
+                  "lib/images/signup.png",
+                  width: 250,
+                ),
                 const SizedBox(height: 20),
                 Container(
                   width: 300,
@@ -214,11 +218,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelStyle: const TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: _passwordContainerColor),
+                          borderSide:
+                              BorderSide(color: _passwordContainerColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: _passwordContainerColor),
+                          borderSide:
+                              BorderSide(color: _passwordContainerColor),
                         ),
                         errorText: _passwordError,
                       ),
@@ -241,12 +247,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:
-                          BorderSide(color: _confirmPasswordContainerColor),
+                              BorderSide(color: _confirmPasswordContainerColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:
-                          BorderSide(color: _confirmPasswordContainerColor),
+                              BorderSide(color: _confirmPasswordContainerColor),
                         ),
                         errorText: _confirmPasswordError,
                       ),
@@ -255,69 +261,42 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // REMOVED TEMPORALLY AS BACKEND ISN'T WORKING
-                /*Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Load with Secure Context',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    const SizedBox(width: 10,),
-                    Switch(
-                      value: _loadWithSecureContext,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _loadWithSecureContext = value;
-                        });
-                      },
-                      activeColor: Colors.blue,
-                      inactiveTrackColor: Colors.grey,
-                    ),
-                  ],
-                ),*/
                 _isLoading
                     ? CircularProgressIndicator()
                     : ElevatedButton(
-                  onPressed: _signUp,
-                  child: const Text('Create Vault'),
-                ),
+                        onPressed: _signUp,
+                        child: const Text('Create Vault'),
+                      ),
                 canLog,
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: Stack(
-          children: [
-            Positioned(
-              right: 16.0,
-              bottom: 16.0,
-              child: SpeedDial(
-                icon: Icons.add,
-                activeIcon: Icons.close,
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                animatedIconTheme: const IconThemeData(size: 22.0),
-                children: [
-                  SpeedDialChild(
-                    child: const Icon(Icons.password),
-                    backgroundColor: Colors.blue,
-                    label: 'Import new Vault',
-                    labelStyle: const TextStyle(fontSize: 16.0),
-                    onTap: () {
-                      _showImportConfirmationDialog(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      floatingActionButton: SpeedDial(
+        icon: Icons.move_to_inbox,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.grey,
+        foregroundColor: Colors.white,
+        animatedIconTheme: const IconThemeData(size: 22.0),
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.import_export),
+            backgroundColor: Colors.blue,
+            label: 'Import new Vault',
+            labelStyle: const TextStyle(fontSize: 16.0),
+            onTap: () {
+              _showImportConfirmationDialog(context);
+              setState(() {});
+              Navigator.of(context).pushReplacementNamed('Login');
+            },
+          ),
+        ],
+      ),
     );
   }
 
-   void _showImportConfirmationDialog(BuildContext context) {
+  void _showImportConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -334,7 +313,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Navigator.of(context).pop();
                   _showImportFailureMessage(context);
                 }
-
+                setState(() {});
               },
               child: const Text('Import'),
             ),
@@ -376,7 +355,8 @@ class _SignUpPageState extends State<SignUpPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Import Failed'),
-          content: const Text("Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
+          content: const Text(
+              "Your data wasn't imported, please retry. Make sure you selected a valid Vault image. The file name should finish with '.CryptedEye.tar'. Make sure you don't already have a vault with the same name."),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -390,4 +370,3 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 }
-
