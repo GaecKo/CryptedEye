@@ -277,7 +277,7 @@ class _PasswordItemState extends State<PasswordItem> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
       child: ListTile(
         title: Row(
           children: [
@@ -289,9 +289,13 @@ class _PasswordItemState extends State<PasswordItem> {
             const SizedBox(
               width: 5,
             ),
-            Text(
-              widget.website,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            Expanded(
+              flex: 2,
+              child: Text(
+                widget.website,
+                overflow: TextOverflow.fade,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
@@ -317,7 +321,7 @@ class _PasswordItemState extends State<PasswordItem> {
           children: [
             IconButton(
               icon: Icon(
-                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility),
               onPressed: () {
                 setState(() {
                   _isPasswordVisible = !_isPasswordVisible;

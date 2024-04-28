@@ -349,15 +349,33 @@ class _NoteState extends State<Note> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
       child: ListTile(
-        title: Text(
-          widget.ctr.crypter.decrypt(widget.cryptedTitle),
-          style: const TextStyle(fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            const Icon(
+              Icons.note,
+              color: Colors.blue,
+              size: 18,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                widget.ctr.crypter.decrypt(widget.cryptedTitle),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.fade,
+                maxLines: 2,
+              ),
+            ),
+          ],
         ),
         subtitle: Text(
           widget.ctr.crypter.decrypt(widget.cryptedContent),
           maxLines: 3,
+          overflow: TextOverflow.fade,
         ),
         onTap: () {
           Navigator.push(
@@ -375,11 +393,6 @@ class _NoteState extends State<Note> {
             ),
           );
         },
-        leading: const Icon(
-          Icons.note,
-          size: 36.0,
-          color: Colors.blue,
-        ),
       ),
     );
   }
@@ -403,8 +416,8 @@ class Folder extends StatefulWidget {
 class _FolderState extends State<Folder> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -418,29 +431,15 @@ class _FolderState extends State<Folder> {
             ),
           );
         },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: const Offset(0, 2),
-              ),
-            ],
+        child: ListTile(
+          title: Text(
+            widget.ctr.crypter.decrypt(widget.name),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          child: ListTile(
-            title: Text(
-              widget.ctr.crypter.decrypt(widget.name),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            leading: const Icon(
-              Icons.folder,
-              size: 36.0,
-              color: Colors.blue,
-            ),
+          leading: const Icon(
+            Icons.folder_open,
+            size: 36.0,
+            color: Colors.blue,
           ),
         ),
       ),
