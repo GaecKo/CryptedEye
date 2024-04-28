@@ -76,6 +76,7 @@ class _WelcomePageState extends State<WelcomePage> {
         children: [CryptedEyeWelcome(), MultipleVaults()],
       ),
       bottomNavigationBar: BottomAppBar(
+        elevation: 0,
         color: const Color.fromRGBO(100, 100, 100, 1),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
