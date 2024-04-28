@@ -73,22 +73,20 @@ class _WelcomePageState extends State<WelcomePage> {
             _currentPageIndex = index;
           });
         },
-        children: [
-          CryptedEyeWelcome(),
-          MultipleVaults()
-        ],
+        children: [CryptedEyeWelcome(), MultipleVaults()],
       ),
       bottomNavigationBar: BottomAppBar(
         color: const Color.fromRGBO(100, 100, 100, 1),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            _currentPageIndex == 0 ? const SizedBox() :
-            IconButton(
-              icon: const Icon(Icons.navigate_before),
-              onPressed: _navigateToPreviousPage,
-              color: Colors.white,
-            ),
+            _currentPageIndex == 0
+                ? const SizedBox()
+                : IconButton(
+                    icon: const Icon(Icons.navigate_before),
+                    onPressed: _navigateToPreviousPage,
+                    color: Colors.white,
+                  ),
             Row(
               children: [
                 Container(
@@ -96,7 +94,9 @@ class _WelcomePageState extends State<WelcomePage> {
                   height: 8,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentPageIndex == 0 ? Colors.white : Colors.grey, // Active page color
+                    color: _currentPageIndex == 0
+                        ? Colors.white
+                        : Colors.grey, // Active page color
                   ),
                 ),
                 SizedBox(width: 8),
@@ -105,32 +105,34 @@ class _WelcomePageState extends State<WelcomePage> {
                   height: 8,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentPageIndex == 1 ? Colors.white : Colors.grey, // Active page color
+                    color: _currentPageIndex == 1
+                        ? Colors.white
+                        : Colors.grey, // Active page color
                   ),
                 ),
               ],
             ),
             _currentPageIndex == 1
                 ? SizedBox(
-              width: 140,
-              child: ElevatedButton.icon(
-                onPressed: _navigateToNextPage,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                ),
-                icon: const Icon(Icons.arrow_forward),
-                label: const Text('Sign Up'),
-              ),
-            )
+                    width: 140,
+                    child: ElevatedButton.icon(
+                      onPressed: _navigateToNextPage,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                      ),
+                      icon: const Icon(Icons.arrow_forward),
+                      label: const Text('Sign Up'),
+                    ),
+                  )
                 : IconButton(
-              icon: const Icon(Icons.navigate_next),
-              onPressed: _navigateToNextPage,
-              color: Colors.white,
-            ),
+                    icon: const Icon(Icons.navigate_next),
+                    onPressed: _navigateToNextPage,
+                    color: Colors.white,
+                  ),
           ],
         ),
       ),
@@ -158,11 +160,13 @@ class CryptedEyeWelcome extends StatelessWidget {
             "lib/images/CryptedEye.png",
             width: 300,
           ),
-          const SizedBox(height: 30,),
+          const SizedBox(
+            height: 30,
+          ),
           const SizedBox(
             width: 300,
             child: Text(
-              "CryptedEye is a fully local vault, with the automatic creation of salt and Key, making your data locked using an Access Password.",
+              "CryptedEye is a fully local vault, with the automatic creation of salt and Key, making your data locked using an Access Password (don't forget it!). With CryptedEye, you can easily and securely save passwords and notes.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -190,11 +194,13 @@ class MultipleVaults extends StatelessWidget {
             "lib/images/MultiVaults.png",
             width: 300,
           ),
-          const SizedBox(height: 30,),
+          const SizedBox(
+            height: 30,
+          ),
           const SizedBox(
             width: 300,
             child: Text(
-              "CryptedEye allows you to export, import, and switch between vaults. Simply export your vault in the settings, share the image file and import in other's app!",
+              "CryptedEye also allows you to export, import, and switch between vaults. Simply export your vault in the settings, share the image file wherever you need!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,

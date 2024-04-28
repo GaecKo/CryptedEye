@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 30),
+                const SizedBox(height: 15),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -127,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 30),
                 Image.asset(
-                  "lib/images/login.png",
+                  "lib/images/login_back3.png",
                   width: 300,
                 ),
                 const SizedBox(height: 20),
@@ -240,7 +240,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       floatingActionButton: SpeedDial(
-        icon: Icons.move_to_inbox,
+        icon: Icons.more_horiz,
         activeIcon: Icons.close,
         backgroundColor: Colors.grey,
         foregroundColor: Colors.white,
@@ -254,6 +254,15 @@ class _LoginPageState extends State<LoginPage> {
             onTap: () {
               _showImportConfirmationDialog(context);
               setState(() {});
+            },
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.question_mark),
+            backgroundColor: Colors.grey,
+            label: 'How does it work?',
+            labelStyle: const TextStyle(fontSize: 16.0),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed("/Welcome");
             },
           ),
         ],
