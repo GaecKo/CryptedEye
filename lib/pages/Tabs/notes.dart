@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -255,12 +257,14 @@ class _NotesPageState extends State<NotesPage> {
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     dismissible: DismissiblePane(onDismissed: () {
-                      deleteWidget(index);
+                      //deleteWidget(index);
+                      _showDeleteConfirmationDialog(context, index);
                     }),
                     children: [
                       SlidableAction(
                         onPressed: (context) {
-                          deleteWidget(index);
+                          _showDeleteConfirmationDialog(context, index);
+                          // deleteWidget(index);
                           setState(() {});
                         },
                         borderRadius: BorderRadius.circular(10),
@@ -280,6 +284,33 @@ class _NotesPageState extends State<NotesPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete'),
+          content: const Text('Are you sure you want to delete this note ?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                deleteWidget(index);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Delete'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
 

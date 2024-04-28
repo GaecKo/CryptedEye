@@ -151,8 +151,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     dismissible: DismissiblePane(onDismissed: () {
-                      widget.ctr.deletePassword(website);
-                      _rebuildParent();
+                      _showDeleteConfirmationDialog(context, website);
                     }),
                     children: [
                       SlidableAction(
@@ -232,6 +231,34 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, String website) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete'),
+          content: Text('Are you sure you want to delete ${widget.ctr.crypter.decrypt(website)} ?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                widget.ctr.deletePassword(website);
+                _rebuildParent();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Delete'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
