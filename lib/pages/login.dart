@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   String? _passwordError;
   late String _selectedVault;
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
 
   _LoginPageState({required this.ctr});
 
@@ -84,6 +85,12 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = false;
       });
     }
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
   }
 
   @override
@@ -162,12 +169,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: TextField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: "> Access Password",
                       border: InputBorder.none,
+                      suffixIcon: IconButton(
+                        icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                        onPressed: _togglePasswordVisibility,
+                      ),
                     ),
-                    style: const TextStyle(color: Colors.black),
-                    obscureText: true,
+                    style: TextStyle(color: Colors.black),
+                    obscureText: !_isPasswordVisible, // Utilisation de l'état de visibilité pour masquer ou afficher le mot de passe
                     onChanged: (_) {
                       setState(() {
                         _passwordError = null;
