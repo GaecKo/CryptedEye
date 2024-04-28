@@ -320,7 +320,7 @@ class _PasswordItemState extends State<PasswordItem> {
           children: [
             IconButton(
               icon: Icon(
-                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility),
               onPressed: () {
                 setState(() {
                   _isPasswordVisible = !_isPasswordVisible;
