@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../controller.dart';
 import 'Tabs/notes.dart';
 import 'Tabs/passwords.dart';
+import 'themeProvider.dart';
 
 class HomePage extends StatefulWidget {
-  Controller ctr;
+  final Controller ctr;
   late bool isStartup;
 
-  HomePage({super.key, required this.ctr});
+  HomePage({Key? key, required this.ctr}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState(ctr);
+  _HomePageState createState() => _HomePageState(ctr);
 }
 
 class _HomePageState extends State<HomePage> {
   Controller ctr;
+  bool isHighContrast = false; // Track the current theme state
 
   _HomePageState(this.ctr);
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    bool defaultLightTheme = themeProvider.themeData == ThemeData();
+
     Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     widget.isStartup = args["isStartup"];
@@ -28,86 +34,108 @@ class _HomePageState extends State<HomePage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
-            title: Row(
-              children: [
-                const Icon(
-                  Icons.lock,
-                  size: 26,
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
+          title: Row(
+            children: [
+              const Icon(
+                Icons.lock,
+                size: 26,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                "CryptedEye",
+                style: TextStyle(
+                  fontSize: 26,
                   color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(width: 10),
-                const Text(
-                  "CryptedEye",
-                  style: TextStyle(
-                      fontSize: 26,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    " > ${widget.ctr.VaultName}",
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  " > ${widget.ctr.VaultName}",
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
                   ),
-                )
-              ],
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(
-                  Icons.settings,
-                  size: 30,
-                  color: Colors.white,
                 ),
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/Settings');
-                  setState(() {});
-                },
-              )
+              ),
             ],
-            bottom: TabBar(
-              tabs: const [
-                Tab(
-                  icon: Icon(Icons.password),
-                ),
-                /*Tab(icon: Icon(Icons.panorama_outlined),),*/
-                Tab(
-                  icon: Icon(Icons.notes),
-                ),
-              ],
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Colors.blue,
-              labelColor: Colors.blue,
-              unselectedLabelColor: Colors.white,
-              overlayColor: MaterialStateColor.resolveWith(
-                  (states) => const Color.fromRGBO(20, 20, 40, 0.2)),
-              splashBorderRadius: BorderRadius.circular(10),
-            ),
           ),
-
-          // tabbar view
-          body: SafeArea(
-            child: TabBarView(
-              children: <Widget>[
-                PasswordManagerPage(
-                  ctr: ctr,
-                  isStartup: widget.isStartup,
-                ),
-                /*AlbumsPage(),*/
-                NotesPage(
-                  ctr: ctr,
-                  isStartup: widget.isStartup,
-                ),
-              ],
+          actions: <Widget>[
+            IconButton(
+              // Toggle button for switching themes
+              icon: Icon(
+                defaultLightTheme ? Icons.dark_mode : Icons.light_mode,
+                size: 30,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                if (themeProvider.themeData == ThemeData()) {
+                  // Set high contrast dark theme
+                  themeProvider.setThemeData(
+                      ThemeData.from(colorScheme: ColorScheme.dark()));
+                  setState(() {
+                    defaultLightTheme = false;
+                  });
+                } else {
+                  // Set default theme
+                  themeProvider.setThemeData(ThemeData());
+                  setState(() {
+                    defaultLightTheme = true;
+                  });
+                }
+              },
             ),
-          )),
+            IconButton(
+              icon: const Icon(
+                Icons.settings,
+                size: 30,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/Settings');
+                setState(() {});
+              },
+            ),
+          ],
+          bottom: TabBar(
+            tabs: const [
+              Tab(
+                icon: Icon(Icons.password),
+              ),
+              Tab(
+                icon: Icon(Icons.notes),
+              ),
+            ],
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorColor: Colors.blue,
+            labelColor: Colors.blue,
+            unselectedLabelColor: Colors.white,
+            overlayColor: MaterialStateColor.resolveWith(
+                (states) => const Color.fromRGBO(20, 20, 40, 0.2)),
+            splashBorderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        body: SafeArea(
+          child: TabBarView(
+            children: <Widget>[
+              PasswordManagerPage(
+                ctr: ctr,
+                isStartup: widget.isStartup,
+              ),
+              NotesPage(
+                ctr: ctr,
+                isStartup: widget.isStartup,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

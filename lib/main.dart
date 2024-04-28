@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
 
 import 'controller.dart';
@@ -10,6 +11,7 @@ import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/settings.dart';
 import 'pages/signup.dart';
+import 'pages/themeProvider.dart';
 import 'pages/welcome.dart';
 
 void main() async {
@@ -33,11 +35,15 @@ void main() async {
   // close the app cleanly
   MyAppLifecycleObserver observer = MyAppLifecycleObserver(ctr: ctr);
   WidgetsBinding.instance.addObserver(observer);
-
-  runApp(CryptedEye(
-    ctr: ctr,
-    isStartup: isStartup,
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: CryptedEye(
+        ctr: ctr,
+        isStartup: isStartup,
+      ),
+    ),
+  );
 }
 
 class CryptedEye extends StatefulWidget {
@@ -81,15 +87,7 @@ class _CryptedEyeState extends State<CryptedEye> {
       },
       home: firstPage,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: Colors.black,
-          selectionHandleColor:
-              Colors.black, // Couleur de la poignée de sélection
-          selectionColor:
-              Colors.black.withOpacity(0.3), // Couleur de la sélection
-        ),
-      ),
+      theme: Provider.of<ThemeProvider>(context).themeData,
       builder: (BuildContext context, Widget? widget) {
         ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
           return CustomError(errorDetails: errorDetails);
