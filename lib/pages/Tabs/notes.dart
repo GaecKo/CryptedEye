@@ -124,7 +124,7 @@ class _NotesPageState extends State<NotesPage> {
         children: [
           Positioned(
             left: 50.0,
-            bottom: 16.0,
+            bottom: 30.0,
             child: FloatingActionButton(
               onPressed: () {
                 popup();
@@ -138,7 +138,7 @@ class _NotesPageState extends State<NotesPage> {
           ),
           Positioned(
             right: 16.0,
-            bottom: 16.0,
+            bottom: 30.0,
             child: SpeedDial(
               icon: Icons.add,
               activeIcon: Icons.close,
