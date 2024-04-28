@@ -299,11 +299,13 @@ class _SettingsList extends State<SettingsList> {
 
                 _showExportSuccessMessage(context);
 
+                widget.ctr.onSharing = true;
                 await Share.shareXFiles(
                   [XFile(tarPath)],
                   text:
                       'This is the image of the Vault ${widget.ctr.VaultName}.',
                 );
+                widget.ctr.onSharing = false;
               },
               child: const Text('Export'),
             ),

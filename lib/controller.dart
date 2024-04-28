@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:archive/archive.dart';
 import 'package:path/path.dart' as p;
 
 import 'API/crypter.dart';
@@ -26,6 +25,7 @@ class Controller {
   late String VaultName;
 
   late bool initialized = false;
+  bool onSharing = false;
 
   // variable for password management
   late Map<String, dynamic> password_data = {};
@@ -337,7 +337,8 @@ class Controller {
   Future<bool> importData() async {
     try {
       // Attendre que l'utilisateur sélectionne un fichier
-      final tar_to_import = await FlutterFileDialog.pickFile(params: const OpenFileDialogParams(
+      final tar_to_import = await FlutterFileDialog.pickFile(
+          params: const OpenFileDialogParams(
         fileExtensionsFilter: ["tar"],
       ));
 
@@ -362,7 +363,6 @@ class Controller {
           dir.deleteSync(recursive: true);
           return false;
         }
-
       } else {
         // L'utilisateur a annulé la sélection
         print('Aucun fichier sélectionné.');
@@ -375,7 +375,6 @@ class Controller {
   }
 
   bool verifyVaultForm(String path) {
-    
     // Vérifier l'extension du fichier
     File tarFile = File(path);
     if (p.extension(path) != '.CryptedEye') {
@@ -384,7 +383,12 @@ class Controller {
     }
 
     List<String> expectedFolders = ['app', 'notes', 'passwords'];
-    List<String> expectedFiles = ['app/AP.hash', 'app/salt.key', 'notes/notes.json', 'passwords/passwords.json'];
+    List<String> expectedFiles = [
+      'app/AP.hash',
+      'app/salt.key',
+      'notes/notes.json',
+      'passwords/passwords.json'
+    ];
 
     for (var folder in expectedFolders) {
       Directory directory = Directory('$path/$folder');
@@ -405,7 +409,6 @@ class Controller {
     // Toutes les vérifications ont réussi
     return true;
   }
-
 }
 
 void main() {}

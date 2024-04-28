@@ -128,7 +128,8 @@ class MyAppLifecycleObserver with WidgetsBindingObserver {
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
       ctr.closeApp();
-      if (ctr.initialized && notif == false) {
+      if (ctr.initialized && notif == false && !ctr.onSharing) {
+        // onSharing: don't send notif if user is on share prompt
         // begin notif to true
         notif = true;
         notifTimer = Timer(Duration(seconds: 5), () {
