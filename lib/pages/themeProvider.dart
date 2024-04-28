@@ -30,7 +30,9 @@ class ThemeProvider extends ChangeNotifier {
     );
     notifyListeners();
     mode = "Dark";
-    ctr.setSettingTheme(mode);
+    if (ctr.initialized) {
+      ctr.setSettingTheme(mode);
+    }
   }
 
   void setLightMode() {
@@ -46,7 +48,9 @@ class ThemeProvider extends ChangeNotifier {
     );
     notifyListeners();
     mode = "Light";
-    ctr.setSettingTheme(mode);
+    if (ctr.initialized) {
+      ctr.setSettingTheme(mode);
+    }
   }
 
   ThemeData get themeData => _themeData;

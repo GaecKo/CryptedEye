@@ -75,18 +75,14 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () {
                 if (themeProvider.mode == "Light") {
-                  // Set high contrast dark theme
                   themeProvider.setDarkMode();
                   setState(() {
                     defaultLightTheme = false;
                   });
                 } else {
-                  print("wow");
-                  // Set default theme
                   themeProvider.setLightMode();
                   setState(() {
                     defaultLightTheme = true;
-                    print(defaultLightTheme);
                   });
                 }
               },

@@ -138,6 +138,9 @@ class Controller {
   }
 
   String getSettingTheme() {
+    if (!File("$localPath/settings.json").existsSync()) {
+      return 'Light';
+    }
     return getSettings()['theme'];
   }
 
