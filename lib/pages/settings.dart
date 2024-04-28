@@ -75,7 +75,7 @@ class _SettingsList extends State<SettingsList> {
         ),
         const Divider(),
         ListTile(
-          title: const Text('Export Data'),
+          title: const Text('Export Vault'),
           leading: const Icon(Icons.share),
           onTap: () {
             _showExportConfirmationDialog(context);
@@ -289,8 +289,8 @@ class _SettingsList extends State<SettingsList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Export Data'),
-          content: const Text('Are you sure you want to export your data ?'),
+          title: const Text('Export Vault'),
+          content: const Text('Are you sure you want to export your Vault ?'),
           actions: <Widget>[
             TextButton(
               onPressed: () async {

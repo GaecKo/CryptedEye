@@ -12,6 +12,16 @@ class IMG {
       return null;
     }
 
+    // Changer le nom si existe déja
+    String tarFileName = '$targetDirectory/$tar_name.CryptedEye';
+    int cpt = 1;
+    while (Directory(tarFileName).existsSync()){
+      tarFileName = '$targetDirectory/$tar_name($cpt).CryptedEye';
+      cpt ++;
+    }
+    int nmbr_tar = cpt - 1;
+    tar_name = "$tar_name($nmbr_tar)";
+
     // Lire les données de l'archive tar
     List<int> bytes = source.readAsBytesSync();
     Archive archive = TarDecoder().decodeBytes(bytes);
@@ -21,7 +31,7 @@ class IMG {
       if (file.isFile) {
         List<int> data = file.content as List<int>;
         String filePath = file.name;
-        String outputFile = '$targetDirectory/$tar_name/$filePath';
+        String outputFile = '$targetDirectory/$tar_name.CryptedEye/$filePath';
         File(outputFile)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
@@ -59,11 +69,15 @@ class IMG {
 
     // Créer un fichier .tar à partir de l'archive
     String tarFileName = '$outputDirectory/$tar_name.CryptedEye.tar';
+    int cpt = 1;
+    while (File(tarFileName).existsSync()){
+      tarFileName = '$outputDirectory/$tar_name($cpt).CryptedEye.tar';
+      cpt ++;
+    }
+
     print(tarFileName);
     File tarFile = File(tarFileName);
-    if (!tarFile.existsSync()) {
-      tarFile.createSync(recursive: true);
-    }
+    tarFile.createSync(recursive: true);
     tarFile.writeAsBytesSync(TarEncoder().encode(archive));
     print('Tar créé: ${tarFile.path}');
     return tarFile.path;

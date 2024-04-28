@@ -331,14 +331,6 @@ class Controller {
     String data_path = "$localPath/$VaultName.CryptedEye";
     Directory d = Directory(data_path);
     String download_path = '/storage/emulated/0/Download';
-    String tarFilePath = '$download_path/$VaultName.CryptedEye.tar';
-
-    File existingTarFile = File(tarFilePath);
-    if (existingTarFile.existsSync()) {
-      print('Le fichier TAR existe déjà dans le dossier de destination. Suppression en cours...');
-      existingTarFile.deleteSync();
-      print('Le fichier TAR existant a été supprimé.');
-    }
     return img.createTarFile(d, download_path, VaultName);
   }
 
@@ -360,7 +352,7 @@ class Controller {
         tmp = dirName.split('.');
 
         print('Data to import from $tar_to_import');
-        print(img.unTarFile(tar_to_import, localPath, '${tmp[0]}.CryptedEye'));
+        print(img.unTarFile(tar_to_import, localPath, tmp[0]));
 
         if (verifyVaultForm('$localPath/${tmp[0]}.CryptedEye')) {
           return true;
