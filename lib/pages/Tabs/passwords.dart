@@ -501,34 +501,41 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
             const SizedBox(height: 8),
             TextField(
               controller: websiteController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Title - Website',
+                errorText: showError && websiteController.text.isEmpty
+                    ? 'Please enter title'
+                    : null,
               ),
+              onChanged: (_) {
+                setState(() {});
+              },
             ),
             const SizedBox(height: 8),
             TextField(
               controller: usernameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Username - email',
-                errorText: showError && usernameController.text.isEmpty
-                    ? 'Please enter username'
-                    : null,
               ),
             ),
             const SizedBox(height: 8),
             Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.autorenew),
-                  color: Colors.blue,
-                  onPressed: () {
-                    setState(() {
-                      passwordController.text =
-                          widget.ctr.generateRandomPassword();
-                    });
-                  },
+                Expanded(
+                  flex: 1,
+                  child: IconButton(
+                    icon: const Icon(Icons.autorenew),
+                    color: Colors.blue,
+                    onPressed: () {
+                      setState(() {
+                        passwordController.text =
+                            widget.ctr.generateRandomPassword();
+                      });
+                    },
+                  ),
                 ),
                 Expanded(
+                  flex: 7,
                   child: TextField(
                     controller: passwordController,
                     obscureText: obscurePassword,
@@ -538,15 +545,21 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
                           ? 'Please enter password'
                           : null,
                     ),
+                    onChanged: (_) {
+                      setState(() {});
+                    },
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.visibility),
-                  onPressed: () {
-                    setState(() {
-                      obscurePassword = !obscurePassword;
-                    });
-                  },
+                Expanded(
+                  flex: 1,
+                  child: IconButton(
+                    icon: const Icon(Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        obscurePassword = !obscurePassword;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
@@ -565,7 +578,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
             setState(() {
               showError = true;
             });
-            if (usernameController.text.isNotEmpty &&
+            if (websiteController.text.isNotEmpty &&
                 passwordController.text.isNotEmpty) {
               // Controller function
               widget.ctr.editPasswordData(
