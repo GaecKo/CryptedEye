@@ -382,6 +382,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
             ),
             const SizedBox(height: 8),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                   flex: 1,
@@ -396,8 +397,11 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     },
                   ),
                 ),
+                const SizedBox(
+                  width: 7,
+                ),
                 Expanded(
-                  flex: 7,
+                  flex: 6,
                   child: TextField(
                     controller: passwordController,
                     obscureText: obscurePassword,
@@ -534,8 +538,11 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
                     },
                   ),
                 ),
+                const SizedBox(
+                  width: 7,
+                ),
                 Expanded(
-                  flex: 7,
+                  flex: 6,
                   child: TextField(
                     controller: passwordController,
                     obscureText: obscurePassword,

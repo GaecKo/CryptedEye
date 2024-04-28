@@ -260,6 +260,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         errorText: _confirmPasswordError,
                       ),
                       style: const TextStyle(color: Colors.white),
+                      onFieldSubmitted: (_) {
+                        _signUp();
+                      },
                     ),
                   ),
                 ),
