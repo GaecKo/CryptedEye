@@ -87,6 +87,8 @@ class _SignUpPageState extends State<SignUpPage> {
       setState(() {
         _passwordError = null;
         _confirmPasswordError = null;
+        _vaultError = null;
+        _vaultColor = Colors.white;
         _passwordContainerColor = Colors.white;
         _confirmPasswordContainerColor = Colors.white;
         _isLoading = true;
@@ -182,12 +184,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 20),
                 Container(
                   width: 300,
-                  height: 50,
+                  height: 100,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextFormField(
+                      maxLength: 20,
                       controller: _VaultNameController,
                       decoration: InputDecoration(
+                        counterStyle: const TextStyle(color: Colors.white),
                         labelText: 'Vault Name',
                         errorText: _vaultError,
                         labelStyle: const TextStyle(color: Colors.white),
@@ -205,7 +209,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
                 Container(
                   width: 300,
                   child: Padding(

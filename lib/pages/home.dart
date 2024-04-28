@@ -21,7 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     widget.isStartup = args["isStartup"];
 
     return DefaultTabController(
@@ -44,13 +45,18 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  " > ${widget.ctr.VaultName}",
-                  style: const TextStyle(
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    " > ${widget.ctr.VaultName}",
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(
                       fontSize: 15,
                       color: Colors.grey,
-                      fontWeight: FontWeight.bold),
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
               ],
             ),
             actions: <Widget>[
@@ -90,9 +96,15 @@ class _HomePageState extends State<HomePage> {
           body: SafeArea(
             child: TabBarView(
               children: <Widget>[
-                PasswordManagerPage(ctr: ctr, isStartup: widget.isStartup,),
+                PasswordManagerPage(
+                  ctr: ctr,
+                  isStartup: widget.isStartup,
+                ),
                 /*AlbumsPage(),*/
-                NotesPage(ctr: ctr, isStartup: widget.isStartup,),
+                NotesPage(
+                  ctr: ctr,
+                  isStartup: widget.isStartup,
+                ),
               ],
             ),
           )),
