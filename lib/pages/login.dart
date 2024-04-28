@@ -168,6 +168,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     style: const TextStyle(color: Colors.black),
                     obscureText: true,
+                    onChanged: (_) {
+                      setState(() {
+                        _passwordError = null;
+                        _passwordContainerColor = Colors.white;
+                      });
+                    },
                     onSubmitted: (_) {
                       _login();
                     },
