@@ -177,18 +177,26 @@ class CustomError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.red,
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          "We are sorry, CryptedEye ran through an unhandled error. Please try restarting the app."
-          "\nIf this came from importing a vault image, then the vault must be corrupted, try exporting it properly again."
-          "\nIf the error persists, you can also contact the dev team at ",
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return Center(
+      child: SizedBox(
+        height: 350,
+        width: 350,
+        child: Center(
+          child: Card(
+            color: Color.fromRGBO(150, 50, 50, 1),
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(
+                "We are sorry, CryptedEye ran through an unhandled error. Please try restarting the app."
+                "\nIf this came from importing a vault image, then the vault must be corrupted, try exporting it properly again."
+                "\nIf the error persists, you can also contact the dev team at https://github.com/GaecKo/CryptedEye/issues",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ),
       ),
