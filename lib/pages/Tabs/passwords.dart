@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter/services.dart';
 
 import '../../controller.dart';
 
@@ -327,6 +328,19 @@ class _PasswordItemState extends State<PasswordItem> {
             IconButton(
               icon: const Icon(Icons.edit),
               onPressed: widget.onPenPressed,
+            ),
+            IconButton(
+              icon: const Icon(Icons.copy),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: widget.password)).catchError((error) {
+                  // Erreur lors de la copie du mot de passe dans le presse-papiers
+              print(
+                  'Erreur lors de la copie du mot de passe dans le presse-papiers : $error');
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Erreur lors de la copie du mot de passe'),
+                  ));
+                });
+              }
             ),
           ],
         ),
