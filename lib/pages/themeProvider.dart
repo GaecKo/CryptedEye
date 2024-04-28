@@ -1,7 +1,53 @@
 import 'package:flutter/material.dart';
 
+import '../controller.dart';
+
 class ThemeProvider extends ChangeNotifier {
-  ThemeData _themeData = ThemeData(); // Default theme
+  late ThemeData _themeData; // Default theme
+  late String mode;
+  Controller ctr;
+
+  ThemeProvider({required this.ctr}) {
+    if (ctr.getSettingTheme() == "Light") {
+      mode = "Light";
+      setLightMode();
+    } else {
+      mode = "Dark";
+      setDarkMode();
+    }
+  }
+
+  void setDarkMode() {
+    _themeData = ThemeData(
+      colorScheme: const ColorScheme.dark(),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: Colors.black,
+        selectionHandleColor:
+            Colors.black, // Couleur de la poignée de sélection
+        selectionColor:
+            Colors.black.withOpacity(0.3), // Couleur de la sélection
+      ),
+    );
+    notifyListeners();
+    mode = "Dark";
+    ctr.setSettingTheme(mode);
+  }
+
+  void setLightMode() {
+    _themeData = ThemeData(
+      colorScheme: const ColorScheme.light(),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: Colors.black,
+        selectionHandleColor:
+            Colors.black, // Couleur de la poignée de sélection
+        selectionColor:
+            Colors.black.withOpacity(0.3), // Couleur de la sélection
+      ),
+    );
+    notifyListeners();
+    mode = "Light";
+    ctr.setSettingTheme(mode);
+  }
 
   ThemeData get themeData => _themeData;
 

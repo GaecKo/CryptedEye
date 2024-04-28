@@ -25,8 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    bool defaultLightTheme = themeProvider.themeData == ThemeData();
-
+    bool defaultLightTheme = themeProvider.mode == "Light";
     Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     widget.isStartup = args["isStartup"];
@@ -75,18 +74,19 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
               ),
               onPressed: () {
-                if (themeProvider.themeData == ThemeData()) {
+                if (themeProvider.mode == "Light") {
                   // Set high contrast dark theme
-                  themeProvider.setThemeData(
-                      ThemeData.from(colorScheme: ColorScheme.dark()));
+                  themeProvider.setDarkMode();
                   setState(() {
                     defaultLightTheme = false;
                   });
                 } else {
+                  print("wow");
                   // Set default theme
-                  themeProvider.setThemeData(ThemeData());
+                  themeProvider.setLightMode();
                   setState(() {
                     defaultLightTheme = true;
+                    print(defaultLightTheme);
                   });
                 }
               },

@@ -90,6 +90,13 @@ class Controller {
     print("creating with vaultname $VaultName");
     // Init and then load App
 
+    // 1. settings file creation (if needed)
+    File settingsFile = File("$localPath/settings.json");
+    if (!settingsFile.existsSync()) {
+      settingsFile.createSync();
+      rwm.writeJSONData("settings.json", {"theme": "Light"});
+    }
+
     // 2. create project structure
     rwm.create_folder("$VaultName.CryptedEye/app/");
     rwm.create_folder("$VaultName.CryptedEye/passwords");
@@ -116,6 +123,22 @@ class Controller {
       "Directories": {"child": []},
       "Notes": {}
     });
+  }
+
+  Map<String, dynamic> getSettings() {
+    return rwm.getJSONData("settings.json");
+  }
+
+  void setSettingTheme(String value) {
+    Map<String, dynamic> settings = getSettings();
+
+    settings["theme"] = value;
+
+    rwm.writeJSONData("settings.json", settings);
+  }
+
+  String getSettingTheme() {
+    return getSettings()['theme'];
   }
 
   bool isStartup() {

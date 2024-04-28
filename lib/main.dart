@@ -37,7 +37,7 @@ void main() async {
   WidgetsBinding.instance.addObserver(observer);
   runApp(
     ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+      create: (_) => ThemeProvider(ctr: ctr),
       child: CryptedEye(
         ctr: ctr,
         isStartup: isStartup,
@@ -59,6 +59,7 @@ class CryptedEye extends StatefulWidget {
 class _CryptedEyeState extends State<CryptedEye> {
   @override
   void initState() {
+    super.initState();
     AwesomeNotifications().isNotificationAllowed().then((allowed) {
       if (!allowed) {
         AwesomeNotifications().requestPermissionToSendNotifications();
