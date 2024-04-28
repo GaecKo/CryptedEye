@@ -48,8 +48,10 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Adding Passwords",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+          title: const Text(
+            "Adding Passwords",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -76,7 +78,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
         );
       },
     );
-    return SizedBox();
+    return const SizedBox();
   }
 
   @override
@@ -100,12 +102,14 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: BorderSide(color: Colors.blue), // Couleur de la bordure
+                  borderSide: const BorderSide(
+                      color: Colors.blue), // Couleur de la bordure
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
                   borderSide: const BorderSide(
-                    color: Colors.blue, // Couleur de la bordure lorsqu'elle est activée
+                    color: Colors
+                        .blue, // Couleur de la bordure lorsqu'elle est activée
                     width: 2.0, // Largeur de la bordure lorsqu'elle est activée
                   ),
                 ),
@@ -124,7 +128,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
               itemBuilder: (BuildContext context, int index) {
                 String website = widget.ctr.password_data.keys.elementAt(index);
                 List<dynamic> userData =
-                widget.ctr.password_data.values.elementAt(index);
+                    widget.ctr.password_data.values.elementAt(index);
                 String username = userData[0];
                 String password = userData[1];
 
@@ -192,9 +196,9 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
               },
               mini: true,
               backgroundColor: Colors.grey,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
               tooltip: 'Show Popup',
-              child: Icon(Icons.question_mark),
+              child: const Icon(Icons.question_mark),
             ),
           ),
           Positioned(
@@ -215,11 +219,10 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (_) =>
-                          AddPasswordItem(
-                            ctr: widget.ctr,
-                            rebuildParent: _rebuildParent,
-                          ),
+                      builder: (_) => AddPasswordItem(
+                        ctr: widget.ctr,
+                        rebuildParent: _rebuildParent,
+                      ),
                     );
                   },
                 ),
@@ -269,25 +272,38 @@ class _PasswordItemState extends State<PasswordItem> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       child: ListTile(
-        title: Text(
-          widget.website,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            const Icon(
+              Icons.lock_open,
+              color: Colors.blue,
+              size: 18,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(
+              widget.website,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
-            Text(
-              '${_hasUsername ?'Username: ${ widget.username}': ''}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            _hasUsername ? const SizedBox(height: 8) : const SizedBox(),
+            _hasUsername
+                ? Text(
+                    'Username: ${widget.username}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  )
+                : const SizedBox(),
             const SizedBox(height: 8),
             Text(
               'Password: ${_isPasswordVisible ? widget.password : '********'}',
@@ -348,44 +364,40 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
       content: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: websiteController,
-                    decoration: InputDecoration(
-                      labelText: 'Website',
-                      errorText: showError && websiteController.text.isEmpty
-                          ? 'Please enter website'
-                          : null,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: usernameController,
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      
-                    ),
-                  ),
-                ),
-              ],
+            TextField(
+              controller: websiteController,
+              decoration: InputDecoration(
+                labelText: 'Title - Website',
+                errorText: showError && websiteController.text.isEmpty
+                    ? 'Please enter title'
+                    : null,
+              ),
+            ),
+            const SizedBox(width: 8),
+            TextField(
+              controller: usernameController,
+              decoration: const InputDecoration(
+                labelText: 'Username - email',
+              ),
             ),
             const SizedBox(height: 8),
             Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.autorenew),
-                  onPressed: () {
-                    setState(() {
-                      passwordController.text =
-                          widget.ctr.generateRandomPassword();
-                    });
-                  },
+                Expanded(
+                  flex: 1,
+                  child: IconButton(
+                    icon: const Icon(Icons.autorenew),
+                    color: Colors.blue,
+                    onPressed: () {
+                      setState(() {
+                        passwordController.text =
+                            widget.ctr.generateRandomPassword();
+                      });
+                    },
+                  ),
                 ),
                 Expanded(
+                  flex: 7,
                   child: TextField(
                     controller: passwordController,
                     obscureText: obscurePassword,
@@ -397,13 +409,16 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.visibility),
-                  onPressed: () {
-                    setState(() {
-                      obscurePassword = !obscurePassword;
-                    });
-                  },
+                Expanded(
+                  flex: 1,
+                  child: IconButton(
+                    icon: const Icon(Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        obscurePassword = !obscurePassword;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
@@ -479,7 +494,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-          'Edit ${widget.ctr.crypter.decrypt(widget.initialWebsite)} Password'),
+          "Edit '${widget.ctr.crypter.decrypt(widget.initialWebsite)}' Password"),
       content: SingleChildScrollView(
         child: Column(
           children: [
@@ -487,14 +502,14 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
             TextField(
               controller: websiteController,
               decoration: const InputDecoration(
-                labelText: 'Website',
+                labelText: 'Title - Website',
               ),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: usernameController,
               decoration: InputDecoration(
-                labelText: 'Username',
+                labelText: 'Username - email',
                 errorText: showError && usernameController.text.isEmpty
                     ? 'Please enter username'
                     : null,
@@ -505,6 +520,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.autorenew),
+                  color: Colors.blue,
                   onPressed: () {
                     setState(() {
                       passwordController.text =
