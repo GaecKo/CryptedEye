@@ -253,6 +253,7 @@ class _NotesPageState extends State<NotesPage> {
                     motion: const ScrollMotion(),
                     dismissible: DismissiblePane(onDismissed: () {
                       deleteWidget(index);
+                      setState(() {});
                       // _showDeleteConfirmationDialog(context, index);
                     }),
                     children: [
@@ -313,23 +314,19 @@ class _NotesPageState extends State<NotesPage> {
     Widget tmp = contents[index];
     if (tmp is Note) {
       tmp = tmp as Note;
-      if (tmp.folderName != null) {
-        widget.ctr
-            .deleteNote(tmp.cryptedTitle, folderName: tmp.folderName as String);
-      } else {
-        widget.ctr.deleteNote(tmp.cryptedTitle);
-      }
       contents.removeWhere((elem) {
         if (elem is Note) {
           return elem.cryptedTitle == (tmp as Note).cryptedTitle;
         }
         return false;
       });
+      if (tmp.folderName != null) {
+        widget.ctr
+            .deleteNote(tmp.cryptedTitle, folderName: tmp.folderName as String);
+      } else {
+        widget.ctr.deleteNote(tmp.cryptedTitle);
+      }
     } else {
-      // TODO: ERROR WHEN REMOVING FOLDER, TO CHECK
-      tmp = tmp as Folder;
-      // remove folder from backend, its child notes as well
-      widget.ctr.deleteFolder(tmp.name);
       // remove folder from frontend
       contents.removeWhere((elem) {
         if (elem is Folder) {
@@ -337,6 +334,9 @@ class _NotesPageState extends State<NotesPage> {
         }
         return false;
       });
+      tmp = tmp as Folder;
+      // remove folder from backend, its child notes as well
+      widget.ctr.deleteFolder(tmp.name);
     }
   }
 
