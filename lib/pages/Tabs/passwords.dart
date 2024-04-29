@@ -150,7 +150,8 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     dismissible: DismissiblePane(onDismissed: () {
-                      _showDeleteConfirmationDialog(context, website);
+                      widget.ctr.deletePassword(website);
+                      _rebuildParent();
                     }),
                     children: [
                       SlidableAction(

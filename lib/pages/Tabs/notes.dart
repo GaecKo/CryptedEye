@@ -252,14 +252,14 @@ class _NotesPageState extends State<NotesPage> {
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     dismissible: DismissiblePane(onDismissed: () {
-                      //deleteWidget(index);
-                      _showDeleteConfirmationDialog(context, index);
+                      deleteWidget(index);
+                      // _showDeleteConfirmationDialog(context, index);
                     }),
                     children: [
                       SlidableAction(
                         onPressed: (context) {
-                          _showDeleteConfirmationDialog(context, index);
-                          // deleteWidget(index);
+                          //_showDeleteConfirmationDialog(context, index);
+                          deleteWidget(index);
                           setState(() {});
                         },
                         borderRadius: BorderRadius.circular(10),
