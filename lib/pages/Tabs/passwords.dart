@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter/services.dart';
 
 import '../../controller.dart';
 
 class PasswordManagerPage extends StatefulWidget {
   final Controller ctr;
-  bool isStartup;
   bool shown = false;
 
-  PasswordManagerPage({super.key, required this.ctr, required this.isStartup});
+  PasswordManagerPage({super.key, required this.ctr});
 
   @override
   _PasswordManagerPageState createState() => _PasswordManagerPageState();
@@ -240,7 +239,8 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete'),
-          content: Text('Are you sure you want to delete ${widget.ctr.crypter.decrypt(website)} ?'),
+          content: Text(
+              'Are you sure you want to delete ${widget.ctr.crypter.decrypt(website)} ?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -361,18 +361,18 @@ class _PasswordItemState extends State<PasswordItem> {
               onPressed: widget.onPenPressed,
             ),
             IconButton(
-              icon: const Icon(Icons.copy),
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: widget.password)).catchError((error) {
-                  // Erreur lors de la copie du mot de passe dans le presse-papiers
-              print(
-                  'Erreur lors de la copie du mot de passe dans le presse-papiers : $error');
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Erreur lors de la copie du mot de passe'),
-                  ));
-                });
-              }
-            ),
+                icon: const Icon(Icons.copy),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: widget.password))
+                      .catchError((error) {
+                    // Erreur lors de la copie du mot de passe dans le presse-papiers
+                    print(
+                        'Erreur lors de la copie du mot de passe dans le presse-papiers : $error');
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Erreur lors de la copie du mot de passe'),
+                    ));
+                  });
+                }),
           ],
         ),
       ),

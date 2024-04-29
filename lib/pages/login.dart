@@ -71,8 +71,7 @@ class _LoginPageState extends State<LoginPage> {
 
       ctr.loadApp(password, _selectedVault, key);
 
-      Navigator.pushReplacementNamed(context, '/HomePage',
-          arguments: {"isStartup": false});
+      Navigator.pushReplacementNamed(context, '/HomePage');
     } else {
       // Incorrect password handling
       print('Invalid password');
@@ -173,12 +172,15 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: "> Access Password",
                       border: InputBorder.none,
                       suffixIcon: IconButton(
-                        icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                        icon: Icon(_isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off),
                         onPressed: _togglePasswordVisibility,
                       ),
                     ),
                     style: TextStyle(color: Colors.black),
-                    obscureText: !_isPasswordVisible, // Utilisation de l'état de visibilité pour masquer ou afficher le mot de passe
+                    obscureText:
+                        !_isPasswordVisible, // Utilisation de l'état de visibilité pour masquer ou afficher le mot de passe
                     onChanged: (_) {
                       setState(() {
                         _passwordError = null;

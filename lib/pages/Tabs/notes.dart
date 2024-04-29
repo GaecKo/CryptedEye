@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -8,11 +6,9 @@ import '../../controller.dart';
 
 class NotesPage extends StatefulWidget {
   final Controller ctr;
-  bool isStartup;
   bool shown = false;
 
-  NotesPage({Key? key, required this.ctr, required this.isStartup})
-      : super(key: key);
+  NotesPage({Key? key, required this.ctr}) : super(key: key);
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -69,10 +65,8 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-
+  void buildContent() {
+    contents = [];
     ctr = widget.ctr;
     Map<String, dynamic> notesData = ctr.notes_data;
     print("Notes: $notesData");
@@ -120,6 +114,7 @@ class _NotesPageState extends State<NotesPage> {
 
   @override
   Widget build(BuildContext context) {
+    buildContent();
     return Scaffold(
       backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       floatingActionButton: Stack(

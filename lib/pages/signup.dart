@@ -104,8 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
       // 3. finaly, apply retrieved key to app, and load it.
       ctr.loadApp(password, VaultName, key);
 
-      Navigator.pushReplacementNamed(context, '/HomePage',
-          arguments: {"isStartup": true});
+      Navigator.pushReplacementNamed(context, '/HomePage');
     }
   }
 

@@ -26,9 +26,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     bool defaultLightTheme = themeProvider.mode == "Light";
-    Map<String, dynamic> args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    widget.isStartup = args["isStartup"];
 
     return DefaultTabController(
       length: 2,
@@ -122,11 +119,9 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               PasswordManagerPage(
                 ctr: ctr,
-                isStartup: widget.isStartup,
               ),
               NotesPage(
                 ctr: ctr,
-                isStartup: widget.isStartup,
               ),
             ],
           ),
