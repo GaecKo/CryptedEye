@@ -513,10 +513,8 @@ class _NoteScreenState extends State<NoteScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: const SizedBox.shrink(), // Enlève le texte du titre
       ),
-      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -549,8 +547,7 @@ class _NoteScreenState extends State<NoteScreen> {
                 },
                 style: const TextStyle(
                   fontSize: 30,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
+                  fontWeight: FontWeight.normal,he
                 ),
               ),
             ),
@@ -569,7 +566,6 @@ class _NoteScreenState extends State<NoteScreen> {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.normal, // Remet la police en normal
-                  color: Colors.black, // Couleur normale du texte en noir
                 ),
               ),
             ),
