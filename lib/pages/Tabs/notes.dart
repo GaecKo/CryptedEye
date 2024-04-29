@@ -547,7 +547,7 @@ class _NoteScreenState extends State<NoteScreen> {
                 },
                 style: const TextStyle(
                   fontSize: 30,
-                  fontWeight: FontWeight.normal,he
+                  fontWeight: FontWeight.normal,
                 ),
               ),
             ),
