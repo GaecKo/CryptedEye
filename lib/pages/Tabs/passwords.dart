@@ -135,14 +135,18 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 String decryptedWebsite = widget.ctr.crypter.decrypt(website);
                 String decryptedUsername = widget.ctr.crypter.decrypt(username);
                 String decryptedPassword = widget.ctr.crypter.decrypt(password);
+                
+                String decryptedWebsiteLowercase = decryptedWebsite.toLowerCase();
+                String decryptedUsernameLowercase = decryptedUsername.toLowerCase();
+                String decryptedPasswordLowercase = decryptedPassword.toLowerCase();
+                String searchQueryLowercase = _searchQuery.toLowerCase();
 
                 // Apply search filter
                 if (_searchQuery.isNotEmpty &&
-                    !decryptedWebsite.contains(_searchQuery) &&
-                    !decryptedUsername.contains(_searchQuery) &&
-                    !decryptedPassword.contains(_searchQuery)) {
-                  return const SizedBox
-                      .shrink(); // Hide item if it doesn't match search query
+                    !decryptedWebsiteLowercase.contains(searchQueryLowercase) &&
+                    !decryptedUsernameLowercase.contains(searchQueryLowercase) &&
+                    !decryptedPasswordLowercase.contains(searchQueryLowercase)) {
+                  return const SizedBox.shrink();// Hide item if it doesn't match search query 
                 }
 
                 return Slidable(
