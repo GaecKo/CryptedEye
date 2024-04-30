@@ -523,8 +523,9 @@ class _NoteScreenState extends State<NoteScreen> {
             SizedBox(
               height: 50,
               child: TextFormField(
+                textInputAction: TextInputAction.next,
                 controller: _titleController,
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   hintText: "Title",
                   hintStyle: const TextStyle(color: Colors.grey),
