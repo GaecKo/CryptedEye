@@ -524,6 +524,7 @@ class _NoteScreenState extends State<NoteScreen> {
               height: 50,
               child: TextFormField(
                 controller: _titleController,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   hintText: "Title",
                   hintStyle: const TextStyle(color: Colors.grey),
@@ -677,6 +678,7 @@ class _FolderCreationState extends State<FolderCreation> {
           children: [
             TextField(
               controller: _folderNameController,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: 'Folder Name',
                 errorText: _showError && _folderNameController.text.isEmpty

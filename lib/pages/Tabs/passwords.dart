@@ -416,6 +416,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
           children: [
             TextField(
               controller: websiteController,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: 'Title - Website',
                 errorText: showError && websiteController.text.isEmpty
