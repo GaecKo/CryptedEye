@@ -379,13 +379,17 @@ class Controller {
         tmp = dirName.split('.');
 
         print('Data to import from $tar_to_import');
-        print(img.unTarFile(tar_to_import, localPath, tmp[0]));
+        String result = img.unTarFile(tar_to_import, localPath, tmp[0]);
+        print("Extraced path: $result");
+        if (result == "") {
+          return false;
+        }
 
-        if (verifyVaultForm('$localPath/${tmp[0]}.CryptedEye')) {
+        if (verifyVaultForm(result)) {
           return true;
         } else {
           print("File is not valid, deleting it");
-          Directory dir = Directory('$localPath/${tmp[0]}.CryptedEye');
+          Directory dir = Directory(result);
           dir.deleteSync(recursive: true);
           return false;
         }

@@ -3,24 +3,25 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 
 class IMG {
-  String? unTarFile(
-      String sourceFile, String targetDirectory, String tar_name) {
+  String unTarFile(String sourceFile, String targetDirectory, String tar_name) {
     // Vérifier si le fichier source existe
     File source = File(sourceFile);
     if (!source.existsSync()) {
       print("Le fichier source n'existe pas.");
-      return null;
+      return "";
     }
 
     // Changer le nom si existe déja
     String tarFileName = '$targetDirectory/$tar_name.CryptedEye';
     int cpt = 1;
-    while (Directory(tarFileName).existsSync()){
+    while (Directory(tarFileName).existsSync()) {
       tarFileName = '$targetDirectory/$tar_name($cpt).CryptedEye';
-      cpt ++;
+      cpt++;
     }
-    int nmbr_tar = cpt - 1;
-    tar_name = "$tar_name($nmbr_tar)";
+    if (cpt != 1) {
+      int nmbr_tar = cpt - 1;
+      tar_name = "$tar_name($nmbr_tar)";
+    }
 
     // Lire les données de l'archive tar
     List<int> bytes = source.readAsBytesSync();
@@ -41,7 +42,7 @@ class IMG {
 
     source.deleteSync();
     print('Extraction terminée.');
-    return '$targetDirectory/$tar_name';
+    return '$targetDirectory/$tar_name.CryptedEye';
   }
 
   String createTarFile(
@@ -70,9 +71,9 @@ class IMG {
     // Créer un fichier .tar à partir de l'archive
     String tarFileName = '$outputDirectory/$tar_name.CryptedEye.tar';
     int cpt = 1;
-    while (File(tarFileName).existsSync()){
+    while (File(tarFileName).existsSync()) {
       tarFileName = '$outputDirectory/$tar_name($cpt).CryptedEye.tar';
-      cpt ++;
+      cpt++;
     }
 
     print(tarFileName);
