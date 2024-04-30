@@ -130,8 +130,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ));
 
-    int nb_vaults = ctr.getListOfVault().length;
-    if (nb_vaults > 0) {
+    int nbVaults = ctr.getListOfVault().length;
+    if (nbVaults > 0) {
       canLog = login;
       title = " > New Vault";
     } else {

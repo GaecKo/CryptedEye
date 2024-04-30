@@ -135,18 +135,24 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 String decryptedWebsite = widget.ctr.crypter.decrypt(website);
                 String decryptedUsername = widget.ctr.crypter.decrypt(username);
                 String decryptedPassword = widget.ctr.crypter.decrypt(password);
-                
-                String decryptedWebsiteLowercase = decryptedWebsite.toLowerCase();
-                String decryptedUsernameLowercase = decryptedUsername.toLowerCase();
-                String decryptedPasswordLowercase = decryptedPassword.toLowerCase();
+
+                String decryptedWebsiteLowercase =
+                    decryptedWebsite.toLowerCase();
+                String decryptedUsernameLowercase =
+                    decryptedUsername.toLowerCase();
+                String decryptedPasswordLowercase =
+                    decryptedPassword.toLowerCase();
                 String searchQueryLowercase = _searchQuery.toLowerCase();
 
                 // Apply search filter
                 if (_searchQuery.isNotEmpty &&
                     !decryptedWebsiteLowercase.contains(searchQueryLowercase) &&
-                    !decryptedUsernameLowercase.contains(searchQueryLowercase) &&
-                    !decryptedPasswordLowercase.contains(searchQueryLowercase)) {
-                  return const SizedBox.shrink();// Hide item if it doesn't match search query 
+                    !decryptedUsernameLowercase
+                        .contains(searchQueryLowercase) &&
+                    !decryptedPasswordLowercase
+                        .contains(searchQueryLowercase)) {
+                  return const SizedBox
+                      .shrink(); // Hide item if it doesn't match search query
                 }
 
                 return Slidable(
@@ -277,14 +283,14 @@ class PasswordItem extends StatefulWidget {
   final Controller ctr;
 
   const PasswordItem({
-    Key? key,
+    super.key,
     required this.website,
     required this.username,
     required this.password,
     required this.onEyePressed,
     required this.onPenPressed,
     required this.ctr,
-  }) : super(key: key);
+  });
 
   @override
   _PasswordItemState createState() => _PasswordItemState();
@@ -373,7 +379,7 @@ class _PasswordItemState extends State<PasswordItem> {
                     // Erreur lors de la copie du mot de passe dans le presse-papiers
                     print(
                         'Erreur lors de la copie du mot de passe dans le presse-papiers : $error');
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Erreur lors de la copie du mot de passe'),
                     ));
                   });
@@ -427,6 +433,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
             const SizedBox(width: 8),
             TextField(
               controller: usernameController,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Username - email',
               ),
@@ -569,6 +576,7 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
             const SizedBox(height: 8),
             TextField(
               controller: usernameController,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Username - email',
               ),
