@@ -423,6 +423,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
             TextField(
               controller: websiteController,
               textCapitalization: TextCapitalization.words,
+              textInputAction: TextInputAction.next,
               decoration: InputDecoration(
                 labelText: 'Title - Website',
                 errorText: showError && websiteController.text.isEmpty
@@ -432,6 +433,7 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
             ),
             const SizedBox(width: 8),
             TextField(
+              textInputAction: TextInputAction.next,
               controller: usernameController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
