@@ -242,9 +242,10 @@ class _LoginPageState extends State<LoginPage> {
                       : const Text(
                           "New Vault? Create One!",
                           style: TextStyle(
-                            color: Colors.white,
-                            fontStyle: FontStyle.italic,
-                          ),
+                              color: Colors.white,
+                              fontStyle: FontStyle.italic,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.white),
                         ),
                 ),
               ],

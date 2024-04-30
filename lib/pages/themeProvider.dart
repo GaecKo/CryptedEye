@@ -19,7 +19,9 @@ class ThemeProvider extends ChangeNotifier {
 
   void setDarkMode() {
     _themeData = ThemeData(
-      colorScheme: const ColorScheme.dark(),
+      colorScheme: const ColorScheme.dark().copyWith(
+        primary: Colors.blue,
+      ),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: Colors.black,
         selectionHandleColor:
@@ -37,7 +39,9 @@ class ThemeProvider extends ChangeNotifier {
 
   void setLightMode() {
     _themeData = ThemeData(
-      colorScheme: const ColorScheme.light(),
+      colorScheme: const ColorScheme.light().copyWith(
+        primary: Colors.blue,
+      ),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: Colors.black,
         selectionHandleColor:

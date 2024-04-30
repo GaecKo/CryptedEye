@@ -119,8 +119,11 @@ class _SignUpPageState extends State<SignUpPage> {
             ? const SizedBox()
             : const Text(
                 "Connect to existing Vault",
-                style:
-                    TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+                style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.white,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.white),
               ));
 
     int nb_vaults = ctr.getListOfVault().length;
