@@ -193,7 +193,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
         children: [
           Positioned(
             left: 50.0,
-            bottom: 30.0,
+            bottom: 10.0,
             child: FloatingActionButton(
               onPressed: () {
                 popup();
@@ -207,7 +207,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
           ),
           Positioned(
             right: 16.0,
-            bottom: 30.0,
+            bottom: 10.0,
             child: SpeedDial(
               icon: Icons.add,
               activeIcon: Icons.close,

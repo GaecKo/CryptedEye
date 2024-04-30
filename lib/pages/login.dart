@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 10),
                 _isLoading
                     ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                       )
                     : Container(
                         width: 250,
@@ -242,10 +242,16 @@ class _LoginPageState extends State<LoginPage> {
                       : const Text(
                           "New Vault? Create One!",
                           style: TextStyle(
-                              color: Colors.white,
-                              fontStyle: FontStyle.italic,
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.white),
+                            shadows: [
+                              Shadow(color: Colors.white, offset: Offset(0, -5))
+                            ],
+                            fontStyle: FontStyle.italic,
+                            color: Colors.transparent,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue,
+                            decorationThickness: 3,
+                            decorationStyle: TextDecorationStyle.dashed,
+                          ),
                         ),
                 ),
               ],

@@ -120,10 +120,14 @@ class _SignUpPageState extends State<SignUpPage> {
             : const Text(
                 "Connect to existing Vault",
                 style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.white),
+                  shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                  fontStyle: FontStyle.italic,
+                  color: Colors.transparent,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.blue,
+                  decorationThickness: 3,
+                  decorationStyle: TextDecorationStyle.dashed,
+                ),
               ));
 
     int nb_vaults = ctr.getListOfVault().length;
@@ -143,7 +147,6 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start, // Alignement à gauche
@@ -184,7 +187,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   width: 300,
                 ),
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   width: 300,
                   height: 100,
                   child: Padding(
@@ -211,7 +214,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 300,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -239,7 +242,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
+                SizedBox(
                   width: 300,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -270,11 +273,16 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 20),
                 _isLoading
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      )
                     : ElevatedButton(
                         onPressed: _signUp,
                         child: const Text('Create Vault'),
                       ),
+                const SizedBox(
+                  height: 10,
+                ),
                 canLog,
               ],
             ),

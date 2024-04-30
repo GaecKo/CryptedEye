@@ -201,7 +201,7 @@ class MultipleVaults extends StatelessWidget {
           const SizedBox(
             width: 300,
             child: Text(
-              "CryptedEye also allows you to export, import, and switch between vaults. Simply export your vault in the settings, share the image file wherever you need!",
+              "CryptedEye also allows you to export, import, and switch between vaults. Simply export your vault from the settings, and share the image file wherever you need! You can import an image from the login and signup page.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,

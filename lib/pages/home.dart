@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                   overflow: TextOverflow.fade,
                   style: const TextStyle(
                     fontSize: 15,
-                    color: Colors.grey,
+                    color: Colors.blue,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
