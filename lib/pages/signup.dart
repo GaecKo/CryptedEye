@@ -193,6 +193,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
                       maxLength: 20,
                       controller: _VaultNameController,
                       decoration: InputDecoration(
@@ -210,7 +211,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       style: const TextStyle(color: Colors.white),
-                      textInputAction: TextInputAction.next,
                     ),
                   ),
                 ),
@@ -219,6 +219,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
                       controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
@@ -237,7 +238,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         errorText: _passwordError,
                       ),
                       style: const TextStyle(color: Colors.white),
-                      textInputAction: TextInputAction.next,
+                      
                     ),
                   ),
                 ),
