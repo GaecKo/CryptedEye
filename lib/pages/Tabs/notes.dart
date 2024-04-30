@@ -360,7 +360,8 @@ class Note extends StatefulWidget {
   String? folderName;
 
   Note(
-      {super.key, required this.cryptedTitle,
+      {super.key,
+      required this.cryptedTitle,
       required this.cryptedContent,
       required this.ctr,
       required this.contents,
@@ -433,7 +434,8 @@ class Folder extends StatefulWidget {
   final List<dynamic> childNotes;
   final Controller ctr;
 
-  const Folder({super.key, 
+  const Folder({
+    super.key,
     required this.name,
     required this.childNotes,
     required this.ctr,
@@ -773,6 +775,8 @@ class _OpenDirState extends State<OpenDir> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
         title: Text(widget.ctr.crypter.decrypt(dirName)),
       ),
       floatingActionButton: SpeedDial(
@@ -802,7 +806,7 @@ class _OpenDirState extends State<OpenDir> {
               },
             ),
           ]),
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Column(
         children: [
           const SizedBox(
