@@ -227,22 +227,26 @@ class _NotesPageState extends State<NotesPage> {
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
                 Widget tmp = contents[index];
+                String _searchQueryLower = _searchQuery.toLowerCase();
 
                 if (tmp is Note) {
                   if (_searchQuery.isNotEmpty &&
                       !widget.ctr.crypter
                           .decrypt(tmp.cryptedTitle)
-                          .contains(_searchQuery) &&
+                          .toLowerCase()
+                          .contains(_searchQueryLower) &&
                       !widget.ctr.crypter
                           .decrypt(tmp.cryptedContent)
-                          .contains(_searchQuery)) {
+                          .toLowerCase()
+                          .contains(_searchQueryLower)) {
                     return const SizedBox.shrink();
                   }
                 } else if (tmp is Folder) {
                   if (_searchQuery.isNotEmpty &&
                       !widget.ctr.crypter
                           .decrypt(tmp.name)
-                          .contains(_searchQuery)) {
+                          .toLowerCase()
+                          .contains(_searchQueryLower)) {
                     return const SizedBox.shrink();
                   }
                 }
