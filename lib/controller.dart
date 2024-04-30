@@ -408,6 +408,8 @@ class Controller {
       return false;
     }
 
+    print("Path to verify: $path");
+
     List<String> expectedFolders = ['app', 'notes', 'passwords'];
     List<String> expectedFiles = [
       'app/AP.hash',
@@ -417,6 +419,7 @@ class Controller {
     ];
 
     for (var folder in expectedFolders) {
+      print("folder to check: $path/$folder}");
       Directory directory = Directory('$path/$folder');
       if (!directory.existsSync()) {
         print('Le dossier $folder est manquant.');

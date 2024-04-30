@@ -8,7 +8,7 @@ class NotesPage extends StatefulWidget {
   final Controller ctr;
   bool shown = false;
 
-  NotesPage({Key? key, required this.ctr}) : super(key: key);
+  NotesPage({super.key, required this.ctr});
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -227,18 +227,18 @@ class _NotesPageState extends State<NotesPage> {
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
                 Widget tmp = contents[index];
-                String _searchQueryLower = _searchQuery.toLowerCase();
+                String searchQueryLower = _searchQuery.toLowerCase();
 
                 if (tmp is Note) {
                   if (_searchQuery.isNotEmpty &&
                       !widget.ctr.crypter
                           .decrypt(tmp.cryptedTitle)
                           .toLowerCase()
-                          .contains(_searchQueryLower) &&
+                          .contains(searchQueryLower) &&
                       !widget.ctr.crypter
                           .decrypt(tmp.cryptedContent)
                           .toLowerCase()
-                          .contains(_searchQueryLower)) {
+                          .contains(searchQueryLower)) {
                     return const SizedBox.shrink();
                   }
                 } else if (tmp is Folder) {
@@ -246,7 +246,7 @@ class _NotesPageState extends State<NotesPage> {
                       !widget.ctr.crypter
                           .decrypt(tmp.name)
                           .toLowerCase()
-                          .contains(_searchQueryLower)) {
+                          .contains(searchQueryLower)) {
                     return const SizedBox.shrink();
                   }
                 }
@@ -317,7 +317,7 @@ class _NotesPageState extends State<NotesPage> {
   void deleteWidget(int index) {
     Widget tmp = contents[index];
     if (tmp is Note) {
-      tmp = tmp as Note;
+      tmp = tmp;
       contents.removeWhere((elem) {
         if (elem is Note) {
           return elem.cryptedTitle == (tmp as Note).cryptedTitle;
@@ -360,7 +360,7 @@ class Note extends StatefulWidget {
   String? folderName;
 
   Note(
-      {required this.cryptedTitle,
+      {super.key, required this.cryptedTitle,
       required this.cryptedContent,
       required this.ctr,
       required this.contents,
@@ -433,7 +433,7 @@ class Folder extends StatefulWidget {
   final List<dynamic> childNotes;
   final Controller ctr;
 
-  Folder({
+  const Folder({super.key, 
     required this.name,
     required this.childNotes,
     required this.ctr,
@@ -589,8 +589,8 @@ class _NoteScreenState extends State<NoteScreen> {
           if (_titleController.text.isNotEmpty) {
             String title = _titleController.text;
             String content = _contentController.text;
-            String cr_title = widget.ctr.crypter.encrypt(title);
-            String cr_content = widget.ctr.crypter.encrypt(content);
+            String crTitle = widget.ctr.crypter.encrypt(title);
+            String crContent = widget.ctr.crypter.encrypt(content);
             Navigator.of(context).pop();
             widget.rebuildParent();
             if (widget.note != null) {
@@ -599,28 +599,28 @@ class _NoteScreenState extends State<NoteScreen> {
               if (widget.folderName == null) {
                 // if it has a defined folder name, then update
                 widget.ctr.updateNewNote(
-                    widget.note!.cryptedTitle, cr_title, cr_content);
+                    widget.note!.cryptedTitle, crTitle, crContent);
               } else {
                 widget.ctr.updateNewNote(
-                    widget.note!.cryptedTitle, cr_title, cr_content,
+                    widget.note!.cryptedTitle, crTitle, crContent,
                     cr_dir_name: widget.folderName!);
               }
 
-              widget.note?.cryptedTitle = cr_title;
-              widget.note?.cryptedContent = cr_content;
+              widget.note?.cryptedTitle = crTitle;
+              widget.note?.cryptedContent = crContent;
               widget.rebuildNote!();
             } else {
               widget.rebuildParent();
               if (widget.folderName != null) {
-                widget.ctr.saveNewNote(cr_title, cr_content,
+                widget.ctr.saveNewNote(crTitle, crContent,
                     cr_dir_name: widget.folderName as String);
               } else {
-                widget.ctr.saveNewNote(cr_title, cr_content);
+                widget.ctr.saveNewNote(crTitle, crContent);
               }
 
               widget.contents.add(Note(
-                cryptedTitle: cr_title,
-                cryptedContent: cr_content,
+                cryptedTitle: crTitle,
+                cryptedContent: crContent,
                 ctr: widget.ctr,
                 contents: widget.contents,
                 rebuildParent: widget.rebuildParent,
@@ -646,7 +646,7 @@ class FolderCreation extends StatefulWidget {
   final List<Widget> contents;
   final VoidCallback rebuildParent;
 
-  FolderCreation({
+  const FolderCreation({
     super.key,
     required this.ctr,
     required this.contents,
@@ -660,21 +660,21 @@ class FolderCreation extends StatefulWidget {
 class _FolderCreationState extends State<FolderCreation> {
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _folderNameController = TextEditingController();
-    bool _showError = false;
+    final TextEditingController folderNameController = TextEditingController();
+    bool showError = false;
 
-    void _addFolder(String name) {
-      String cr_name = widget.ctr.crypter.encrypt(name);
+    void addFolder(String name) {
+      String crName = widget.ctr.crypter.encrypt(name);
       widget.contents.insert(
         0,
         Folder(
-          name: cr_name,
-          childNotes: [],
+          name: crName,
+          childNotes: const [],
           ctr: widget.ctr,
         ),
       );
       widget.rebuildParent();
-      widget.ctr.createNewFolder(cr_name);
+      widget.ctr.createNewFolder(crName);
     }
 
     return AlertDialog(
@@ -683,11 +683,11 @@ class _FolderCreationState extends State<FolderCreation> {
         child: Column(
           children: [
             TextField(
-              controller: _folderNameController,
+              controller: folderNameController,
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: 'Folder Name',
-                errorText: _showError && _folderNameController.text.isEmpty
+                errorText: showError && folderNameController.text.isEmpty
                     ? 'Please enter a folder name'
                     : null,
               ),
@@ -705,10 +705,10 @@ class _FolderCreationState extends State<FolderCreation> {
         ElevatedButton(
           onPressed: () {
             setState(() {
-              _showError = true;
+              showError = true;
             });
-            if (_folderNameController.text.isNotEmpty) {
-              _addFolder(_folderNameController.text);
+            if (folderNameController.text.isNotEmpty) {
+              addFolder(folderNameController.text);
               Navigator.pop(context);
             }
           },
@@ -724,12 +724,11 @@ class OpenDir extends StatefulWidget {
   final String dirName;
   final List<dynamic> childs;
 
-  OpenDir(
-      {Key? key,
+  const OpenDir(
+      {super.key,
       required this.ctr,
       required this.dirName,
-      required this.childs})
-      : super(key: key);
+      required this.childs});
 
   @override
   _OpenDirState createState() => _OpenDirState();

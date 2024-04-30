@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
   final Controller ctr;
   late bool isStartup;
 
-  HomePage({Key? key, required this.ctr}) : super(key: key);
+  HomePage({super.key, required this.ctr});
 
   @override
   _HomePageState createState() => _HomePageState(ctr);

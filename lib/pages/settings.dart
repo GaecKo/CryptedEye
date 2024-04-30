@@ -7,7 +7,7 @@ import '../controller.dart';
 class SettingsPage extends StatefulWidget {
   Controller ctr;
 
-  SettingsPage({required this.ctr});
+  SettingsPage({super.key, required this.ctr});
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -36,7 +36,7 @@ class SettingsList extends StatefulWidget {
   Controller ctr;
   VoidCallback rebuiltSettingsPage;
 
-  SettingsList({required this.ctr, required this.rebuiltSettingsPage});
+  SettingsList({super.key, required this.ctr, required this.rebuiltSettingsPage});
 
   @override
   _SettingsList createState() => _SettingsList();

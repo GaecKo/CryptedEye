@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
+
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
@@ -13,7 +15,7 @@ class _WelcomePageState extends State<WelcomePage> {
     if (_currentPageIndex < 1) {
       _pageController.animateToPage(
         _currentPageIndex + 1,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
     } else {
@@ -26,7 +28,7 @@ class _WelcomePageState extends State<WelcomePage> {
     if (_currentPageIndex > 0) {
       _pageController.animateToPage(
         _currentPageIndex - 1,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
     }
@@ -73,7 +75,7 @@ class _WelcomePageState extends State<WelcomePage> {
             _currentPageIndex = index;
           });
         },
-        children: [CryptedEyeWelcome(), MultipleVaults()],
+        children: const [CryptedEyeWelcome(), MultipleVaults()],
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
@@ -100,7 +102,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         : Colors.grey, // Active page color
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Container(
                   width: 8,
                   height: 8,
@@ -148,6 +150,8 @@ class _WelcomePageState extends State<WelcomePage> {
 }
 
 class CryptedEyeWelcome extends StatelessWidget {
+  const CryptedEyeWelcome({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -182,6 +186,8 @@ class CryptedEyeWelcome extends StatelessWidget {
 }
 
 class MultipleVaults extends StatelessWidget {
+  const MultipleVaults({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(

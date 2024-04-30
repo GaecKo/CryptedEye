@@ -16,7 +16,7 @@ Future<E.Key> callCrypterInit(List<dynamic> args) async {
 class LoginPage extends StatefulWidget {
   final Controller ctr;
 
-  LoginPage({Key? key, required this.ctr}) : super(key: key);
+  const LoginPage({super.key, required this.ctr});
 
   @override
   _LoginPageState createState() => _LoginPageState(ctr: ctr);
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
     print("Selected vault name from LoginPage: $_selectedVault");
 
     if (ctr.verifyPassword(password, _selectedVault)) {
-      print("Access to vault ${_selectedVault} agreed");
+      print("Access to vault $_selectedVault agreed");
 
       E.Key key =
           await compute(callCrypterInit, [ctr, password, _selectedVault]);
@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
       // Incorrect password handling
       print('Invalid password');
 
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       setState(() {
         _passwordContainerColor = Colors.red;
@@ -178,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: _togglePasswordVisibility,
                       ),
                     ),
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                     obscureText:
                         !_isPasswordVisible, // Utilisation de l'état de visibilité pour masquer ou afficher le mot de passe
                     onChanged: (_) {
@@ -369,11 +369,11 @@ class DropdownButtonVault extends StatefulWidget {
   final List<String> values;
   final ValueChanged<String> onChanged;
 
-  DropdownButtonVault({
-    Key? key,
+  const DropdownButtonVault({
+    super.key,
     required this.values,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   _DropdownButtonVaultState createState() => _DropdownButtonVaultState();
@@ -390,7 +390,7 @@ class _DropdownButtonVaultState extends State<DropdownButtonVault> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 200,
       child: DropdownButton<String>(
         value: _curVal,
@@ -415,8 +415,8 @@ class _DropdownButtonVaultState extends State<DropdownButtonVault> {
         items: widget.values.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value),
             alignment: Alignment.center,
+            child: Text(value),
           );
         }).toList(),
       ),

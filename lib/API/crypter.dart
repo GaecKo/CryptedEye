@@ -85,7 +85,7 @@ class Crypter {
   }
 
   String encrypt(String toEncrypt) {
-    if (toEncrypt.length == 0) return "";
+    if (toEncrypt.isEmpty) return "";
     print("encrypting: $toEncrypt");
     // random IV (init vector)
     final iv = IV.fromSecureRandom(16);
@@ -101,7 +101,7 @@ class Crypter {
   }
 
   String decrypt(String toDecrypt) {
-    if (toDecrypt.length == 0) return "";
+    if (toDecrypt.isEmpty) return "";
     // crypted - iv
     final parts = toDecrypt.split(':');
 
