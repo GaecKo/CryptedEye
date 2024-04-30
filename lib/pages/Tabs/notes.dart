@@ -224,6 +224,7 @@ class _NotesPageState extends State<NotesPage> {
           ),
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 60),
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
                 Widget tmp = contents[index];
@@ -814,6 +815,7 @@ class _OpenDirState extends State<OpenDir> {
           ),
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 60),
               itemCount: contents.length,
               itemBuilder: (BuildContext context, int index) {
                 return Slidable(
