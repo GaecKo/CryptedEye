@@ -183,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 20),
                 Image.asset(
-                  "lib/images/signup_back3.png",
+                  "lib/images/signup.png",
                   width: 300,
                 ),
                 const SizedBox(height: 20),
@@ -238,7 +238,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         errorText: _passwordError,
                       ),
                       style: const TextStyle(color: Colors.white),
-                      
                     ),
                   ),
                 ),
