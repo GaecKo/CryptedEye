@@ -38,7 +38,7 @@ class _NotesPageState extends State<NotesPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                "lib/images/notes.png",
+                "lib/assets/notes.png",
                 width: 350,
               ),
               const SizedBox(height: 20),

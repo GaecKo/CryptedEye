@@ -162,7 +162,7 @@ class CryptedEyeWelcome extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           Image.asset(
-            "lib/images/CryptedEye.png",
+            "lib/assets/CryptedEye.png",
             width: 300,
           ),
           const SizedBox(
@@ -198,7 +198,7 @@ class MultipleVaults extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           Image.asset(
-            "lib/images/MultiVaults.png",
+            "lib/assets/MultiVaults.png",
             width: 300,
           ),
           const SizedBox(

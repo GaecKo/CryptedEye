@@ -183,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 20),
                 Image.asset(
-                  "lib/images/signup.png",
+                  "lib/assets/signup.png",
                   width: 300,
                 ),
                 const SizedBox(height: 20),

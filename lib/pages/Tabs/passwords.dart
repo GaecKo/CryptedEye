@@ -58,7 +58,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                "lib/images/passwords.png",
+                "lib/assets/passwords.png",
                 width: 350,
               ),
               const SizedBox(height: 20),
