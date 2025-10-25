@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cryptedeye/pages/widgets/AddPasswordItemWidget.dart';
 import 'package:cryptedeye/pages/widgets/EditPasswordItemWidget.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class PasswordManagerPage extends StatefulWidget {
 
 class _PasswordManagerPageState extends State<PasswordManagerPage> {
   String _searchQuery = '';
+  final ScrollController _scrollController = ScrollController();
 
   void _updateSearchQuery(String newQuery) {
     setState(() {
@@ -86,75 +89,54 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Calculate filtered items count
+    final filteredItems = widget.ctr.password_data.entries.where((entry) {
+      if (_searchQuery.isEmpty) return true;
+
+      String website = entry.key;
+      List<dynamic> userData = entry.value;
+      String username = userData[0];
+      String password = userData[1];
+
+      String decryptedWebsite = widget.ctr.crypter.decrypt(website);
+      String decryptedUsername = widget.ctr.crypter.decrypt(username);
+      String decryptedPassword = widget.ctr.crypter.decrypt(password);
+
+      String decryptedWebsiteLowercase = decryptedWebsite.toLowerCase();
+      String decryptedUsernameLowercase = decryptedUsername.toLowerCase();
+      String decryptedPasswordLowercase = decryptedPassword.toLowerCase();
+      String searchQueryLowercase = _searchQuery.toLowerCase();
+
+      return decryptedWebsiteLowercase.contains(searchQueryLowercase) ||
+          decryptedUsernameLowercase.contains(searchQueryLowercase) ||
+          decryptedPasswordLowercase.contains(searchQueryLowercase);
+    }).toList();
+
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
         children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-            child: TextField(
-              onChanged: _updateSearchQuery,
-              decoration: InputDecoration(
-                hintText: 'Search Password...',
-                prefixIcon: const Icon(
-                  Icons.search,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary), // Couleur de la bordure
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, // Couleur de la bordure lorsqu'elle est activée
-                    width: 2.0, // Largeur de la bordure lorsqu'elle est activée
-                  ),
-                ),
-              ),
-              style: TextStyle(
-                // Définir la couleur de la bordure lorsqu'elle n'est pas activée
-                decorationColor:Theme.of(context).colorScheme.primary,
-                // Définir l'épaisseur de la bordure lorsqu'elle n'est pas activée
-                decorationThickness: 2.0,
-              ),
-            ),
-          ),
-          Expanded(
+          // Main content with ListView
+          Positioned.fill(
             child: ListView.builder(
+              controller: _scrollController,
               padding: const EdgeInsets.only(bottom: 60),
-              itemCount: widget.ctr.password_data.length,
+              itemCount: filteredItems.length + 1, // +1 for the spacer
               itemBuilder: (BuildContext context, int index) {
-                String website = widget.ctr.password_data.keys.elementAt(index);
-                List<dynamic> userData =
-                    widget.ctr.password_data.values.elementAt(index);
+                // First item is the spacer
+                if (index == 0) {
+                  return const SizedBox(height: 70.0); // Space for search bar
+                }
+
+                // Adjust index for data access (subtract 1 for the spacer)
+                final entry = filteredItems[index - 1];
+                String website = entry.key;
+                List<dynamic> userData = entry.value;
                 String username = userData[0];
                 String password = userData[1];
 
                 String decryptedWebsite = widget.ctr.crypter.decrypt(website);
                 String decryptedUsername = widget.ctr.crypter.decrypt(username);
                 String decryptedPassword = widget.ctr.crypter.decrypt(password);
-
-                String decryptedWebsiteLowercase =
-                    decryptedWebsite.toLowerCase();
-                String decryptedUsernameLowercase =
-                    decryptedUsername.toLowerCase();
-                String decryptedPasswordLowercase =
-                    decryptedPassword.toLowerCase();
-                String searchQueryLowercase = _searchQuery.toLowerCase();
-
-                // Apply search filter
-                if (_searchQuery.isNotEmpty &&
-                    !decryptedWebsiteLowercase.contains(searchQueryLowercase) &&
-                    !decryptedUsernameLowercase
-                        .contains(searchQueryLowercase) &&
-                    !decryptedPasswordLowercase
-                        .contains(searchQueryLowercase)) {
-                  return const SizedBox
-                      .shrink(); // Hide item if it doesn't match search query
-                }
 
                 return Slidable(
                   key: UniqueKey(),
@@ -192,6 +174,51 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                   ),
                 );
               },
+            ),
+          ),
+
+          // Glassy search bar
+          Positioned(
+            top: 10.0,
+            left: 20.0,
+            right: 20.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(0.0),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: TextField(
+                    onChanged: _updateSearchQuery,
+                    decoration: InputDecoration(
+                      hintText: 'Search Password...',
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 12.0,
+                      ),
+                      filled: false,
+                    ),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -277,8 +304,10 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
       },
     );
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 }
-
-
-
-
