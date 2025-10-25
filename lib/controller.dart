@@ -39,12 +39,12 @@ class Controller {
   static Future<Controller> create() async {
     var ctr = Controller._create();
 
-    await ctr.initAPI();
+    await ctr.initServices();
 
     return ctr;
   }
 
-  Future<void> initAPI() async {
+  Future<void> initServices() async {
     crypter = Crypter.create();
     img = IMG();
 
