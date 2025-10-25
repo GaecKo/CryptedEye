@@ -25,11 +25,11 @@ class ThemeProvider extends ChangeNotifier {
       colorScheme: const ColorScheme.dark(
         primary: Colors.blue,
         secondary: Colors.blueAccent,
-        surface: Color(0xFF121212),
+        surface: Color(0xFF363636),
         onPrimary: Colors.white,
         onSurface: Colors.white,
       ),
-      scaffoldBackgroundColor: const Color(0xFF121212),
+      scaffoldBackgroundColor: const Color(0xFF363636),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,

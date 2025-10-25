@@ -25,9 +25,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   Controller ctr;
   final TextEditingController _passwordController = TextEditingController();
-  Color _passwordContainerColor = Colors.white;
+  late Color _passwordContainerColor;
   String? _passwordError;
   late String _selectedVault;
+  late bool _isLightMode;
   bool _isLoading = false;
   bool _isPasswordVisible = false;
 
@@ -37,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _selectedVault = widget.ctr.getListOfVault().first;
+
   }
 
   @override
@@ -94,30 +96,32 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    _isLightMode = Theme.of(context).colorScheme.brightness.name == "light";
+    if (_passwordError == null) {
+      _passwordContainerColor = Theme.of(context).colorScheme.onSurface;
+    }
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
+            heightFactor: 1.2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 15),
-                const Row(
+                const SizedBox(height: 20),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       Icons.lock,
                       size: 40,
-                      color: Colors.white,
                     ),
                     SizedBox(width: 10),
                     Text(
                       "CryptedEye",
                       style: TextStyle(
                         fontSize: 26,
-                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -125,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                       " > Login",
                       style: TextStyle(
                         fontSize: 15,
-                        color: Colors.grey,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -133,14 +137,15 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 30),
                 Image.asset(
-                  "lib/assets/login.png",
+                  _isLightMode ?
+                  "lib/assets/login_light.png"
+                  : "lib/assets/login_dark.png",
                   width: 300,
                 ),
                 const SizedBox(height: 20),
                 const Text(
                   "Login to Vault:",
                   style: TextStyle(
-                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -159,7 +164,6 @@ class _LoginPageState extends State<LoginPage> {
                   width: 250,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                    color: Colors.grey[500],
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       width: 3.0,
@@ -168,9 +172,13 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: TextField(
                     controller: _passwordController,
+
                     decoration: InputDecoration(
                       hintText: "> Access Password",
                       border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      fillColor: Colors.transparent,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       suffixIcon: IconButton(
                         icon: Icon(_isPasswordVisible
                             ? Icons.visibility
@@ -178,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: _togglePasswordVisibility,
                       ),
                     ),
-                    style: const TextStyle(color: Colors.black),
+
                     obscureText:
                         !_isPasswordVisible, // Utilisation de l'état de visibilité pour masquer ou afficher le mot de passe
                     onChanged: (_) {
@@ -239,16 +247,12 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: _callSignUp,
                   child: _isLoading
                       ? const SizedBox()
-                      : const Text(
+                      : Text(
                           "New Vault? Create One!",
                           style: TextStyle(
-                            shadows: [
-                              Shadow(color: Colors.white, offset: Offset(0, -5))
-                            ],
                             fontStyle: FontStyle.italic,
-                            color: Colors.transparent,
                             decoration: TextDecoration.underline,
-                            decorationColor: Colors.blue,
+                            decorationColor: Theme.of(context).colorScheme.primary,
                             decorationThickness: 3,
                             decorationStyle: TextDecorationStyle.dashed,
                           ),
@@ -268,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           SpeedDialChild(
             child: const Icon(Icons.import_export),
-            backgroundColor: Colors.blue,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             label: 'Import Vault',
             labelStyle: const TextStyle(fontSize: 16.0),
             onTap: () {
@@ -279,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
           SpeedDialChild(
             child: const Icon(Icons.question_mark),
             backgroundColor: Colors.grey,
-            label: 'How does it work?',
+            label: 'How does this work?',
             labelStyle: const TextStyle(fontSize: 16.0),
             onTap: () {
               Navigator.of(context).pushReplacementNamed("/Welcome");
@@ -396,13 +400,11 @@ class _DropdownButtonVaultState extends State<DropdownButtonVault> {
         value: _curVal,
         icon: const Icon(Icons.arrow_drop_down),
         elevation: 16,
-        dropdownColor: Colors.grey,
         borderRadius: BorderRadius.circular(10),
         isExpanded: true,
-        style: const TextStyle(color: Colors.white),
         underline: Container(
           height: 2,
-          color: Colors.blue,
+          color: Theme.of(context).colorScheme.primary
         ),
         onChanged: (String? value) {
           if (value != null) {
