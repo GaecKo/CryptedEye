@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'dart:math';
 
 import '../controller.dart';
 
@@ -40,6 +43,11 @@ class _SignUpPageState extends State<SignUpPage> {
   String? _passwordError;
   String? _confirmPasswordError;
 
+  // Password strength
+  double _passwordStrength = 0.0;
+  String _passwordStrengthText = "Empty";
+  Color _passwordStrengthColor = Colors.grey;
+
   bool _isLoading = false;
 
   _SignUpPageState(this.ctr);
@@ -50,6 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
     // Add listeners to update validation in real-time
     _VaultNameController.addListener(_validateVaultName);
     _passwordController.addListener(_validatePassword);
+    _passwordController.addListener(_calculatePasswordStrength);
     _confirmPasswordController.addListener(_validateConfirmPassword);
   }
 
@@ -57,12 +66,88 @@ class _SignUpPageState extends State<SignUpPage> {
   void dispose() {
     _VaultNameController.removeListener(_validateVaultName);
     _passwordController.removeListener(_validatePassword);
+    _passwordController.removeListener(_calculatePasswordStrength);
     _confirmPasswordController.removeListener(_validateConfirmPassword);
     _VaultNameController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
+
+
+
+  void _calculatePasswordStrength() {
+    final password = _passwordController.text.trim();
+
+    if (password.isEmpty) {
+      setState(() {
+        _passwordStrength = 0.0;
+        _passwordStrengthText = "Empty";
+        _passwordStrengthColor = Colors.grey;
+      });
+      return;
+    }
+
+    // ---- Determine character pool size ----
+    int poolSize = 0;
+    if (password.contains(RegExp(r'[a-z]'))) poolSize += 26;
+    if (password.contains(RegExp(r'[A-Z]'))) poolSize += 26;
+    if (password.contains(RegExp(r'[0-9]'))) poolSize += 10;
+    if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>_\-+=;\\[\]\\|`~]'))) poolSize += 33;
+
+        // Fallback: if something odd, assume at least lowercase
+        if (poolSize == 0) poolSize = 26;
+
+    // ---- Calculate entropy ----
+    final entropy = password.length * (log(poolSize) / log(2));
+
+    // ---- Normalize entropy (0–1 scale) ----
+    double strength;
+    if (entropy < 28) {
+      strength = entropy / 28 * 0.25;
+    } else if (entropy < 36) {
+      strength = 0.25 + ((entropy - 28) / (36 - 28)) * 0.20;
+    } else if (entropy < 60) {
+      strength = 0.45 + ((entropy - 36) / (60 - 36)) * 0.20;
+    } else if (entropy < 90) {
+      strength = 0.65 + ((entropy - 60) / (90 - 60)) * 0.20;
+    } else {
+      strength = 0.85 + ((entropy - 90) / 60).clamp(0.0, 0.15);
+    }
+
+    strength = strength.clamp(0.0, 1.0);
+
+    // ---- Map to descriptive labels ----
+    String strengthText;
+    Color strengthColor;
+    if (password.length < 4) {
+      strengthText = "X";
+      strengthColor = const Color(0xFFB71C1C); // Deep crimson red
+    } else if (entropy < 28) {
+      strengthText = "Very Weak";
+      strengthColor = const Color(0xFFD32F2F); // Soft red
+    } else if (entropy < 36) {
+      strengthText = "Weak";
+      strengthColor = const Color(0xFFE57373); // Muted coral pink
+    } else if (entropy < 60) {
+      strengthText = "Fair";
+      strengthColor = const Color(0xFFFBC02D); // Warm amber
+    } else if (entropy < 90) {
+      strengthText = "Good";
+      strengthColor = const Color(0xFF64B5F6); // Soft sky blue
+    } else {
+      strengthText = "Strong";
+      strengthColor = const Color(0xFF2E7D32); // Deep emerald green
+    }
+
+
+    setState(() {
+      _passwordStrength = strength;
+      _passwordStrengthText = strengthText;
+      _passwordStrengthColor = strengthColor;
+    });
+  }
+
 
   void _validateVaultName() {
     if (!_vaultNameTouched) return;
@@ -294,8 +379,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: _getFieldColor(_vaultNameValid, _vaultNameTouched),
-                            width: 1.5
+                              color: _getFieldColor(_vaultNameValid, _vaultNameTouched),
+                              width: 1.5
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -326,56 +411,129 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 const SizedBox(height: 10),
 
-                // Password Field
-                SizedBox(
-                  width: 300,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      textInputAction: TextInputAction.next,
-                      controller: _passwordController,
-                      obscureText: true,
-                      onChanged: (_) {
-                        setState(() {
-                          _passwordTouched = true;
-                        });
-                        _validatePassword();
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        helperText: _getPasswordHelperText(),
-                        errorText: _passwordError,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: _getFieldColor(_passwordValid, _passwordTouched),
-                            width: 1.5
+                // Password Field with Strength Indicator
+                Column(
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: TextFormField(
+                          textInputAction: TextInputAction.next,
+                          controller: _passwordController,
+                          obscureText: true,
+                          onChanged: (_) {
+                            setState(() {
+                              _passwordTouched = true;
+                            });
+                            _validatePassword();
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            helperText: _getPasswordHelperText(),
+                            errorText: _passwordError,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: _getFieldColor(_passwordValid, _passwordTouched),
+                                  width: 1.5
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: _getFieldColor(_passwordValid, _passwordTouched),
+                                width: 2.5,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Colors.red),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                            ),
+                            suffixIcon: _passwordTouched
+                                ? Icon(
+                              _passwordValid ? Icons.check_circle : Icons.error,
+                              color: _passwordValid ? Colors.green : Colors.red,
+                            )
+                                : null,
                           ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: _getFieldColor(_passwordValid, _passwordTouched),
-                            width: 2.5,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.red),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.red, width: 2.0),
-                        ),
-                        suffixIcon: _passwordTouched
-                            ? Icon(
-                          _passwordValid ? Icons.check_circle : Icons.error,
-                          color: _passwordValid ? Colors.green : Colors.red,
-                        )
-                            : null,
                       ),
                     ),
-                  ),
+
+                    const SizedBox(height: 8),
+                    
+                    // Password Strength Indicator
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 80),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Use Expanded + LayoutBuilder so we know the actual available width
+                                Expanded(
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      // The full width of the background bar
+                                      final fullWidth = constraints.maxWidth;
+                                      // Compute the filled width relative to the available width.
+                                      // Give a small minimum to make tiny strengths visible.
+                                      final minVisible = 4.0;
+                                      final filledWidth = (_passwordStrength > 0)
+                                          ? math.max(minVisible, fullWidth * _passwordStrength)
+                                          : 0.0;
+
+                                      return Container(
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          color: Colors.grey[300],
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            // Animated filled portion
+                                            AnimatedContainer(
+                                              duration: const Duration(milliseconds: 400),
+                                              curve: Curves.easeOutCubic,
+                                              width: filledWidth,
+                                              height: 8,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: _passwordStrengthColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                // Strength text
+                                Text(
+                                  _passwordStrengthText,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: _passwordStrengthColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 10),
@@ -401,8 +559,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: _getFieldColor(_confirmPasswordValid, _confirmPasswordTouched),
-                            width: 1.5
+                              color: _getFieldColor(_confirmPasswordValid, _confirmPasswordTouched),
+                              width: 1.5
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
