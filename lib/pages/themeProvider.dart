@@ -27,7 +27,7 @@ class ThemeProvider extends ChangeNotifier {
         selectionHandleColor:
             Colors.black, // Couleur de la poignée de sélection
         selectionColor:
-            Colors.black.withOpacity(0.3), // Couleur de la sélection
+            Colors.black.withValues(alpha: 0.3), // Couleur de la sélection
       ),
     );
     notifyListeners();

@@ -301,31 +301,31 @@ class Controller {
     rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", notes_data);
   }
 
-  void saveNewNote(String cr_note_title, String cr_content,
+  void saveNewNote(String crNoteTitle, String crContent,
       {String cr_dir_name = "child"}) {
     // {Notes: { "cr_title": "cr_content", ...}, Directories: ...}
-    notes_data["Notes"][cr_note_title] = cr_content;
+    notes_data["Notes"][crNoteTitle] = crContent;
     // {Notes: ..., Directories: "child": ["cr_title", ...], "cr_dir_name": [...], ...}
-    notes_data["Directories"][cr_dir_name].add(cr_note_title);
+    notes_data["Directories"][cr_dir_name].add(crNoteTitle);
     writeNotesToJson();
   }
 
   void updateNewNote(
-      String old_cr_note, String new_cr_note, String new_cr_content,
+      String oldCrNote, String newCrNote, String newCrContent,
       {String cr_dir_name = "child"}) {
     // update note
-    notes_data["Notes"].remove(old_cr_note);
-    notes_data["Notes"][new_cr_note] = new_cr_content;
+    notes_data["Notes"].remove(oldCrNote);
+    notes_data["Notes"][newCrNote] = newCrContent;
 
     // actualize note in its directory
-    notes_data["Directories"][cr_dir_name].remove(old_cr_note);
-    notes_data["Directories"][cr_dir_name].add(new_cr_note);
+    notes_data["Directories"][cr_dir_name].remove(oldCrNote);
+    notes_data["Directories"][cr_dir_name].add(newCrNote);
     writeNotesToJson();
   }
 
-  void deleteNote(String cr_title, {String folderName = "child"}) {
-    notes_data["Notes"].remove(cr_title);
-    notes_data["Directories"][folderName].remove(cr_title);
+  void deleteNote(String crTitle, {String folderName = "child"}) {
+    notes_data["Notes"].remove(crTitle);
+    notes_data["Directories"][folderName].remove(crTitle);
     print("Note deleted successfully");
     writeNotesToJson();
   }
@@ -338,15 +338,15 @@ class Controller {
     writeNotesToJson();
   }
 
-  void createNewFolder(String cr_name) {
-    notes_data["Directories"][cr_name] = [];
+  void createNewFolder(String crName) {
+    notes_data["Directories"][crName] = [];
     writeNotesToJson();
   }
 
-  void updateFolderName(String old_cr_name, new_cr_name) {
-    List<int> cor_notes = notes_data["Directories"][old_cr_name];
-    notes_data["Directories"].remove(old_cr_name);
-    notes_data["Directories"][new_cr_name] = [cor_notes];
+  void updateFolderName(String oldCrName, newCrName) {
+    List<int> corNotes = notes_data["Directories"][oldCrName];
+    notes_data["Directories"].remove(oldCrName);
+    notes_data["Directories"][newCrName] = [corNotes];
     writeNotesToJson();
   }
 
@@ -354,22 +354,22 @@ class Controller {
     //String data_path = "/data/data/com.example.flutter.cryptedeye.cryptedeye/app_flutter/gui.CryptedEye";
     // "$localPath/$VaultName.CryptedEye"
 
-    String data_path = "$localPath/$VaultName.CryptedEye";
-    Directory d = Directory(data_path);
-    String download_path = '/storage/emulated/0/Download';
-    return img.createTarFile(d, download_path, VaultName);
+    String dataPath = "$localPath/$VaultName.CryptedEye";
+    Directory d = Directory(dataPath);
+    String downloadPath = '/storage/emulated/0/Download';
+    return img.createTarFile(d, downloadPath, VaultName);
   }
 
   Future<bool> importData() async {
     try {
       // Attendre que l'utilisateur sélectionne un fichier
-      final tar_to_import = await FlutterFileDialog.pickFile(
+      final tarToImport = await FlutterFileDialog.pickFile(
           params: const OpenFileDialogParams(
         fileExtensionsFilter: ["tar"],
       ));
 
-      if (tar_to_import != null) {
-        String dirName = tar_to_import;
+      if (tarToImport != null) {
+        String dirName = tarToImport;
 
         // get the last part of the path
         List<String> tmp = dirName.split("/");
@@ -378,8 +378,8 @@ class Controller {
         // get first part
         tmp = dirName.split('.');
 
-        print('Data to import from $tar_to_import');
-        String result = img.unTarFile(tar_to_import, localPath, tmp[0]);
+        print('Data to import from $tarToImport');
+        String result = img.unTarFile(tarToImport, localPath, tmp[0]);
         print("Extraced path: $result");
         if (result == "") {
           return false;

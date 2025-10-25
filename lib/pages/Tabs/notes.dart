@@ -116,7 +116,6 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     buildContent();
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       floatingActionButton: Stack(
         children: [
           Positioned(
@@ -777,7 +776,6 @@ class _OpenDirState extends State<OpenDir> {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
-        backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
         title: Text(widget.ctr.crypter.decrypt(dirName)),
       ),
       floatingActionButton: SpeedDial(
@@ -807,7 +805,6 @@ class _OpenDirState extends State<OpenDir> {
               },
             ),
           ]),
-      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
       body: Column(
         children: [
           const SizedBox(

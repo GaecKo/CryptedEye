@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controller.dart';
-import 'Tabs/notes.dart';
-import 'Tabs/passwords.dart';
+import 'tabs/notes.dart';
+import 'tabs/passwords.dart';
 import 'themeProvider.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
+          backgroundColor: const Color.fromARGB(255, 91, 91, 91),
           title: Row(
             children: [
               const Icon(
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             indicatorColor: Colors.blue,
             labelColor: Colors.blue,
             unselectedLabelColor: Colors.white,
-            overlayColor: MaterialStateColor.resolveWith(
+            overlayColor: WidgetStateColor.resolveWith(
                 (states) => const Color.fromRGBO(20, 20, 40, 0.2)),
             splashBorderRadius: BorderRadius.circular(10),
           ),
