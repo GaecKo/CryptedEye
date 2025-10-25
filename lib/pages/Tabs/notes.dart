@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -18,6 +20,7 @@ class _NotesPageState extends State<NotesPage> {
   late List<Widget> contents = [];
   late Controller ctr;
   String _searchQuery = '';
+  final ScrollController _scrollController = ScrollController();
 
   void _updateSearchQuery(String newQuery) {
     setState(() {
@@ -115,7 +118,125 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     buildContent();
+
+    // Calculate filtered items count
+    final filteredItems = contents.where((widget) {
+      if (_searchQuery.isEmpty) return true;
+
+      String searchQueryLower = _searchQuery.toLowerCase();
+
+      if (widget is Note) {
+        return widget.ctr.crypter
+            .decrypt(widget.cryptedTitle)
+            .toLowerCase()
+            .contains(searchQueryLower) ||
+            widget.ctr.crypter
+                .decrypt(widget.cryptedContent)
+                .toLowerCase()
+                .contains(searchQueryLower);
+      } else if (widget is Folder) {
+        return widget.ctr.crypter
+            .decrypt(widget.name)
+            .toLowerCase()
+            .contains(searchQueryLower);
+      }
+      return true;
+    }).toList();
+
     return Scaffold(
+      body: Stack(
+        children: [
+          // Main content with ListView
+          Positioned.fill(
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.only(bottom: 60),
+              itemCount: filteredItems.length + 1, // +1 for the spacer
+              itemBuilder: (BuildContext context, int index) {
+                // First item is the spacer
+                if (index == 0) {
+                  return const SizedBox(height: 70.0); // Space for search bar
+                }
+
+                // Adjust index for data access (subtract 1 for the spacer)
+                final widget = filteredItems[index - 1];
+
+                return Slidable(
+                  key: UniqueKey(),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    dismissible: DismissiblePane(onDismissed: () {
+                      deleteWidgetFromContents(widget);
+                      setState(() {});
+                    }),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) {
+                          deleteWidgetFromContents(widget);
+                          setState(() {});
+                        },
+                        borderRadius: BorderRadius.circular(10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 10),
+                        backgroundColor: const Color(0xFFFE4A49),
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        label: 'Delete',
+                      ),
+                    ],
+                  ),
+                  child: widget,
+                );
+              },
+            ),
+          ),
+
+          // Glassy search bar
+          Positioned(
+            top: 10.0,
+            left: 20.0,
+            right: 20.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(20.0),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: TextField(
+                    onChanged: _updateSearchQuery,
+                    decoration: InputDecoration(
+                      hintText: 'Search Notes...',
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 12.0,
+                      ),
+                      filled: false,
+                    ),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: Stack(
         children: [
           Positioned(
@@ -138,13 +259,14 @@ class _NotesPageState extends State<NotesPage> {
             child: SpeedDial(
               icon: Icons.add,
               activeIcon: Icons.close,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               animatedIconTheme: const IconThemeData(size: 22.0),
               children: [
                 SpeedDialChild(
-                  child: const Icon(Icons.note_add_outlined),
-                  backgroundColor: Colors.blue,
+                  child: Icon(Icons.note_add_outlined,
+                      color: Theme.of(context).colorScheme.onPrimary),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   label: 'Add Note',
                   labelStyle: const TextStyle(fontSize: 16.0),
                   onTap: () {
@@ -161,9 +283,9 @@ class _NotesPageState extends State<NotesPage> {
                   },
                 ),
                 SpeedDialChild(
-                  child:
-                      const Icon(Icons.create_new_folder, color: Colors.blue),
-                  backgroundColor: Colors.white,
+                  child: Icon(Icons.create_new_folder,
+                      color: Theme.of(context).colorScheme.primary),
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   label: 'Create Folder',
                   labelStyle: const TextStyle(fontSize: 16.0),
                   onTap: () {
@@ -182,122 +304,20 @@ class _NotesPageState extends State<NotesPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          const SizedBox(
-            height: 0,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-            child: TextField(
-              onChanged: _updateSearchQuery,
-              decoration: InputDecoration(
-                hintText: 'Search Notes...',
-                prefixIcon: const Icon(
-                  Icons.search,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: const BorderSide(
-                      color: Colors.blue), // Couleur de la bordure
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: const BorderSide(
-                    color: Colors
-                        .blue, // Couleur de la bordure lorsqu'elle est activée
-                    width: 2.0, // Largeur de la bordure lorsqu'elle est activée
-                  ),
-                ),
-              ),
-              style: const TextStyle(
-                // Définir la couleur de la bordure lorsqu'elle n'est pas activée
-                decorationColor: Colors.blue,
-                // Définir l'épaisseur de la bordure lorsqu'elle n'est pas activée
-                decorationThickness: 2.0,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 60),
-              itemCount: contents.length,
-              itemBuilder: (BuildContext context, int index) {
-                Widget tmp = contents[index];
-                String searchQueryLower = _searchQuery.toLowerCase();
-
-                if (tmp is Note) {
-                  if (_searchQuery.isNotEmpty &&
-                      !widget.ctr.crypter
-                          .decrypt(tmp.cryptedTitle)
-                          .toLowerCase()
-                          .contains(searchQueryLower) &&
-                      !widget.ctr.crypter
-                          .decrypt(tmp.cryptedContent)
-                          .toLowerCase()
-                          .contains(searchQueryLower)) {
-                    return const SizedBox.shrink();
-                  }
-                } else if (tmp is Folder) {
-                  if (_searchQuery.isNotEmpty &&
-                      !widget.ctr.crypter
-                          .decrypt(tmp.name)
-                          .toLowerCase()
-                          .contains(searchQueryLower)) {
-                    return const SizedBox.shrink();
-                  }
-                }
-
-                return Slidable(
-                  key: UniqueKey(),
-                  endActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    dismissible: DismissiblePane(onDismissed: () {
-                      deleteWidget(index);
-                      setState(() {});
-                      // _showDeleteConfirmationDialog(context, index);
-                    }),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          //_showDeleteConfirmationDialog(context, index);
-                          deleteWidget(index);
-                          setState(() {});
-                        },
-                        borderRadius: BorderRadius.circular(10),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 10),
-                        backgroundColor: const Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
-                      ),
-                    ],
-                  ),
-                  child: contents[index],
-                );
-              },
-            ),
-          ),
-        ],
-      ),
     );
   }
 
-  void _showDeleteConfirmationDialog(BuildContext context, int index) {
+  void _showDeleteConfirmationDialog(BuildContext context, Widget widget) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete'),
-          content: const Text('Are you sure you want to delete this note ?'),
+          content: const Text('Are you sure you want to delete this item?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                deleteWidget(index);
+                deleteWidgetFromContents(widget);
                 Navigator.of(context).pop();
               },
               child: const Text('Delete'),
@@ -314,33 +334,28 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  void deleteWidget(int index) {
-    Widget tmp = contents[index];
-    if (tmp is Note) {
-      tmp = tmp;
+  void deleteWidgetFromContents(Widget widget) {
+    if (widget is Note) {
       contents.removeWhere((elem) {
         if (elem is Note) {
-          return elem.cryptedTitle == (tmp as Note).cryptedTitle;
+          return elem.cryptedTitle == widget.cryptedTitle;
         }
         return false;
       });
-      if (tmp.folderName != null) {
+      if (widget.folderName != null) {
         widget.ctr
-            .deleteNote(tmp.cryptedTitle, folderName: tmp.folderName as String);
+            .deleteNote(widget.cryptedTitle, folderName: widget.folderName as String);
       } else {
-        widget.ctr.deleteNote(tmp.cryptedTitle);
+        widget.ctr.deleteNote(widget.cryptedTitle);
       }
-    } else {
-      // remove folder from frontend
+    } else if (widget is Folder) {
       contents.removeWhere((elem) {
         if (elem is Folder) {
-          return elem.name == (tmp as Folder).name;
+          return elem.name == widget.name;
         }
         return false;
       });
-      tmp = tmp as Folder;
-      // remove folder from backend, its child notes as well
-      widget.ctr.deleteFolder(tmp.name);
+      widget.ctr.deleteFolder(widget.name);
     }
   }
 
@@ -348,6 +363,12 @@ class _NotesPageState extends State<NotesPage> {
     setState(() {
       // Trigger a rebuild of NotesPageState
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
 
@@ -359,14 +380,15 @@ class Note extends StatefulWidget {
   final VoidCallback rebuildParent;
   String? folderName;
 
-  Note(
-      {super.key,
-      required this.cryptedTitle,
-      required this.cryptedContent,
-      required this.ctr,
-      required this.contents,
-      required this.rebuildParent,
-      this.folderName});
+  Note({
+    super.key,
+    required this.cryptedTitle,
+    required this.cryptedContent,
+    required this.ctr,
+    required this.contents,
+    required this.rebuildParent,
+    this.folderName,
+  });
 
   @override
   State<Note> createState() => _NoteState();
@@ -384,14 +406,12 @@ class _NoteState extends State<Note> {
       child: ListTile(
         title: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.note,
-              color: Colors.blue,
+              color: Theme.of(context).colorScheme.primary,
               size: 18,
             ),
-            const SizedBox(
-              width: 5,
-            ),
+            const SizedBox(width: 5),
             Expanded(
               flex: 2,
               child: Text(
@@ -412,7 +432,6 @@ class _NoteState extends State<Note> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              // build NoteScreen for note update: ctr, contents, rebuildParent, rebuildNote, note widget
               builder: (_) => NoteScreen(
                 ctr: widget.ctr,
                 contents: widget.contents,
@@ -468,10 +487,10 @@ class _FolderState extends State<Folder> {
             widget.ctr.crypter.decrypt(widget.name),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          leading: const Icon(
+          leading: Icon(
             Icons.folder_open,
             size: 36.0,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -483,9 +502,9 @@ class NoteScreen extends StatefulWidget {
   final Controller ctr;
   final List<Widget> contents;
   final VoidCallback rebuildParent;
-  VoidCallback? rebuildNote;
-  Note? note;
-  String? folderName;
+  final VoidCallback? rebuildNote;
+  final Note? note;
+  final String? folderName;
 
   NoteScreen({
     super.key,
@@ -504,23 +523,18 @@ class NoteScreen extends StatefulWidget {
 class _NoteScreenState extends State<NoteScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-
   bool showError = false;
 
   @override
   Widget build(BuildContext context) {
     if (widget.note != null) {
-      _titleController.text = (widget.note == null
-          ? null
-          : widget.ctr.crypter.decrypt(widget.note!.cryptedTitle))!;
-      _contentController.text = (widget.note == null
-          ? null
-          : widget.ctr.crypter.decrypt(widget.note!.cryptedContent))!;
+      _titleController.text = widget.ctr.crypter.decrypt(widget.note!.cryptedTitle);
+      _contentController.text = widget.ctr.crypter.decrypt(widget.note!.cryptedContent);
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const SizedBox.shrink(), // Enlève le texte du titre
+        title: const SizedBox.shrink(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -552,7 +566,9 @@ class _NoteScreenState extends State<NoteScreen> {
                   errorText: showError ? 'Please enter a title' : null,
                 ),
                 onChanged: (value) {
-                  showError = _titleController.text.isEmpty;
+                  setState(() {
+                    showError = _titleController.text.isEmpty;
+                  });
                 },
                 style: const TextStyle(
                   fontSize: 30,
@@ -569,12 +585,11 @@ class _NoteScreenState extends State<NoteScreen> {
                 decoration: const InputDecoration(
                   hintText: "Note",
                   hintStyle: TextStyle(color: Colors.grey),
-                  border: InputBorder
-                      .none, // Supprime le contour rectangulaire autour de la note
+                  border: InputBorder.none,
                 ),
                 style: const TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.normal, // Remet la police en normal
+                  fontWeight: FontWeight.normal,
                 ),
               ),
             ),
@@ -582,7 +597,8 @@ class _NoteScreenState extends State<NoteScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         child: const Icon(Icons.save),
         onPressed: () {
           setState(() {
@@ -596,10 +612,7 @@ class _NoteScreenState extends State<NoteScreen> {
             Navigator.of(context).pop();
             widget.rebuildParent();
             if (widget.note != null) {
-              // NOTE UPDATE
-              // update note in backend
               if (widget.folderName == null) {
-                // if it has a defined folder name, then update
                 widget.ctr.updateNewNote(
                     widget.note!.cryptedTitle, crTitle, crContent);
               } else {
@@ -607,19 +620,16 @@ class _NoteScreenState extends State<NoteScreen> {
                     widget.note!.cryptedTitle, crTitle, crContent,
                     cr_dir_name: widget.folderName!);
               }
-
               widget.note?.cryptedTitle = crTitle;
               widget.note?.cryptedContent = crContent;
               widget.rebuildNote!();
             } else {
-              widget.rebuildParent();
               if (widget.folderName != null) {
                 widget.ctr.saveNewNote(crTitle, crContent,
                     cr_dir_name: widget.folderName as String);
               } else {
                 widget.ctr.saveNewNote(crTitle, crContent);
               }
-
               widget.contents.add(Note(
                 cryptedTitle: crTitle,
                 cryptedContent: crContent,
@@ -705,6 +715,10 @@ class _FolderCreationState extends State<FolderCreation> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          ),
           onPressed: () {
             setState(() {
               showError = true;
@@ -726,11 +740,12 @@ class OpenDir extends StatefulWidget {
   final String dirName;
   final List<dynamic> childs;
 
-  const OpenDir(
-      {super.key,
-      required this.ctr,
-      required this.dirName,
-      required this.childs});
+  const OpenDir({
+    super.key,
+    required this.ctr,
+    required this.dirName,
+    required this.childs,
+  });
 
   @override
   _OpenDirState createState() => _OpenDirState();
@@ -752,9 +767,7 @@ class _OpenDirState extends State<OpenDir> {
 
     mainContent.forEach((key, value) {
       if (key == dirName) {
-        String dirTitle = key;
         List<dynamic> childNodes = value;
-
         for (int i = 0; i < childNodes.length; i++) {
           String title = childNodes[i];
           String content = notesContent[title];
@@ -764,7 +777,7 @@ class _OpenDirState extends State<OpenDir> {
             contents: contents,
             rebuildParent: rebuildDirPage,
             ctr: ctr,
-            folderName: dirTitle,
+            folderName: dirName,
           ));
         }
       }
@@ -775,91 +788,83 @@ class _OpenDirState extends State<OpenDir> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.ctr.crypter.decrypt(dirName)),
       ),
       floatingActionButton: SpeedDial(
-          icon: Icons.add,
-          activeIcon: Icons.close,
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          animatedIconTheme: const IconThemeData(size: 22.0),
-          children: [
-            SpeedDialChild(
-              child: const Icon(Icons.note_add_outlined),
-              backgroundColor: Colors.blue,
-              label: 'Add Note',
-              labelStyle: const TextStyle(fontSize: 16.0),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => NoteScreen(
-                      ctr: widget.ctr,
-                      contents: contents,
-                      rebuildParent: rebuildDirPage,
-                      folderName: widget.dirName,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ]),
-      body: Column(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        animatedIconTheme: const IconThemeData(size: 22.0),
         children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 60),
-              itemCount: contents.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Slidable(
-                  key: UniqueKey(),
-                  endActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    dismissible: DismissiblePane(onDismissed: () {
-                      deleteWidget(index);
-                    }),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          deleteWidget(index);
-                          setState(() {});
-                        },
-                        borderRadius: BorderRadius.circular(10),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 10),
-                        backgroundColor: const Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
-                      ),
-                    ],
+          SpeedDialChild(
+            child: Icon(Icons.note_add_outlined,
+                color: Theme.of(context).colorScheme.onPrimary),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            label: 'Add Note',
+            labelStyle: const TextStyle(fontSize: 16.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NoteScreen(
+                    ctr: widget.ctr,
+                    contents: contents,
+                    rebuildParent: rebuildDirPage,
+                    folderName: widget.dirName,
                   ),
-                  child: contents[index],
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ],
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.only(bottom: 60),
+        itemCount: contents.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Slidable(
+            key: UniqueKey(),
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              dismissible: DismissiblePane(onDismissed: () {
+                deleteWidget(index);
+              }),
+              children: [
+                SlidableAction(
+                  onPressed: (context) {
+                    deleteWidget(index);
+                    setState(() {});
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 0, horizontal: 10),
+                  backgroundColor: const Color(0xFFFE4A49),
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete,
+                  label: 'Delete',
+                ),
+              ],
+            ),
+            child: contents[index],
+          );
+        },
       ),
     );
   }
 
   void deleteWidget(int index) {
     Note tmp = contents[index] as Note;
-
     widget.ctr.deleteNote(tmp.cryptedTitle, folderName: dirName);
     contents.removeWhere((elem) {
       return (elem as Note).cryptedTitle == tmp.cryptedTitle;
     });
+    setState(() {});
   }
 
   void rebuildDirPage() {
-    setState(() {
-      // Trigger a rebuild of NotesPageState
-    });
+    setState(() {});
   }
 }

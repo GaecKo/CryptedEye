@@ -189,7 +189,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(0.0),
+                    borderRadius: BorderRadius.circular(20.0),
                     border: Border.all(
                       color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                     ),
@@ -197,7 +197,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                   child: TextField(
                     onChanged: _updateSearchQuery,
                     decoration: InputDecoration(
-                      hintText: 'Search Password...',
+                      hintText: 'Search Passwords...',
                       prefixIcon: Icon(
                         Icons.search,
                         color: Theme.of(context).colorScheme.onSurface,
