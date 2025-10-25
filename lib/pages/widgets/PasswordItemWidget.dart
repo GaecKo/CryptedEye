@@ -49,9 +49,9 @@ class _PasswordItemState extends State<PasswordItem> {
       child: ListTile(
         title: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.lock_open,
-              color: Colors.blue,
+              color: Theme.of(context).colorScheme.primary,
               size: 18,
             ),
             const SizedBox(

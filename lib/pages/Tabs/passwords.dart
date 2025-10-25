@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../controller.dart';
+import '../widgets/PasswordItemWidget.dart';
 
 class PasswordManagerPage extends StatefulWidget {
   final Controller ctr;
@@ -93,7 +94,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
             height: 10,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
             child: TextField(
               onChanged: _updateSearchQuery,
               decoration: InputDecoration(
@@ -103,21 +104,19 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: const BorderSide(
-                      color: Colors.blue), // Couleur de la bordure
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary), // Couleur de la bordure
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0), // Coins arrondis
-                  borderSide: const BorderSide(
-                    color: Colors
-                        .blue, // Couleur de la bordure lorsqu'elle est activée
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, // Couleur de la bordure lorsqu'elle est activée
                     width: 2.0, // Largeur de la bordure lorsqu'elle est activée
                   ),
                 ),
               ),
-              style: const TextStyle(
+              style: TextStyle(
                 // Définir la couleur de la bordure lorsqu'elle n'est pas activée
-                decorationColor: Colors.blue,
+                decorationColor:Theme.of(context).colorScheme.primary,
                 // Définir l'épaisseur de la bordure lorsqu'elle n'est pas activée
                 decorationThickness: 2.0,
               ),
@@ -219,13 +218,12 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
             child: SpeedDial(
               icon: Icons.add,
               activeIcon: Icons.close,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               animatedIconTheme: const IconThemeData(size: 22.0),
               children: [
                 SpeedDialChild(
                   child: const Icon(Icons.password),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   label: 'Add Password',
                   labelStyle: const TextStyle(fontSize: 16.0),
                   onTap: () {
@@ -281,121 +279,6 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
   }
 }
 
-class PasswordItem extends StatefulWidget {
-  final String website;
-  final String username;
-  final String password;
-  final VoidCallback onEyePressed;
-  final VoidCallback onPenPressed;
-  final Controller ctr;
 
-  const PasswordItem({
-    super.key,
-    required this.website,
-    required this.username,
-    required this.password,
-    required this.onEyePressed,
-    required this.onPenPressed,
-    required this.ctr,
-  });
-
-  @override
-  _PasswordItemState createState() => _PasswordItemState();
-}
-
-class _PasswordItemState extends State<PasswordItem> {
-  bool _isPasswordVisible = false;
-  bool _hasUsername = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // Check if username is empty
-    if (widget.username.isEmpty) {
-      setState(() {
-        _hasUsername = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-      child: ListTile(
-        title: Row(
-          children: [
-            const Icon(
-              Icons.lock_open,
-              color: Colors.blue,
-              size: 18,
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(
-                widget.website,
-                overflow: TextOverflow.fade,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _hasUsername ? const SizedBox(height: 8) : const SizedBox(),
-            _hasUsername
-                ? Text(
-                    'Username: ${widget.username}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  )
-                : const SizedBox(),
-            const SizedBox(height: 8),
-            Text(
-              'Password: ${_isPasswordVisible ? widget.password : '********'}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-              onPressed: () {
-                setState(() {
-                  _isPasswordVisible = !_isPasswordVisible;
-                });
-                widget.onEyePressed(); // Trigger callback
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: widget.onPenPressed,
-            ),
-            IconButton(
-                icon: const Icon(Icons.copy),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: widget.password))
-                      .catchError((error) {
-                    // Erreur lors de la copie du mot de passe dans le presse-papiers
-                    print(
-                        'Erreur lors de la copie du mot de passe dans le presse-papiers : $error');
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Erreur lors de la copie du mot de passe'),
-                    ));
-                  });
-                }),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 

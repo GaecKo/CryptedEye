@@ -31,20 +31,18 @@ class _HomePageState extends State<HomePage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 91, 91, 91),
           title: Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.lock,
                 size: 26,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.primary
               ),
               const SizedBox(width: 10),
               const Text(
                 "CryptedEye",
                 style: TextStyle(
                   fontSize: 26,
-                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -53,10 +51,10 @@ class _HomePageState extends State<HomePage> {
                 child: Text(
                   " > ${widget.ctr.VaultName}",
                   overflow: TextOverflow.fade,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
-                    color: Colors.blue,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary
                   ),
                 ),
               ),
@@ -68,7 +66,6 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(
                 defaultLightTheme ? Icons.dark_mode : Icons.light_mode,
                 size: 30,
-                color: Colors.white,
               ),
               onPressed: () {
                 if (themeProvider.mode == "Light") {
@@ -88,7 +85,6 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(
                 Icons.settings,
                 size: 30,
-                color: Colors.white,
               ),
               onPressed: () async {
                 await Navigator.pushNamed(context, '/Settings');
@@ -106,9 +102,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
             indicatorSize: TabBarIndicatorSize.tab,
-            indicatorColor: Colors.blue,
-            labelColor: Colors.blue,
-            unselectedLabelColor: Colors.white,
+            indicatorColor: Theme.of(context).colorScheme.primary,
+            labelColor: Theme.of(context).colorScheme.primary,
             overlayColor: WidgetStateColor.resolveWith(
                 (states) => const Color.fromRGBO(20, 20, 40, 0.2)),
             splashBorderRadius: BorderRadius.circular(10),
