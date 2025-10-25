@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../controller.dart';
 import 'tabs/notes.dart';
 import 'tabs/passwords.dart';
-import 'themeProvider.dart';
+import '../theme/themeProvider.dart';
 
 class HomePage extends StatefulWidget {
   final Controller ctr;

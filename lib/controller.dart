@@ -2,14 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cryptedeye/services/crypter.dart';
+import 'package:cryptedeye/services/img.dart';
+import 'package:cryptedeye/services/rwm.dart';
+
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path/path.dart' as p;
 
-import 'API/crypter.dart';
-import 'API/img.dart';
-import 'API/rwm.dart';
 
 // TODO: tar / untar will only be done for sharing purposes
 // no untar / tar operation will be done otherwise, and full file structure will always be kept and updated

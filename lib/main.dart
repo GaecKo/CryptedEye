@@ -11,7 +11,7 @@ import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/settings.dart';
 import 'pages/signup.dart';
-import 'pages/themeProvider.dart';
+import 'theme/themeProvider.dart';
 import 'pages/welcome.dart';
 
 void main() async {
