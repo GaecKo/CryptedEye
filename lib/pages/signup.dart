@@ -24,24 +24,134 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _VaultNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   Controller ctr;
+
+  // Validation states
+  bool _vaultNameValid = false;
+  bool _vaultNameTouched = false;
+  bool _passwordValid = false;
+  bool _passwordTouched = false;
+  bool _confirmPasswordValid = false;
+  bool _confirmPasswordTouched = false;
+
+  // Error messages
+  String? _vaultError;
   String? _passwordError;
   String? _confirmPasswordError;
-  String? _vaultError;
-  Color _vaultColor = Colors.white;
-  Color _passwordContainerColor = Colors.white;
-  Color _confirmPasswordContainerColor = Colors.white;
 
   bool _isLoading = false;
 
   _SignUpPageState(this.ctr);
 
   @override
+  void initState() {
+    super.initState();
+    // Add listeners to update validation in real-time
+    _VaultNameController.addListener(_validateVaultName);
+    _passwordController.addListener(_validatePassword);
+    _confirmPasswordController.addListener(_validateConfirmPassword);
+  }
+
+  @override
   void dispose() {
+    _VaultNameController.removeListener(_validateVaultName);
+    _passwordController.removeListener(_validatePassword);
+    _confirmPasswordController.removeListener(_validateConfirmPassword);
+    _VaultNameController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _validateVaultName() {
+    if (!_vaultNameTouched) return;
+
+    final vaultName = _VaultNameController.text.trim();
+    setState(() {
+      if (vaultName.isEmpty) {
+        _vaultError = "Vault name is required";
+        _vaultNameValid = false;
+      } else if (vaultName.length < 2) {
+        _vaultError = "Vault name must be at least 2 characters long";
+        _vaultNameValid = false;
+      } else if (ctr.getListOfVault().contains(vaultName)) {
+        _vaultError = "A vault with this name already exists";
+        _vaultNameValid = false;
+      } else {
+        _vaultError = null;
+        _vaultNameValid = true;
+      }
+    });
+  }
+
+  void _validatePassword() {
+    if (!_passwordTouched) return;
+
+    final password = _passwordController.text;
+    setState(() {
+      if (password.isEmpty) {
+        _passwordError = "Password is required";
+        _passwordValid = false;
+      } else if (password.length < 4) {
+        _passwordError = "Password must be at least 4 characters long";
+        _passwordValid = false;
+      } else {
+        _passwordError = null;
+        _passwordValid = true;
+      }
+    });
+
+    // Also validate confirm password when password changes
+    if (_confirmPasswordTouched) {
+      _validateConfirmPassword();
+    }
+  }
+
+  void _validateConfirmPassword() {
+    if (!_confirmPasswordTouched) return;
+
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+    setState(() {
+      if (confirmPassword.isEmpty) {
+        _confirmPasswordError = "Please confirm your password";
+        _confirmPasswordValid = false;
+      } else if (password != confirmPassword) {
+        _confirmPasswordError = "Passwords do not match";
+        _confirmPasswordValid = false;
+      } else {
+        _confirmPasswordError = null;
+        _confirmPasswordValid = true;
+      }
+    });
+  }
+
+  Color _getFieldColor(bool isValid, bool isTouched) {
+    if (!isTouched) {
+      return Theme.of(context).colorScheme.onSurface.withOpacity(0.7);
+    }
+    return isValid
+        ? Colors.green
+        : Colors.red;
+  }
+
+  String? _getVaultNameHelperText() {
+    if (!_vaultNameTouched) return "Enter a unique vault name";
+    if (_vaultNameValid) return "Vault name is available";
+    return null;
+  }
+
+  String? _getPasswordHelperText() {
+    if (!_passwordTouched) return "At least 4 characters";
+    if (_passwordValid) return "Password is valid";
+    return null;
+  }
+
+  String? _getConfirmPasswordHelperText() {
+    if (!_confirmPasswordTouched) return "Re-enter your password";
+    if (_confirmPasswordValid) return "Passwords match";
+    return null;
   }
 
   void _callLogIn() {
@@ -49,52 +159,31 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _signUp() async {
+    // Mark all fields as touched to show validation
+    setState(() {
+      _vaultNameTouched = true;
+      _passwordTouched = true;
+      _confirmPasswordTouched = true;
+    });
+
+    // Run validation
+    _validateVaultName();
+    _validatePassword();
+    _validateConfirmPassword();
+
+    // Check if all fields are valid
+    if (!_vaultNameValid || !_passwordValid || !_confirmPasswordValid) {
+      return;
+    }
+
     String VaultName = _VaultNameController.text.trim();
     String password = _passwordController.text;
-    String confirmPassword = _confirmPasswordController.text;
 
-    if (VaultName.isEmpty || VaultName.length < 2) {
-      setState(() {
-        _vaultError = "Vault name must be at least 2 characters long";
-        _vaultColor = Colors.red;
-      });
-    } else if (ctr.getListOfVault().contains(VaultName)) {
-      setState(() {
-        _vaultError =
-            "Vault can't have the same name as other already created vaults";
-        _vaultColor = Colors.red;
-      });
-    } else if (password.isEmpty || confirmPassword.isEmpty) {
-      // Show error message for empty fields and change container color
-      setState(() {
-        _passwordError = 'Password fields are required';
-        _confirmPasswordError = 'Password fields are required';
-        _passwordContainerColor = Colors.red;
-        _confirmPasswordContainerColor = Colors.red;
-      });
-      print("Password fields are required");
-    } else if (password != confirmPassword) {
-      // Show error message for mismatched passwords and change container color
-      setState(() {
-        _passwordError = 'Passwords do not match';
-        _confirmPasswordError = 'Passwords do not match';
-        _passwordContainerColor = Colors.red;
-        _confirmPasswordContainerColor = Colors.red;
-      });
-      print("Passwords do not match");
-    } else {
-      // Reset error messages and container colors
-      setState(() {
-        _passwordError = null;
-        _confirmPasswordError = null;
-        _vaultError = null;
-        _vaultColor = Colors.white;
-        _passwordContainerColor = Colors.white;
-        _confirmPasswordContainerColor = Colors.white;
-        _isLoading = true;
-      });
-      print("Passwords match");
+    setState(() {
+      _isLoading = true;
+    });
 
+    try {
       // 1. init the vault, create files, salt, ...
       await ctr.initApp(password, VaultName);
 
@@ -105,76 +194,69 @@ class _SignUpPageState extends State<SignUpPage> {
       ctr.loadApp(password, VaultName, key);
 
       Navigator.pushReplacementNamed(context, '/HomePage');
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      // Handle error here if needed
+      print("Error during signup: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget canLog;
-    String title;
+    final bool _isLightMode = Theme.of(context).colorScheme.brightness.name == "light";
 
     Widget login = InkWell(
         onTap: _callLogIn,
         child: _isLoading
             ? const SizedBox()
-            : const Text(
-                "Connect to existing Vault",
-                style: TextStyle(
-                  shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
-                  fontStyle: FontStyle.italic,
-                  color: Colors.transparent,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.blue,
-                  decorationThickness: 3,
-                  decorationStyle: TextDecorationStyle.dashed,
-                ),
-              ));
+            : Text(
+          "Connect to existing Vault!",
+          style: TextStyle(
+            fontStyle: FontStyle.italic,
+            decoration: TextDecoration.underline,
+            decorationColor: Theme.of(context).colorScheme.primary,
+            decorationThickness: 3,
+            decorationStyle: TextDecorationStyle.dashed,
+          ),
+        ));
 
     int nbVaults = ctr.getListOfVault().length;
-    if (nbVaults > 0) {
-      canLog = login;
-      title = " > New Vault";
-    } else {
-      canLog = const SizedBox();
-      title = " > Sign-Up";
-    }
+    final Widget canLog = nbVaults > 0 ? login : const SizedBox();
+    final String title = nbVaults > 0 ? " > New Vault" : " > Sign-Up";
 
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(64, 64, 64, 1),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
+            heightFactor: 1.2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Alignement à gauche
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(
-                        height:
-                            20), // Espace entre l'IconButton et le reste des éléments
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
                           Icons.lock,
                           size: 40,
-                          color: Colors.white,
                         ),
                         const SizedBox(width: 10),
                         const Text(
                           "CryptedEye",
                           style: TextStyle(
                               fontSize: 26,
-                              color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
                           title,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 15,
-                              color: Colors.grey,
+                              color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -183,37 +265,68 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 20),
                 Image.asset(
-                  "lib/assets/signup.png",
+                  _isLightMode
+                      ? "lib/assets/signup_light.png"
+                      : "lib/assets/signup_dark.png",
                   width: 300,
                 ),
                 const SizedBox(height: 20),
+
+                // Vault Name Field
                 SizedBox(
                   width: 300,
-                  height: 100,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       maxLength: 20,
                       controller: _VaultNameController,
+                      onChanged: (_) {
+                        setState(() {
+                          _vaultNameTouched = true;
+                        });
+                        _validateVaultName();
+                      },
                       decoration: InputDecoration(
-                        counterStyle: const TextStyle(color: Colors.white),
                         labelText: 'Vault Name',
+                        helperText: _getVaultNameHelperText(),
                         errorText: _vaultError,
-                        labelStyle: const TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: _vaultColor),
+                          borderSide: BorderSide(
+                            color: _getFieldColor(_vaultNameValid, _vaultNameTouched),
+                            width: 1.5
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: _vaultColor),
+                          borderSide: BorderSide(
+                            color: _getFieldColor(_vaultNameValid, _vaultNameTouched),
+                            width: 2.5,
+                          ),
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                        ),
+                        suffixIcon: _vaultNameTouched
+                            ? Icon(
+                          _vaultNameValid ? Icons.check_circle : Icons.error,
+                          color: _vaultNameValid ? Colors.green : Colors.red,
+                        )
+                            : null,
                       ),
-                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 10),
+
+                // Password Field
                 SizedBox(
                   width: 300,
                   child: Padding(
@@ -222,26 +335,52 @@ class _SignUpPageState extends State<SignUpPage> {
                       textInputAction: TextInputAction.next,
                       controller: _passwordController,
                       obscureText: true,
+                      onChanged: (_) {
+                        setState(() {
+                          _passwordTouched = true;
+                        });
+                        _validatePassword();
+                      },
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: const TextStyle(color: Colors.white),
+                        helperText: _getPasswordHelperText(),
+                        errorText: _passwordError,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              BorderSide(color: _passwordContainerColor),
+                          borderSide: BorderSide(
+                            color: _getFieldColor(_passwordValid, _passwordTouched),
+                            width: 1.5
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              BorderSide(color: _passwordContainerColor),
+                          borderSide: BorderSide(
+                            color: _getFieldColor(_passwordValid, _passwordTouched),
+                            width: 2.5,
+                          ),
                         ),
-                        errorText: _passwordError,
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                        ),
+                        suffixIcon: _passwordTouched
+                            ? Icon(
+                          _passwordValid ? Icons.check_circle : Icons.error,
+                          color: _passwordValid ? Colors.green : Colors.red,
+                        )
+                            : null,
                       ),
-                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 10),
+
+                // Confirm Password Field
                 SizedBox(
                   width: 300,
                   child: Padding(
@@ -249,40 +388,62 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: true,
+                      onChanged: (_) {
+                        setState(() {
+                          _confirmPasswordTouched = true;
+                        });
+                        _validateConfirmPassword();
+                      },
                       decoration: InputDecoration(
                         labelText: 'Confirm Password',
-                        labelStyle: const TextStyle(color: Colors.white),
+                        helperText: _getConfirmPasswordHelperText(),
+                        errorText: _confirmPasswordError,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              BorderSide(color: _confirmPasswordContainerColor),
+                          borderSide: BorderSide(
+                            color: _getFieldColor(_confirmPasswordValid, _confirmPasswordTouched),
+                            width: 1.5
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              BorderSide(color: _confirmPasswordContainerColor),
+                          borderSide: BorderSide(
+                            color: _getFieldColor(_confirmPasswordValid, _confirmPasswordTouched),
+                            width: 2.5,
+                          ),
                         ),
-                        errorText: _confirmPasswordError,
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                        ),
+                        suffixIcon: _confirmPasswordTouched
+                            ? Icon(
+                          _confirmPasswordValid ? Icons.check_circle : Icons.error,
+                          color: _confirmPasswordValid ? Colors.green : Colors.red,
+                        )
+                            : null,
                       ),
-                      style: const TextStyle(color: Colors.white),
                       onFieldSubmitted: (_) {
                         _signUp();
                       },
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 20),
                 _isLoading
-                    ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                      )
+                    ? CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+                )
                     : ElevatedButton(
-                        onPressed: _signUp,
-                        child: const Text('Create Vault'),
-                      ),
-                const SizedBox(
-                  height: 10,
+                  onPressed: _signUp,
+                  child: const Text('Create Vault'),
                 ),
+                const SizedBox(height: 10),
                 canLog,
               ],
             ),
@@ -298,12 +459,11 @@ class _SignUpPageState extends State<SignUpPage> {
         children: [
           SpeedDialChild(
             child: const Icon(Icons.import_export),
-            backgroundColor: Colors.blue,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             label: 'Import Vault',
             labelStyle: const TextStyle(fontSize: 16.0),
             onTap: () {
               _showImportConfirmationDialog(context);
-              setState(() {});
             },
           ),
           SpeedDialChild(
@@ -330,14 +490,12 @@ class _SignUpPageState extends State<SignUpPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
+                Navigator.of(context).pop();
                 if (await widget.ctr.importData()) {
-                  Navigator.of(context).pop();
                   _showImportSuccessMessage(context);
                 } else {
-                  Navigator.of(context).pop();
                   _showImportFailureMessage(context);
                 }
-                setState(() {});
               },
               child: const Text('Import'),
             ),
