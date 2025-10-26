@@ -38,21 +38,18 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
-        title: const Row(
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.lock,
               size: 40,
-              color: Colors.white,
             ),
             SizedBox(width: 10),
             Text(
               "CryptedEye",
               style: TextStyle(
                 fontSize: 26,
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -60,14 +57,14 @@ class _WelcomePageState extends State<WelcomePage> {
               " > Welcome",
               style: TextStyle(
                 fontSize: 15,
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
       ),
-      backgroundColor: const Color.fromRGBO(100, 100, 100, 1),
+
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -79,7 +76,6 @@ class _WelcomePageState extends State<WelcomePage> {
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
-        color: const Color.fromRGBO(100, 100, 100, 1),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -88,7 +84,6 @@ class _WelcomePageState extends State<WelcomePage> {
                 : IconButton(
                     icon: const Icon(Icons.navigate_before),
                     onPressed: _navigateToPreviousPage,
-                    color: Colors.white,
                   ),
             Row(
               children: [
@@ -98,7 +93,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentPageIndex == 0
-                        ? Colors.white
+                        ? Theme.of(context).colorScheme.onSurface
                         : Colors.grey, // Active page color
                   ),
                 ),
@@ -109,7 +104,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentPageIndex == 1
-                        ? Colors.white
+                        ? Theme.of(context).colorScheme.onSurface
                         : Colors.grey, // Active page color
                   ),
                 ),
@@ -121,8 +116,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     child: ElevatedButton.icon(
                       onPressed: _navigateToNextPage,
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.blue,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
                         ),
@@ -134,7 +128,6 @@ class _WelcomePageState extends State<WelcomePage> {
                 : IconButton(
                     icon: const Icon(Icons.navigate_next),
                     onPressed: _navigateToNextPage,
-                    color: Colors.white,
                   ),
           ],
         ),
@@ -174,7 +167,6 @@ class CryptedEyeWelcome extends StatelessWidget {
               "CryptedEye is a fully local vault, with the automatic creation of salt and Key, making your data locked using an Access Password (don't forget it!). With CryptedEye, you can easily and securely save passwords and notes.",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -210,7 +202,6 @@ class MultipleVaults extends StatelessWidget {
               "CryptedEye also allows you to export, import, and switch between vaults. Simply export your vault from the settings, and share the image file wherever you need! You can import an image from the login and signup page.",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
