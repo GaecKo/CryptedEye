@@ -340,6 +340,8 @@ class Controller {
   }
 
   void createNewFolder(String crName) {
+    // as crName is unique, even if two folders share same name their
+    // crName in data won't be the same
     notes_data["Directories"][crName] = [];
     writeNotesToJson();
   }
