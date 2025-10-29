@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../../theme/themeProvider.dart';
 
 import '../../controller.dart';
-import '../widgets/PasswordItemWidget.dart';
+import '../widgets/PasswordCardWidget.dart';
 
 class PasswordManagerPage extends StatefulWidget {
   final Controller ctr;
@@ -35,19 +35,18 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
   }
 
   void _editPassword(String website, String username, String password) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return EditPasswordItem(
-          ctr: widget.ctr,
-          initialWebsite: website,
-          initialUsername: username,
-          initialPassword: password,
-          rebuildParent: _rebuildParent,
-        );
-      },
-    );
+    FrostedAlertDialog(
+      title: Text("Edit '${widget.ctr.crypter.decrypt(website)}' Password"),
+      content: EditPasswordItem(
+        ctr: widget.ctr,
+        initialWebsite: website,
+        initialUsername: username,
+        initialPassword: password,
+        rebuildParent: _rebuildParent,
+      ),
+    ).show(context);
   }
+
 
   void _rebuildParent() {
     setState(() {});
@@ -133,10 +132,9 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                     username: decryptedUsername,
                     password: decryptedPassword,
                     ctr: widget.ctr,
-                    onPenPressed: () {
+                    onCardPressed: () {
                       _editPassword(website, username, password);
                     },
-                    onEyePressed: () {},
                   ),
                 );
               },

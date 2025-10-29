@@ -8,8 +8,7 @@ class PasswordItem extends StatefulWidget {
   final String website;
   final String username;
   final String password;
-  final VoidCallback onEyePressed;
-  final VoidCallback onPenPressed;
+  final VoidCallback onCardPressed;
   final Controller ctr;
 
   const PasswordItem({
@@ -17,8 +16,7 @@ class PasswordItem extends StatefulWidget {
     required this.website,
     required this.username,
     required this.password,
-    required this.onEyePressed,
-    required this.onPenPressed,
+    required this.onCardPressed,
     required this.ctr,
   });
 
@@ -94,12 +92,7 @@ class _PasswordItemState extends State<PasswordItem> {
                 setState(() {
                   _isPasswordVisible = !_isPasswordVisible;
                 });
-                widget.onEyePressed(); // Trigger callback
               },
-            ),
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: widget.onPenPressed,
             ),
             IconButton(
               icon: const Icon(Icons.copy),
@@ -110,7 +103,7 @@ class _PasswordItemState extends State<PasswordItem> {
                     print(
                         'Erreur lors de la copie du mot de passe dans le presse-papiers : $error');
                     ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text('Erreur lors de la copie du mot de passe'),
+                        .showSnackBar(const SnackBar(content: Text('There was an error while trying to copy password in clip board'),
                     ));
                   }
                 );
@@ -118,6 +111,7 @@ class _PasswordItemState extends State<PasswordItem> {
             ),
           ],
         ),
+        onTap: widget.onCardPressed,
       ),
     );
   }
