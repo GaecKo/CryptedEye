@@ -25,10 +25,14 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
   _AddPasswordItemState({required this.ctr});
 
   @override
-  Widget build(BuildContext context) {
+  AlertDialog build(BuildContext context) {
     return AlertDialog(
+
+      titlePadding: const EdgeInsets.all(20), // Keep only necessary title padding
+      actionsPadding: const EdgeInsets.all(20), // Keep only necessary actions padding
       title: const Text('Add New Password'),
       content: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 0), // Control content padding manually
         child: Column(
           children: [
             TextField(
@@ -42,60 +46,35 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
                     : null,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(height: 8),
             TextField(
               textInputAction: TextInputAction.next,
               controller: usernameController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.8),
                 labelText: 'Username - email',
               ),
             ),
             const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    icon: const Icon(Icons.autorenew),
-                    color: Colors.blue,
-                    onPressed: () {
-                      setState(() {
-                        passwordController.text =
-                            widget.ctr.generateRandomPassword();
-                      });
-                    },
-                  ),
+            TextField(
+              controller: passwordController,
+              obscureText: obscurePassword,
+              decoration: InputDecoration(
+                fillColor:  Theme.of(context).colorScheme.surface.withOpacity(0.8),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
                 ),
-                const SizedBox(
-                  width: 7,
-                ),
-                Expanded(
-                  flex: 6,
-                  child: TextField(
-                    controller: passwordController,
-                    obscureText: obscurePassword,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      errorText: showError && passwordController.text.isEmpty
-                          ? 'Please enter password'
-                          : null,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    icon: const Icon(Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        obscurePassword = !obscurePassword;
-                      });
-                    },
-                  ),
-                ),
-              ],
+                labelText: 'Password',
+                errorText: showError && passwordController.text.isEmpty
+                    ? 'Please enter password'
+                    : null,
+              ),
             ),
           ],
         ),
@@ -124,7 +103,6 @@ class _AddPasswordItemState extends State<AddPasswordItem> {
           child: const Text('Save'),
         ),
       ],
-      // Specify the barrierColor to dim the background
     );
   }
 }

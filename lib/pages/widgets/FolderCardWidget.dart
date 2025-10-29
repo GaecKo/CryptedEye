@@ -1,9 +1,6 @@
 import 'package:cryptedeye/controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import '../tabs/notes.dart';
 import '../tabs/screens/OpenDirScreen.dart';
 
 class FolderCard extends StatefulWidget {
