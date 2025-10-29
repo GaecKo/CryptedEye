@@ -48,7 +48,7 @@ class _PasswordItemState extends State<PasswordItem> {
         title: Row(
           children: [
             Icon(
-              Icons.lock_open,
+              _isPasswordVisible ? Icons.lock_open : Icons.lock_outline,
               color: Theme.of(context).colorScheme.primary,
               size: 18,
             ),
