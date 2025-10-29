@@ -1,7 +1,5 @@
 import 'package:cryptedeye/controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../widgets/NoteCardWidget.dart';
 
@@ -49,7 +47,6 @@ class _NoteScreenState extends State<NoteScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 50,
               child: TextFormField(
                 textInputAction: TextInputAction.next,
                 controller: _titleController,
@@ -89,10 +86,13 @@ class _NoteScreenState extends State<NoteScreen> {
                 controller: _contentController,
                 maxLines: null,
                 expands: true,
+                textAlignVertical: TextAlignVertical(y: -1),
                 decoration: const InputDecoration(
+                  fillColor: Colors.transparent,
                   hintText: "Note",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: InputBorder.none,
+                  focusedBorder: InputBorder.none
                 ),
                 style: const TextStyle(
                   fontSize: 20,
