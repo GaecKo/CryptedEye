@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:cryptedeye/pages/widgets/AddPasswordItemWidget.dart';
-import 'package:cryptedeye/pages/widgets/CustomAlertDialogWidget.dart';
+import 'package:cryptedeye/pages/widgets/FrostedAlertDialog.dart';
 import 'package:cryptedeye/pages/widgets/EditPasswordItemWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
