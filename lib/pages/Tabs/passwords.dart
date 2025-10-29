@@ -1,11 +1,15 @@
 import 'dart:ui';
 
 import 'package:cryptedeye/pages/widgets/AddPasswordItemWidget.dart';
+import 'package:cryptedeye/pages/widgets/CustomAlertDialogWidget.dart';
 import 'package:cryptedeye/pages/widgets/EditPasswordItemWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:provider/provider.dart';
+
+import '../../theme/themeProvider.dart';
 
 import '../../controller.dart';
 import '../widgets/PasswordItemWidget.dart';
@@ -49,44 +53,6 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
     setState(() {});
   }
 
-  Widget popup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            "Adding Passwords",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "lib/assets/passwords.png",
-                width: 350,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Use the '+' button to create Passwords. Swipe left to delete.",
-                textAlign: TextAlign.center,
-                style: TextStyle(),
-              )
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text("Okay"),
-            ),
-          ],
-        );
-      },
-    );
-    return const SizedBox();
-  }
-
   @override
   Widget build(BuildContext context) {
     // Calculate filtered items count
@@ -111,7 +77,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
           decryptedUsernameLowercase.contains(searchQueryLowercase) ||
           decryptedPasswordLowercase.contains(searchQueryLowercase);
     }).toList();
-
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return Scaffold(
       body: Stack(
         children: [
@@ -230,7 +196,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
             bottom: 10.0,
             child: FloatingActionButton(
               onPressed: () {
-                popup();
+                popup(themeProvider);
               },
               mini: true,
               backgroundColor: Colors.grey,
@@ -254,13 +220,14 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                   label: 'Add Password',
                   labelStyle: const TextStyle(fontSize: 16.0),
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AddPasswordItem(
+                    final dialog = FrostedAlertDialog(
+                      title: const Text('Add New Password'),
+                      content: AddPasswordItem(
                         ctr: widget.ctr,
                         rebuildParent: _rebuildParent,
                       ),
                     );
+                    dialog.show(context);
                   },
                 ),
                 SpeedDialChild(
@@ -303,6 +270,41 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
         );
       },
     );
+  }
+
+  void popup(ThemeProvider themeProvider) {
+    FrostedAlertDialog frostedAlertDialog = FrostedAlertDialog(
+      title: const Text(
+        "Adding Passwords",
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            "lib/assets/passwords.png",
+            width: 350,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "Use the '+' button to create Passwords. Swipe left to delete.",
+            textAlign: TextAlign.center,
+            style: TextStyle(),
+          )
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          child: const Text("Okay"),
+        ),
+      ],
+    );
+
+    frostedAlertDialog.show(context);
+
   }
 
   @override
