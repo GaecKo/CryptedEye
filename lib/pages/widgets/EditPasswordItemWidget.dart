@@ -75,47 +75,23 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
             decoration: const InputDecoration(labelText: 'Username - email'),
           ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  icon: const Icon(Icons.autorenew),
-                  color: Colors.blue,
-                  onPressed: () {
-                    setState(() {
-                      passwordController.text =
-                          widget.ctr.generateRandomPassword();
-                    });
-                  },
+          TextField(
+            controller: passwordController,
+            obscureText: obscurePassword,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              errorText: showError && passwordController.text.isEmpty
+                  ? 'Please enter password'
+                  : null,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  obscurePassword ? Icons.visibility : Icons.visibility_off,
                 ),
+                onPressed: () =>
+                    setState(() => obscurePassword = !obscurePassword),
               ),
-              const SizedBox(width: 7),
-              Expanded(
-                flex: 6,
-                child: TextField(
-                  controller: passwordController,
-                  obscureText: obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    errorText: showError && passwordController.text.isEmpty
-                        ? 'Please enter password'
-                        : null,
-                  ),
-                  onChanged: (_) => setState(() {}),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  icon: Icon(
-                    obscurePassword ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () =>
-                      setState(() => obscurePassword = !obscurePassword),
-                ),
-              ),
-            ],
+            ),
+            onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 24),
           Row(
@@ -124,6 +100,18 @@ class _EditPasswordItemState extends State<EditPasswordItem> {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Cancel'),
+              ),
+              const SizedBox(height: 8,),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.redAccent),
+                ),
+                onPressed: () {
+                  widget.ctr.deletePassword(widget.initialWebsite);
+                  widget.rebuildParent();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Delete'),
               ),
               const SizedBox(width: 8),
               ElevatedButton(

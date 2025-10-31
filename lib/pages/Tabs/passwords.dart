@@ -103,40 +103,18 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
                 String decryptedUsername = widget.ctr.crypter.decrypt(username);
                 String decryptedPassword = widget.ctr.crypter.decrypt(password);
 
-                return Slidable(
-                  key: UniqueKey(),
-                  endActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    dismissible: DismissiblePane(onDismissed: () {
-                      widget.ctr.deletePassword(website);
-                      _rebuildParent();
-                    }),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          widget.ctr.deletePassword(website);
-                          _rebuildParent();
-                        },
-                        borderRadius: BorderRadius.circular(10),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 10),
-                        backgroundColor: const Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
-                      ),
-                    ],
-                  ),
-                  child: PasswordItem(
+                return PasswordItem(
                     website: decryptedWebsite,
+                    cryptedWebsite: website,
                     username: decryptedUsername,
                     password: decryptedPassword,
                     ctr: widget.ctr,
                     onCardPressed: () {
                       _editPassword(website, username, password);
                     },
-                  ),
-                );
+                    rebuiltParent: () {_rebuildParent();},
+                  );
+
               },
             ),
           ),

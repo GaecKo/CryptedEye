@@ -1,23 +1,27 @@
-import 'package:cryptedeye/controller.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../controller.dart';
 
 class PasswordItem extends StatefulWidget {
   final String website;
+  final String cryptedWebsite;
   final String username;
   final String password;
   final VoidCallback onCardPressed;
+  final VoidCallback rebuiltParent;
   final Controller ctr;
 
   const PasswordItem({
     super.key,
     required this.website,
+    required this.cryptedWebsite,
     required this.username,
     required this.password,
     required this.onCardPressed,
     required this.ctr,
+    required this.rebuiltParent,
   });
 
   @override
@@ -31,12 +35,7 @@ class _PasswordItemState extends State<PasswordItem> {
   @override
   void initState() {
     super.initState();
-    // Check if username is empty
-    if (widget.username.isEmpty) {
-      setState(() {
-        _hasUsername = false;
-      });
-    }
+    _hasUsername = widget.username.isNotEmpty;
   }
 
   @override
@@ -73,21 +72,22 @@ class _PasswordItemState extends State<PasswordItem> {
                 ? Text(
               'Username: ${widget.username}',
               style: const TextStyle(fontWeight: FontWeight.bold),
-            )
-                : const SizedBox(),
-            const SizedBox(height: 8),
-            Text(
-              'Password: ${_isPasswordVisible ? widget.password : '********'}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+            ) : const SizedBox(),
+          const SizedBox(height: 8),
+          Text(
+            'Password: ${_isPasswordVisible ? widget.password : '********'}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
               icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                size: 20,
+              ),
               onPressed: () {
                 setState(() {
                   _isPasswordVisible = !_isPasswordVisible;
@@ -95,24 +95,18 @@ class _PasswordItemState extends State<PasswordItem> {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.copy),
+              icon: const Icon(Icons.copy, size: 20),
               onPressed: () {
-                Clipboard.setData(ClipboardData(text: widget.password))
-                  .catchError((error) {
-                    // Erreur lors de la copie du mot de passe dans le presse-papiers
-                    print(
-                        'Erreur lors de la copie du mot de passe dans le presse-papiers : $error');
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text('There was an error while trying to copy password in clip board'),
-                    ));
-                  }
+                Clipboard.setData(ClipboardData(text: widget.password));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Password copied to clipboard')),
                 );
-              }
+              },
             ),
           ],
         ),
-        onTap: widget.onCardPressed,
-      ),
+        onTap: () => widget.onCardPressed(),
+      )
     );
   }
 }
