@@ -78,7 +78,6 @@ class _NotesPageState extends State<NotesPage> {
     contents = [];
     ctr = widget.ctr;
     Map<String, dynamic> notesData = ctr.notes_data;
-    print("Notes: $notesData");
     Map<String, dynamic> notesContent = notesData["Notes"];
     Map<String, dynamic> mainContent = notesData["Directories"];
     mainContent.forEach((key, value) {

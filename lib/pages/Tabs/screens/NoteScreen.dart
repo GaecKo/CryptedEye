@@ -10,6 +10,7 @@ class NoteScreen extends StatefulWidget {
   final VoidCallback? rebuildNote;
   final NoteCard? note;
   final String? folderName;
+  bool initialized = false;
 
   NoteScreen({
     super.key,
@@ -32,9 +33,13 @@ class _NoteScreenState extends State<NoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.note != null) {
+    if (widget.note != null && !widget.initialized) {
+      widget.initialized = true;
       _titleController.text = widget.ctr.crypter.decrypt(widget.note!.cryptedTitle);
       _contentController.text = widget.ctr.crypter.decrypt(widget.note!.cryptedContent);
+      setState(() {
+
+      });
     }
 
     return Scaffold(
@@ -108,16 +113,13 @@ class _NoteScreenState extends State<NoteScreen> {
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         child: const Icon(Icons.save),
         onPressed: () {
-          setState(() {
-            showError = true;
-          });
+
           if (_titleController.text.isNotEmpty) {
             String title = _titleController.text;
             String content = _contentController.text;
             String crTitle = widget.ctr.crypter.encrypt(title);
             String crContent = widget.ctr.crypter.encrypt(content);
-            Navigator.of(context).pop();
-            widget.rebuildParent();
+
             if (widget.note != null) {
               if (widget.folderName == null) {
                 widget.ctr.updateNewNote(
@@ -130,6 +132,7 @@ class _NoteScreenState extends State<NoteScreen> {
               widget.note?.cryptedTitle = crTitle;
               widget.note?.cryptedContent = crContent;
               widget.rebuildNote!();
+              Navigator.of(context).pop();
             } else {
               if (widget.folderName != null) {
                 widget.ctr.saveNewNote(crTitle, crContent,
@@ -137,6 +140,7 @@ class _NoteScreenState extends State<NoteScreen> {
               } else {
                 widget.ctr.saveNewNote(crTitle, crContent);
               }
+
               widget.contents.add(NoteCard(
                 cryptedTitle: crTitle,
                 cryptedContent: crContent,
@@ -145,7 +149,13 @@ class _NoteScreenState extends State<NoteScreen> {
                 rebuildParent: widget.rebuildParent,
                 folderName: widget.folderName,
               ));
+
             }
+          }
+          else {
+            setState(() {
+              showError = true;
+            });
           }
         },
       ),
