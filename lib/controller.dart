@@ -302,13 +302,18 @@ class Controller {
     rwm.writeJSONData("$VaultName.CryptedEye/notes/notes.json", notes_data);
   }
 
-  void saveNewNote(String crNoteTitle, String crContent,
+  DateTime saveNewNote(String crNoteTitle, String crContent,
       {String cr_dir_name = "child"}) {
     // {Notes: { "cr_title": "cr_content", ...}, Directories: ...}
-    notes_data["Notes"][crNoteTitle] = crContent;
+    DateTime date = DateTime.now();
+    notes_data["Notes"][crNoteTitle] = {
+      "date": date.toString(),
+      "content": crContent
+    };
     // {Notes: ..., Directories: "child": ["cr_title", ...], "cr_dir_name": [...], ...}
     notes_data["Directories"][cr_dir_name].add(crNoteTitle);
     writeNotesToJson();
+    return date;
   }
 
   void updateNewNote(
@@ -316,7 +321,10 @@ class Controller {
       {String cr_dir_name = "child"}) {
     // update note
     notes_data["Notes"].remove(oldCrNote);
-    notes_data["Notes"][newCrNote] = newCrContent;
+    notes_data["Notes"][newCrNote] = {
+      "date": DateTime.now().toString(),
+      "content": newCrContent
+    };
 
     // actualize note in its directory
     notes_data["Directories"][cr_dir_name].remove(oldCrNote);

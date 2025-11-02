@@ -80,17 +80,25 @@ class _NotesPageState extends State<NotesPage> {
     Map<String, dynamic> notesData = ctr.notes_data;
     Map<String, dynamic> notesContent = notesData["Notes"];
     Map<String, dynamic> mainContent = notesData["Directories"];
+
     mainContent.forEach((key, value) {
       if (key != "child") {
         String dirTitle = key;
         List<dynamic> childNotes = value;
+        childNotes.sort((a, b) {
+          final dateA = DateTime.parse(notesContent[a]["date"]);
+          final dateB = DateTime.parse(notesContent[b]["date"]);
+          return dateB.compareTo(dateA); // Newest firstx
+        });
         List<NoteCard> childNotesWidget = [];
 
         for (int i = 0; i < childNotes.length; i++) {
           String title = childNotes[i];
-          String content = notesContent[title];
+          DateTime noteDate = DateTime.parse(notesContent[title]["date"]);
+          String content = notesContent[title]["content"];
           childNotesWidget.add(NoteCard(
             cryptedTitle: title,
+            date: noteDate,
             cryptedContent: content,
             ctr: ctr,
             rebuildParent: rebuildNotesPage,
@@ -105,13 +113,21 @@ class _NotesPageState extends State<NotesPage> {
       }
     });
     List<dynamic> mainChildNotes = mainContent["child"];
+    mainChildNotes.sort((a, b) {
+      final dateA = DateTime.parse(notesContent[a]["date"]);
+      final dateB = DateTime.parse(notesContent[b]["date"]);
+      return dateB.compareTo(dateA); // Newest first
+    });
+
     for (int i = 0; i < mainChildNotes.length; i++) {
       String title = mainChildNotes[i];
 
-      String content = notesContent[title];
+      String content = notesContent[title]["content"];
+      DateTime date = DateTime.parse(notesContent[title]["date"]);
 
       contents.add(NoteCard(
         cryptedTitle: title,
+        date: date,
         cryptedContent: content,
         ctr: ctr,
         rebuildParent: rebuildNotesPage,

@@ -39,11 +39,17 @@ class _OpenDirScreenState extends State<OpenDirScreen> {
     mainContent.forEach((key, value) {
       if (key == dirName) {
         List<dynamic> childNodes = value;
-        for (int i = 0; i < childNodes.length; i++) {
-          String title = childNodes[i];
-          String content = notesContent[title];
+        for (int i = 0; i < childNodes.length+1; i++) {
+          if (i==0) {
+            contents.add(const SizedBox(height: 15,));
+            continue;
+          }
+          String title = childNodes[i-1];
+          DateTime date = DateTime.parse(notesContent[title]["date"]);
+          String content = notesContent[title]["content"];
           contents.add(NoteCard(
             cryptedTitle: title,
+            date: date,
             cryptedContent: content,
             contents: contents,
             rebuildParent: rebuildDirPage,

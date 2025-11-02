@@ -132,23 +132,29 @@ class _NoteScreenState extends State<NoteScreen> {
               widget.note?.cryptedTitle = crTitle;
               widget.note?.cryptedContent = crContent;
               widget.rebuildNote!();
+              widget.rebuildParent();
               Navigator.of(context).pop();
             } else {
+              DateTime date;
               if (widget.folderName != null) {
-                widget.ctr.saveNewNote(crTitle, crContent,
+                date = widget.ctr.saveNewNote(crTitle, crContent,
                     cr_dir_name: widget.folderName as String);
               } else {
-                widget.ctr.saveNewNote(crTitle, crContent);
+                date = widget.ctr.saveNewNote(crTitle, crContent);
               }
 
               widget.contents.add(NoteCard(
                 cryptedTitle: crTitle,
+                date: date,
                 cryptedContent: crContent,
                 ctr: widget.ctr,
                 contents: widget.contents,
                 rebuildParent: widget.rebuildParent,
                 folderName: widget.folderName,
               ));
+
+              widget.rebuildParent();
+              Navigator.of(context).pop();
 
             }
           }

@@ -1,6 +1,6 @@
 import 'package:cryptedeye/controller.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../tabs/screens/NoteScreen.dart';
 
 class NoteCard extends StatefulWidget {
@@ -9,11 +9,13 @@ class NoteCard extends StatefulWidget {
   late String cryptedContent;
   List<Widget> contents;
   final VoidCallback rebuildParent;
+  DateTime date;
   String? folderName;
 
   NoteCard({
     super.key,
     required this.cryptedTitle,
+    required this.date,
     required this.cryptedContent,
     required this.ctr,
     required this.contents,
@@ -42,15 +44,29 @@ class _NoteCardState extends State<NoteCard> {
               color: Theme.of(context).colorScheme.primary,
               size: 18,
             ),
-            const SizedBox(width: 5),
+            const SizedBox(width: 6),
+            // Title text
             Expanded(
-              flex: 2,
               child: Text(
                 widget.ctr.crypter.decrypt(widget.cryptedTitle),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                overflow: TextOverflow.fade,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  height: 1.3,
+                ),
+                overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
+            ),
+            const SizedBox(width: 8),
+            // Date + time
+            Text(
+              DateFormat('d/MM/yy-HH:mm').format(widget.date),
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.right,
             ),
           ],
         ),
