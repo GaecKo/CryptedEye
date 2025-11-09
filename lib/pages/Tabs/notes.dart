@@ -37,7 +37,7 @@ class _NotesPageState extends State<NotesPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return FrostedAlertDialog(
           title: const Text(
             "Adding Notes and Folders",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

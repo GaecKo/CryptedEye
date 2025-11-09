@@ -263,7 +263,7 @@ class _PasswordManagerPageState extends State<PasswordManagerPage> {
           ),
           const SizedBox(height: 20),
           const Text(
-            "Use the '+' button to create Passwords. Swipe left to delete.",
+            "Use the '+' button to create Passwords. Tap to modify or delete a password.",
             textAlign: TextAlign.center,
             style: TextStyle(),
           )
