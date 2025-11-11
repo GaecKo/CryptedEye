@@ -1,8 +1,8 @@
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
 import '../../../controller.dart';
+import '../../widgets/FolderCardWidget.dart';
 import '../../widgets/NoteCardWidget.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'NoteScreen.dart';
 
@@ -10,12 +10,18 @@ class OpenDirScreen extends StatefulWidget {
   final Controller ctr;
   final String dirName;
   final List<dynamic> childs;
+  final Function(Widget widget) deleteFolderBehavior;
+  final VoidCallback rebuildParent;
+  final FolderCard folderCard;
 
   const OpenDirScreen({
     super.key,
     required this.ctr,
     required this.dirName,
     required this.childs,
+    required this.deleteFolderBehavior,
+    required this.rebuildParent,
+    required this.folderCard
   });
 
   @override
@@ -55,6 +61,7 @@ class _OpenDirScreenState extends State<OpenDirScreen> {
             rebuildParent: rebuildDirPage,
             ctr: ctr,
             folderName: dirName,
+            deleteNoteBehavior: deleteWidget,
           ));
         }
       }
@@ -68,6 +75,20 @@ class _OpenDirScreenState extends State<OpenDirScreen> {
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.ctr.crypter.decrypt(dirName)),
+        actions: [
+          IconButton(
+              onPressed: () {
+                // XXX: should delete logic be in parent widget? Whereare button is here?
+                widget.deleteFolderBehavior(widget.folderCard as Widget);
+                widget.rebuildParent();
+                Navigator.of(context).pop();
+              },
+              icon: Icon(
+                Icons.delete_forever,
+                color: Colors.red,
+              )
+          )
+        ],
       ),
       floatingActionButton: SpeedDial(
         icon: Icons.add,
@@ -91,6 +112,7 @@ class _OpenDirScreenState extends State<OpenDirScreen> {
                     contents: contents,
                     rebuildParent: rebuildDirPage,
                     folderName: widget.dirName,
+                    deleteNoteBehavior: deleteWidget,
                   ),
                 ),
               );
@@ -102,45 +124,32 @@ class _OpenDirScreenState extends State<OpenDirScreen> {
         padding: const EdgeInsets.only(bottom: 60),
         itemCount: contents.length,
         itemBuilder: (BuildContext context, int index) {
-          return Slidable(
-            key: UniqueKey(),
-            endActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              dismissible: DismissiblePane(onDismissed: () {
-                deleteWidget(index);
-              }),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    deleteWidget(index);
-                    setState(() {});
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 0, horizontal: 10),
-                  backgroundColor: const Color(0xFFFE4A49),
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete,
-                  label: 'Delete',
-                ),
-              ],
-            ),
-            child: contents[index],
-          );
+          return contents[index];
         },
       ),
     );
   }
 
-  void deleteWidget(int index) {
-    NoteCard tmp = contents[index] as NoteCard;
-    widget.ctr.deleteNote(tmp.cryptedTitle, folderName: dirName);
-    contents.removeWhere((elem) {
-      return (elem as NoteCard).cryptedTitle == tmp.cryptedTitle;
-    });
-    setState(() {});
+  void deleteWidget(Widget widget) {
+    if (widget is NoteCard) {
+      contents.removeWhere((elem) {
+        if (elem is NoteCard) {
+          return elem.cryptedTitle == widget.cryptedTitle;
+        }
+        return false;
+      });
+      if (widget.folderName != null) {
+        widget.ctr
+            .deleteNote(
+            widget.cryptedTitle, folderName: widget.folderName as String);
+      } else {
+        widget.ctr.deleteNote(widget.cryptedTitle);
+      }
+    }
   }
 
+  // XXX: this could be directly done in deleteWidget,
+  // and thus not need to pass the rebuild parent as param to note screen
   void rebuildDirPage() {
     setState(() {});
   }

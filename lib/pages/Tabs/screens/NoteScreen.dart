@@ -8,6 +8,7 @@ class NoteScreen extends StatefulWidget {
   final List<Widget> contents;
   final VoidCallback rebuildParent;
   final VoidCallback? rebuildNote;
+  final Function(Widget widget) deleteNoteBehavior;
   final NoteCard? note;
   final String? folderName;
   bool initialized = false;
@@ -20,6 +21,7 @@ class NoteScreen extends StatefulWidget {
     required this.ctr,
     required this.contents,
     required this.rebuildParent,
+    required this.deleteNoteBehavior
   });
 
   @override
@@ -44,7 +46,20 @@ class _NoteScreenState extends State<NoteScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const SizedBox.shrink(),
+        actions: [
+          widget.note == null ? SizedBox() : IconButton(
+              onPressed: () {
+                // XXX: should delete logic be in parent widget? Whereare button is here?
+                widget.deleteNoteBehavior(widget.note as Widget);
+                widget.rebuildParent();
+                Navigator.of(context).pop();
+              },
+              icon: Icon(
+                Icons.delete_forever,
+                color: Colors.red,
+              )
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -151,6 +166,7 @@ class _NoteScreenState extends State<NoteScreen> {
                 contents: widget.contents,
                 rebuildParent: widget.rebuildParent,
                 folderName: widget.folderName,
+                deleteNoteBehavior: widget.deleteNoteBehavior,
               ));
 
               widget.rebuildParent();

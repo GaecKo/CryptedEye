@@ -9,6 +9,7 @@ class NoteCard extends StatefulWidget {
   late String cryptedContent;
   List<Widget> contents;
   final VoidCallback rebuildParent;
+  final Function(Widget widget) deleteNoteBehavior;
   DateTime date;
   String? folderName;
 
@@ -20,6 +21,7 @@ class NoteCard extends StatefulWidget {
     required this.ctr,
     required this.contents,
     required this.rebuildParent,
+    required this.deleteNoteBehavior,
     this.folderName,
   });
 
@@ -86,6 +88,7 @@ class _NoteCardState extends State<NoteCard> {
                 rebuildNote: rebuild,
                 note: widget,
                 folderName: widget.folderName,
+                deleteNoteBehavior: widget.deleteNoteBehavior,
               ),
             ),
           );

@@ -6,6 +6,8 @@ import '../tabs/screens/OpenDirScreen.dart';
 class FolderCard extends StatefulWidget {
   final String name;
   final List<dynamic> childNotes;
+  final Function(Widget widget) deleteFolderBehavior;
+  final VoidCallback rebuildParent;
   final Controller ctr;
 
   const FolderCard({
@@ -13,6 +15,8 @@ class FolderCard extends StatefulWidget {
     required this.name,
     required this.childNotes,
     required this.ctr,
+    required this.deleteFolderBehavior,
+    required this.rebuildParent
   });
 
   @override
@@ -33,6 +37,9 @@ class _FolderCardState extends State<FolderCard> {
                 ctr: widget.ctr,
                 dirName: widget.name,
                 childs: widget.childNotes,
+                deleteFolderBehavior: widget.deleteFolderBehavior,
+                rebuildParent: widget.rebuildParent,
+                folderCard: widget,
               ),
             ),
           );

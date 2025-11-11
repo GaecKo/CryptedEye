@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:cryptedeye/pages/tabs/screens/NoteScreen.dart';
 import 'package:cryptedeye/pages/widgets/FrostedAlertDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../controller.dart';
@@ -77,6 +76,7 @@ class _NotesPageState extends State<NotesPage> {
   void buildContent() {
     contents = [];
     ctr = widget.ctr;
+    print(ctr.notes_data.toString());
     Map<String, dynamic> notesData = ctr.notes_data;
     Map<String, dynamic> notesContent = notesData["Notes"];
     Map<String, dynamic> mainContent = notesData["Directories"];
@@ -103,12 +103,15 @@ class _NotesPageState extends State<NotesPage> {
             ctr: ctr,
             rebuildParent: rebuildNotesPage,
             contents: contents,
+            deleteNoteBehavior: deleteWidgetFromContents,
           ));
         }
         contents.add(FolderCard(
           name: dirTitle,
           childNotes: childNotes,
           ctr: ctr,
+          deleteFolderBehavior: deleteWidgetFromContents,
+          rebuildParent: rebuildNotesPage,
         ));
       }
     });
@@ -132,6 +135,7 @@ class _NotesPageState extends State<NotesPage> {
         ctr: ctr,
         rebuildParent: rebuildNotesPage,
         contents: contents,
+        deleteNoteBehavior: deleteWidgetFromContents,
       ));
     }
   }
@@ -182,32 +186,7 @@ class _NotesPageState extends State<NotesPage> {
                 // Adjust index for data access (subtract 1 for the spacer)
                 final widget = filteredItems[index - 1];
 
-                return Slidable(
-                  key: UniqueKey(),
-                  endActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    dismissible: DismissiblePane(onDismissed: () {
-                      deleteWidgetFromContents(widget);
-                      setState(() {});
-                    }),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          deleteWidgetFromContents(widget);
-                          setState(() {});
-                        },
-                        borderRadius: BorderRadius.circular(10),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 10),
-                        backgroundColor: const Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
-                      ),
-                    ],
-                  ),
-                  child: widget,
-                );
+                return widget;
               },
             ),
           ),
@@ -294,11 +273,13 @@ class _NotesPageState extends State<NotesPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => NoteScreen(
-                          ctr: widget.ctr,
-                          contents: contents,
-                          rebuildParent: rebuildNotesPage,
-                        ),
+                        builder: (_) =>
+                            NoteScreen(
+                              ctr: widget.ctr,
+                              contents: contents,
+                              rebuildParent: rebuildNotesPage,
+                              deleteNoteBehavior: deleteWidgetFromContents,
+                          ),
                       ),
                     );
                   },
@@ -316,6 +297,7 @@ class _NotesPageState extends State<NotesPage> {
                         ctr: widget.ctr,
                         contents: contents,
                         rebuildParent: rebuildNotesPage,
+                        deleteFolderBehavior: deleteWidgetFromContents,
                       ),
                     );
                   },

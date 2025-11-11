@@ -9,12 +9,14 @@ class FolderCreation extends StatefulWidget {
   final Controller ctr;
   final List<Widget> contents;
   final VoidCallback rebuildParent;
+  final Function(Widget widget) deleteFolderBehavior;
 
   const FolderCreation({
     super.key,
     required this.ctr,
     required this.contents,
     required this.rebuildParent,
+    required this.deleteFolderBehavior,
   });
 
   @override
@@ -35,6 +37,9 @@ class _FolderCreationState extends State<FolderCreation> {
           name: crName,
           childNotes: const [],
           ctr: widget.ctr,
+          deleteFolderBehavior: widget.deleteFolderBehavior,
+          rebuildParent: widget.rebuildParent,
+
         ),
       );
       widget.rebuildParent();
