@@ -471,7 +471,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 80),
                       child: SizedBox(
-                        width: double.infinity,
+                        width: 260,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
