@@ -62,6 +62,9 @@ To work on the app, you need to install [flutter](https://docs.flutter.dev/get-s
 </p>
 
 ### Notes page
+> [!NOTE] 
+> You can create folders and notes, as well as search through them.
+
 <p float="left" align="center">
     <img src=".assets/notes_dark.png" width=300>
 	<img src=".assets/notes_light.png" width=300>
