@@ -4,29 +4,29 @@
 A vault consist of passwords and notes. 
 
 You can securely import and export vaults offline, as a vault can be packaged as a single compressed file.
-
-![CryptedEye](.assets/signup_dark.gif)
-
 <h1 align="center">
+
+<img src=".assets/signup_dark.gif" width=250>
+
 
 [![Support via PayPal](https://cdn.rawgit.com/twolfson/paypal-github-button/1.0.0/dist/button.svg)](https://paypal.me/ArthurDeNeyer?country.x=BE&locale.x=fr_FR) 
 
 </h1>
 
 ## Installation
-* To install CryptedEye on your phone as the release app, you can get the `.apk` file from [Github](https://github.com/GaecKo/CryptedEye/releases/tag/v1.0.5). 
+To install CryptedEye on your phone as the release app, you can get the `.apk` file from [Github](https://github.com/GaecKo/CryptedEye/releases/tag/v1.0.5). 
 > [!WARNING]  
 > The project is in a WIP stage, latest changes aren't in the apk yet. 
 
-* To work on the app, you need to install [flutter](https://docs.flutter.dev/get-started/install). Once it's done and everything is setup, you simply need to run `flutter run`. 
+To work on the app, you need to install [flutter](https://docs.flutter.dev/get-started/install). Once it's done and everything is setup, you simply need to run `flutter run`. 
 
 ## App preview
 ### sign-up
 > [!NOTE] 
 > Sign-up pages includes a dynamic password quality check.  
-
+<h1 align="center">
 <img src=".assets/signup_light.png" width=300>
-
+</h1>
 ### log-in
 > [!NOTE] 
 > Login pages allows the selection of the vault, among the multiple you have. 
